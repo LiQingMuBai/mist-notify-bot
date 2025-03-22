@@ -27,6 +27,10 @@ func getCommandMenu() tgbotapi.SetMyCommandsConfig {
 			Command:     bot.GET_HISTORICAL_STATS,
 			Description: "历史统计信息",
 		},
+		tgbotapi.BotCommand{
+			Command:     bot.ASSOCIATED_RECOMMENDATION_RELATION,
+			Description: "绑定推荐关系",
+		},
 		//tgbotapi.BotCommand{
 		//	Command:     bot.CommandAskGroup,
 		//	Description: "Задать группу",
@@ -95,10 +99,7 @@ func getCommandMenu() tgbotapi.SetMyCommandsConfig {
 		//	Command:     bot.CommandExchangeEnergy,
 		//	Description: "波场Gas兑换",
 		//},
-		tgbotapi.BotCommand{
-			Command:     bot.CommandCheckBlacklist,
-			Description: "绑定推荐关系",
-		},
+
 		tgbotapi.BotCommand{
 			Command:     bot.CommandHelp,
 			Description: "客服",
