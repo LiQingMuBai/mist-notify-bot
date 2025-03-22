@@ -9,27 +9,30 @@ func getCommandMenu() tgbotapi.SetMyCommandsConfig {
 	menu := tgbotapi.NewSetMyCommands(
 		tgbotapi.BotCommand{
 			Command:     bot.CommandStart,
-			Description: "开始与机器人聊天",
+			Description: "開始與機器人聊天",
 		},
 		tgbotapi.BotCommand{
 			Command:     bot.CommandScoreEnergy,
-			Description: "地址风险评估",
+			Description: "USDT地址風險查詢",
+		}, tgbotapi.BotCommand{
+			Command:     bot.ADDRESS_BEHAVIOR_REPORT,
+			Description: "地址行爲分析報告",
 		},
 		tgbotapi.BotCommand{
 			Command:     bot.GET_TODAY_FROZEN_ADDRESSES,
-			Description: "统计今日冻结地址列表",
+			Description: "統計今日凍結地址列表",
 		},
 		tgbotapi.BotCommand{
 			Command:     bot.GET_PENDING_FROZEN_ADDRESSES,
-			Description: "统计即将冻结地址列表",
+			Description: "統計即將凍結地址列表",
 		},
 		tgbotapi.BotCommand{
 			Command:     bot.GET_HISTORICAL_STATS,
-			Description: "历史统计信息",
+			Description: "歷史統計信息",
 		},
 		tgbotapi.BotCommand{
 			Command:     bot.ASSOCIATED_RECOMMENDATION_RELATION,
-			Description: "绑定推荐关系",
+			Description: "綁定推薦關係",
 		},
 		//tgbotapi.BotCommand{
 		//	Command:     bot.CommandAskGroup,

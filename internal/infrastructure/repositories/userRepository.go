@@ -22,10 +22,12 @@ func (r *UserRepository) Create(user domain.User) error {
 		return err
 	}
 
-	query := "INSERT INTO tg_users (id, username,amount,tron_amount,tron_address, eth_address,eth_amount, associates) VALUES ($1, $2, $3, $4, $5, $6, $7)"
-	row := tx.QueryRow(query, user.Id, user.Username, user.Amount, user.TronAmount, user.TronAddress, user.EthAddress, user.EthAmount, user.Associates)
+	query := "INSERT INTO tg_users (user_id, username,amount,tron_amount,tron_address, eth_address,eth_amount, associates) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+	row := tx.QueryRow(query, user.UserID, user.Username, user.Amount, user.TronAmount, user.TronAddress, user.EthAddress, user.EthAmount, user.Associates)
 	//row := tx.QueryRow(query, 1, user.Username, user.TronAmount, user.TronAddress, user.EthAddress, user.EthAmount, user.Associates)
 	if row.Err() != nil {
+
+		log.Println("add err:", row.Err())
 		_ = tx.Rollback()
 		return err
 	}
@@ -52,7 +54,7 @@ func (r *UserRepository) GetByUsername(_username string) (domain.User, error) {
 	//err := r.db.Get(&user, query, _username)
 
 	jason := domain.User{}
-	err := r.db.Get(&jason, "SELECT  id,username,amount,associates, tron_amount,tron_address,eth_address,eth_amount,create_at,update_at FROM tg_users WHERE username=$1", _username)
+	err := r.db.Get(&jason, "SELECT  user_id,username,amount,associates, tron_amount,tron_address,eth_address,eth_amount,create_at,update_at FROM tg_users WHERE username=?", _username)
 
 	log.Println(err)
 	return jason, err

@@ -17,7 +17,7 @@ func NewUserService(repos interfaces.IUserRepository) *UserService {
 }
 
 func (s *UserService) Create(user domain.User) error {
-	user.Id = uuid.New()
+	user.UserID = uuid.New().String()
 	return s.repos.Create(user)
 }
 

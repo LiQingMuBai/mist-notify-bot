@@ -22,7 +22,7 @@ func (c *StartCommand) Exec(b bot.IBot, message *tgbotapi.Message) error {
 	user, err := b.GetServices().IUserService.GetByUsername(userName)
 
 	if user.Username == "" {
-		log.Println("空的，需要创建")
+		log.Println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>空的，需要创建<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
 		user = *domain.NewUser(message.From.UserName, "", "", "", "", "", "")
 		err = b.GetServices().IUserService.Create(user)
 
@@ -30,7 +30,21 @@ func (c *StartCommand) Exec(b bot.IBot, message *tgbotapi.Message) error {
 		log.Println("username", userName)
 	}
 
-	textStart := "\n\n\n💖你好" + userName + ",欢迎使用U盾BOT\n+--------------------+\n🚀用户标识:" + user.Id.String() + "\n🏆推广人数:0\n🔎查询积分:0\n🕙注册时间:+" + user.CreatedAt.String() + "\n+--------------------+\n/query – 地址查询\n/gas –  能量交易\n/help –  帮助\n – 更多功能请联系我们的客服\n+--------------------+\n🔍@vip664"
+	textStart := "\n\n\n💖您好" + userName + ",🛡️U盾在手，链上无忧！\n" +
+		"歡迎使用U盾鏈上風控助手\n" +
+		"🚀功能介紹：\n" +
+		"✅USDT地址風險查詢\n" +
+		"✅地址行爲分析報告\n" +
+		"✅地址風險等級變動提醒\n" +
+		"✅USDT凍結警報提醒（秒級響應，讓你的U永不被凍結）\n" +
+		"🎁 新用户福利：\n🎉 免费绑定 1 个地址，开启实时风险监控\n🎉 每日赠送 1 次地址风险查询\n\n" +
+		"💡常用指令：\n" +
+		"/check 地址 ➜ 查詢地址風險\n" +
+		"/monitor 地址 ➜ 開啓地址實時監控\n" +
+		"/vip ➜ 升級會員，解鎖更多權益\n" +
+		"📞聯繫客服：@Ushield001\n"
+
+	//"🚀用戶標識:" + user.UserID + "\n🏆推廣人數:0\n🔎查詢積分:0\n🕙註冊時間:+" + "\n+-----------------------+\n/query – 地址查詢\n/help –   幫助\n – 更多功能請聯繫我們的客服\n+--------------------+\n🔍@Ushield001"
 	msg := domain.MessageToSend{
 		ChatId: message.Chat.ID,
 		Text:   textStart,
@@ -49,7 +63,7 @@ func (c *AddCommand) Exec(b bot.IBot, message *tgbotapi.Message) error {
 	b.GetSwitcher().ISwitcherAdd.Next(message.From.ID)
 	msg := domain.MessageToSend{
 		ChatId: message.Chat.ID,
-		Text:   "输入您的波场地址11111",
+		Text:   "輸入您的波場地址",
 	}
 
 	err := b.SendMessage(msg, bot.DefaultChannel)
