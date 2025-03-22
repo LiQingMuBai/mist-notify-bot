@@ -21,7 +21,9 @@ func (f *Factory) GetHandler(b bot.IBot, message *tgbotapi.Message) IHandler {
 	if strings.Contains(message.Text, "score") {
 		return NewTronShieldHandler()
 	}
-
+	if strings.Contains(message.Text, "relation") {
+		return NewUserRelationHandler()
+	}
 	meta := message.Text
 	if len(meta) == 34 && strings.HasPrefix(meta, "T") {
 		return NewMisttrackHandler()

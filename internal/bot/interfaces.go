@@ -46,7 +46,7 @@ const (
 	GET_TODAY_FROZEN_ADDRESSES         = "get_today_frozen_addresses"
 	GET_PENDING_FROZEN_ADDRESSES       = "get_pending_frozen_addresses"
 	GET_HISTORICAL_STATS               = "get_historical_stats"
-	ASSOCIATED_RECOMMENDATION_RELATION = "associated "
+	ASSOCIATED_RECOMMENDATION_RELATION = "associated_relation "
 )
 
 const (

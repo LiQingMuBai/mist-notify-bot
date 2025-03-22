@@ -258,7 +258,7 @@ func NewHelpCommand() *HelpCommand {
 }
 
 func (c *HelpCommand) Exec(b bot.IBot, message *tgbotapi.Message) error {
-	textHelp := "Инструкция пользования Бибой:"
+	textHelp := "聯係我們的客服"
 	msg := domain.MessageToSend{
 		ChatId: message.Chat.ID,
 		Text:   textHelp,
