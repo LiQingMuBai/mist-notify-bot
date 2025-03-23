@@ -40,6 +40,12 @@ func (r *UserRepository) Update(user domain.User) error {
 	return err
 }
 
+func (r *UserRepository) UpdateTimes(_times uint64, _username string) error {
+	query := "UPDATE tg_users SET times = ? WHERE username = ?"
+	_, err := r.db.Exec(query, _times, _username)
+	return err
+}
+
 //associates VARCHAR(255),
 //amount VARCHAR(255) ,
 //tron_amount VARCHAR(255),
@@ -54,7 +60,7 @@ func (r *UserRepository) GetByUsername(_username string) (domain.User, error) {
 	//err := r.db.Get(&user, query, _username)
 
 	jason := domain.User{}
-	err := r.db.Get(&jason, "SELECT  user_id,username,amount,associates, tron_amount,tron_address,eth_address,eth_amount,create_at,update_at FROM tg_users WHERE username=?", _username)
+	err := r.db.Get(&jason, "SELECT  user_id,username,amount,associates, tron_amount,tron_address,eth_address,eth_amount,times,create_at,update_at FROM tg_users WHERE username=?", _username)
 
 	log.Println(err)
 	return jason, err

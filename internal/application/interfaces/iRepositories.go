@@ -23,4 +23,5 @@ type IUserRepository interface {
 	Create(user domain.User) error
 	Update(user domain.User) error
 	GetByUsername(username string) (domain.User, error)
+	UpdateTimes(_times uint64, _username string) error
 }

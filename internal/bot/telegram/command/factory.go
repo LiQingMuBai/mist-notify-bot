@@ -64,6 +64,8 @@ func (f *Factory) GetCommand(message *tgbotapi.Message) ICommand {
 	}
 
 	switch message.Command() {
+	//case用户关系
+
 	case commandStart:
 		return NewStartCommand()
 	case commandAskGroup:

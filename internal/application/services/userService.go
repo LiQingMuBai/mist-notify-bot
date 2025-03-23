@@ -28,3 +28,6 @@ func (s *UserService) Update(user domain.User) error {
 func (s *UserService) GetByUsername(username string) (domain.User, error) {
 	return s.repos.GetByUsername(username)
 }
+func (s *UserService) UpdateTimes(_times uint64, _username string) error {
+	return s.repos.UpdateTimes(_times, _username)
+}

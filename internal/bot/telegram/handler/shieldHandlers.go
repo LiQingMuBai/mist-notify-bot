@@ -15,7 +15,7 @@ func NewTronShieldHandler() *TronShieldHandler {
 func (h *TronShieldHandler) Handle(b bot.IBot, message *tgbotapi.Message) error {
 	msg := domain.MessageToSend{
 		ChatId: message.Chat.ID,
-		Text:   "请输入地址，会自动匹配，默认是波场USDT地址风险评估",
+		Text:   "請輸入地址，會自動匹配，默認是波場USDT地址風險評估",
 	}
 
 	b.GetSwitcher().Next(message.Chat.ID)
