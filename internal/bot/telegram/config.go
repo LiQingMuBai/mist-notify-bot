@@ -14,9 +14,14 @@ func getCommandMenu() tgbotapi.SetMyCommandsConfig {
 		tgbotapi.BotCommand{
 			Command:     bot.CommandScoreEnergy,
 			Description: "USDT地址風險查詢",
-		}, tgbotapi.BotCommand{
+		},
+		tgbotapi.BotCommand{
 			Command:     bot.ADDRESS_BEHAVIOR_REPORT,
 			Description: "地址行爲分析報告",
+		},
+		tgbotapi.BotCommand{
+			Command:     bot.MONITOR_ADDRESS,
+			Description: "跟踪地址",
 		},
 		tgbotapi.BotCommand{
 			Command:     bot.GET_TODAY_FROZEN_ADDRESSES,

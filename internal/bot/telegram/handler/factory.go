@@ -21,6 +21,9 @@ func (f *Factory) GetHandler(b bot.IBot, message *tgbotapi.Message) IHandler {
 	if strings.Contains(message.Text, "vip") {
 		return NewVIPHandler()
 	}
+	if strings.Contains(message.Text, "address") {
+		return NewStatsHandler()
+	}
 	if strings.Contains(message.Text, "help") {
 		return NewHelpHandler()
 	}
