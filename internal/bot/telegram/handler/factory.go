@@ -18,7 +18,13 @@ func (f *Factory) GetHandler(b bot.IBot, message *tgbotapi.Message) IHandler {
 	userId := message.From.ID
 
 	log.Println(message.Text)
-	if strings.Contains(message.Text, "score") {
+	if strings.Contains(message.Text, "vip") {
+		return NewVIPHandler()
+	}
+	if strings.Contains(message.Text, "help") {
+		return NewHelpHandler()
+	}
+	if strings.Contains(message.Text, "check") {
 		return NewTronShieldHandler()
 	}
 	if strings.Contains(message.Text, "relation") {

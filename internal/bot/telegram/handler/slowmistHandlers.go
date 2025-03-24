@@ -46,9 +46,10 @@ func (h *MisttrackHandler) Handle(b bot.IBot, message *tgbotapi.Message) error {
 		err := b.GetServices().IUserService.UpdateTimes(1, userName)
 
 		if err != nil {
+
 			msg = domain.MessageToSend{
 				ChatId: message.Chat.ID,
-				Text:   "系統錯誤，請重新輸入地址",
+				Text:   "系統錯誤1111111111，請重新輸入地址",
 			}
 		}
 	}

@@ -39,7 +39,7 @@ const (
 	CommandScheduleTomorrow            = "schedule_tomorrow"
 	CommandScheduleNextWeek            = "schedule_next_week"
 	CommandAskGroup                    = "ask_group"
-	CommandScoreEnergy                 = "score"
+	CommandScoreEnergy                 = "check"
 	CommandExchangeEnergy              = "exchange"
 	CommandCheckBlacklist              = "bind"
 	GET_TODAY_FROZEN_TOTAL             = "get_today_frozen_total"
@@ -48,6 +48,7 @@ const (
 	GET_HISTORICAL_STATS               = "get_historical_stats"
 	ASSOCIATED_RECOMMENDATION_RELATION = "associated_relation "
 	ADDRESS_BEHAVIOR_REPORT            = "get_address_behavior_report "
+	GET_VIP                            = "get_vip "
 )
 
 const (

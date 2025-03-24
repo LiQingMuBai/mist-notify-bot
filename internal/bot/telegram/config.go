@@ -31,8 +31,8 @@ func getCommandMenu() tgbotapi.SetMyCommandsConfig {
 			Description: "歷史統計信息",
 		},
 		tgbotapi.BotCommand{
-			Command:     bot.ASSOCIATED_RECOMMENDATION_RELATION,
-			Description: "綁定推薦關係",
+			Command:     bot.GET_VIP,
+			Description: "昇級vip用戶",
 		},
 		//tgbotapi.BotCommand{
 		//	Command:     bot.CommandAskGroup,

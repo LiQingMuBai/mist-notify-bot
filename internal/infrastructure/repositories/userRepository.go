@@ -60,7 +60,7 @@ func (r *UserRepository) GetByUsername(_username string) (domain.User, error) {
 	//err := r.db.Get(&user, query, _username)
 
 	jason := domain.User{}
-	err := r.db.Get(&jason, "SELECT  user_id,username,amount,associates, tron_amount,tron_address,eth_address,eth_amount,times,create_at,update_at FROM tg_users WHERE username=?", _username)
+	err := r.db.Get(&jason, "SELECT  user_id,username,amount,associates, tron_amount,tron_address,eth_address,eth_amount,times FROM tg_users WHERE username=?", _username)
 
 	log.Println(err)
 	return jason, err
