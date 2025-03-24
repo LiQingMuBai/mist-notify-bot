@@ -48,7 +48,7 @@ const (
 	GET_HISTORICAL_STATS               = "get_historical_addresses_stats"
 	ASSOCIATED_RECOMMENDATION_RELATION = "associated_relation "
 	ADDRESS_BEHAVIOR_REPORT            = "get_address_behavior_report "
-	GET_VIP                            = "get_vip "
+	GET_VIP                            = "upgrade_vip "
 	MONITOR_ADDRESS                    = "monitor_address"
 )
 
