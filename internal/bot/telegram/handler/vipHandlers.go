@@ -16,7 +16,7 @@ func (h *VIPHandler) Handle(b bot.IBot, message *tgbotapi.Message) error {
 
 	msg := domain.MessageToSend{
 		ChatId: message.Chat.ID,
-		Text:   "📞VIP請聯繫客服@Ushield001\n",
+		Text:   "📞VIP請聯繫客服 @Ushield001\n",
 	}
 
 	b.GetSwitcher().Next(message.Chat.ID)

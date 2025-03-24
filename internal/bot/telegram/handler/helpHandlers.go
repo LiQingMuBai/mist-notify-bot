@@ -16,7 +16,7 @@ func (h *HelpHandler) Handle(b bot.IBot, message *tgbotapi.Message) error {
 
 	msg := domain.MessageToSend{
 		ChatId: message.Chat.ID,
-		Text:   "📞請聯繫客服@Ushield001\n",
+		Text:   "📞請聯繫客服 @Ushield001\n",
 	}
 
 	b.GetSwitcher().Next(message.Chat.ID)
