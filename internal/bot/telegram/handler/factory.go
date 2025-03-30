@@ -37,6 +37,10 @@ func (f *Factory) GetHandler(b bot.IBot, message *tgbotapi.Message) IHandler {
 	if len(meta) == 34 && strings.HasPrefix(meta, "T") {
 		return NewMisttrackHandler()
 	}
+	if len(meta) == 42 && strings.HasPrefix(meta, "0x") {
+		return NewMisttrackHandler()
+	}
+
 	switch {
 
 	case b.GetSwitcher().ISwitcherUpdate.Current(userId) == bot.WaitingId:
