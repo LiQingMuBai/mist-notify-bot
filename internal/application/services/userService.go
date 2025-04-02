@@ -28,6 +28,31 @@ func (s *UserService) Update(user domain.User) error {
 func (s *UserService) GetByUsername(username string) (domain.User, error) {
 	return s.repos.GetByUsername(username)
 }
+
+func (s *UserService) FetchNewestAddress() ([]domain.User, error) {
+	return s.repos.FetchNewestAddress()
+}
+func (s *UserService) NotifyTronAddress() ([]domain.User, error) {
+	return s.repos.NotifyTronAddress()
+}
+func (s *UserService) NotifyEthereumAddress() ([]domain.User, error) {
+	return s.repos.NotifyEthereumAddress()
+}
+
 func (s *UserService) UpdateTimes(_times uint64, _username string) error {
 	return s.repos.UpdateTimes(_times, _username)
+}
+func (s *UserService) BindTronAddress(_address string, _username string) error {
+	return s.repos.BindTronAddress(_address, _username)
+}
+
+func (s *UserService) BindEthereumAddress(_address string, _username string) error {
+	return s.repos.BindEthereumAddress(_address, _username)
+}
+func (s *UserService) DisableTronAddress(_address string) error {
+
+	return s.repos.DisableTronAddress(_address)
+}
+func (s *UserService) BindChat(_associates string, _username string) error {
+	return s.repos.BindChat(_associates, _username)
 }

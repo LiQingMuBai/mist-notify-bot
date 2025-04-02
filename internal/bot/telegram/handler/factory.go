@@ -18,6 +18,18 @@ func (f *Factory) GetHandler(b bot.IBot, message *tgbotapi.Message) IHandler {
 	userId := message.From.ID
 
 	log.Println(message.Text)
+
+	meta := message.Text
+	state := b.GetUserStates()[message.Chat.ID]
+	if strings.Contains(message.Text, "monitor") {
+		return NewMoniterHandler()
+	}
+	if len(meta) == 34 && strings.HasPrefix(meta, "T") && strings.Contains(state, "pre-monitor") {
+		return NewMoniterHandler()
+	}
+	if len(meta) == 42 && strings.HasPrefix(meta, "0x") && strings.Contains(state, "pre-monitor") {
+		return NewMoniterHandler()
+	}
 	if strings.Contains(message.Text, "vip") {
 		return NewVIPHandler()
 	}
@@ -33,7 +45,7 @@ func (f *Factory) GetHandler(b bot.IBot, message *tgbotapi.Message) IHandler {
 	if strings.Contains(message.Text, "relation") {
 		return NewUserRelationHandler()
 	}
-	meta := message.Text
+
 	if len(meta) == 34 && strings.HasPrefix(meta, "T") {
 		return NewMisttrackHandler()
 	}

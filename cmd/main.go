@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
@@ -12,6 +14,8 @@ import (
 	"homework_bot/internal/application/services"
 	"homework_bot/internal/bot/telegram"
 	repository "homework_bot/internal/infrastructure/repositories"
+	"net/http"
+	"time"
 )
 
 var bot *tgbotapi.BotAPI
@@ -37,7 +41,7 @@ func main() {
 	//})
 
 	// Database connection string
-	dsn := "root:123456@(8.219.148.240:6033)/gva"
+	dsn := "root:12345678901234567890@(156.251.17.226:6033)/gva"
 
 	// Initialize a mysql database connection
 	db, err := sqlx.Connect("mysql", dsn)
@@ -50,8 +54,9 @@ func main() {
 	}
 
 	//bot, err = tgbotapi.NewBotAPI(os.Getenv("TG_BOT_API"))
-	//bot, err = tgbotapi.NewBotAPI("7916934957:AAEy5cOEhSXdAQk5vQyMTVEs8BMRvonm4Ho")
-	bot, err = tgbotapi.NewBotAPI("7668068911:AAFOXuA7KpWOfur0rcoVbZTwGOgsBCjkI3s")
+	const token = "7551982200:AAHdSLHtqDj25ugn3uD1hth9i2iRU8OYWnU"
+	bot, err = tgbotapi.NewBotAPI(token)
+	//bot, err = tgbotapi.NewBotAPI("7668068911:AAFOXuA7KpWOfur0rcoVbZTwGOgsBCjkI3s")
 	if err != nil {
 		fmt.Println(err.Error())
 		return
@@ -63,9 +68,36 @@ func main() {
 	service := services.NewService(repos)
 
 	tgBot := telegram.NewBot(bot, service)
+	go asyncNotify(tgBot, token)
+
 	err = tgBot.Start()
+
 	if err != nil {
 		logrus.Fatalf("bot.start failed: %s", err.Error())
+	}
+}
+
+func asyncNotify(tgBot *telegram.Bot, token string) {
+	for {
+		fmt.Println(">>>>>>>>>>>>>>>>>>>>>>>>Hello, World<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
+		addresses, _ := tgBot.GetServices().IUserService.NotifyTronAddress()
+
+		for _, address := range addresses {
+
+			notify(address.Associates, token, address.TronAddress)
+			tgBot.GetServices().IUserService.DisableTronAddress(address.TronAddress)
+
+		}
+
+		eth_addresses, _ := tgBot.GetServices().IUserService.NotifyEthereumAddress()
+
+		for _, address := range eth_addresses {
+			notify(address.Associates, token, address.EthAddress)
+			tgBot.GetServices().IUserService.DisableTronAddress(address.EthAddress)
+
+		}
+
+		time.Sleep(60 * time.Second) // 等待 30秒
 	}
 }
 
@@ -73,4 +105,29 @@ func initConfig() error {
 	viper.AddConfigPath("configs")
 	viper.SetConfigName("config")
 	return viper.ReadInConfig()
+}
+
+func notify(_chatID string, _token string, _address string) {
+	message := map[string]string{
+		"chat_id": _chatID, // 或直接用 chat_id 如 "123456789"=
+		"text":    "‼️‼️" + _address + "请注意地址即将被拉入黑名单" + "️‼️‼️️",
+	}
+	// 转换为 JSON
+	jsonData, err := json.Marshal(message)
+	if err != nil {
+		fmt.Println("JSON 编码失败:", err)
+		return
+	}
+
+	// 发送 POST 请求到 Telegram Bot API
+	url := fmt.Sprintf("https://api.telegram.org/bot%s/sendMessage", _token)
+	resp, err := http.Post(url, "application/json", bytes.NewBuffer(jsonData))
+	if err != nil {
+		fmt.Println("发送消息失败:", err)
+		return
+	}
+	defer resp.Body.Close()
+
+	// 打印响应结果
+	fmt.Println("消息发送状态:", resp.Status)
 }

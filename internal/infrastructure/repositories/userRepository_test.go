@@ -55,7 +55,7 @@ func TestUserRepository_GetByUsername(t *testing.T) {
 
 	jason := domain.User{}
 	err = db.Get(&jason, "SELECT  id,username,amount,associates, tron_amount,tron_address,eth_address,eth_amount ,create_at,update_at FROM tg_users WHERE username=$1", "avachow101")
-	fmt.Printf("%#v\n", jason.Id.String())
+	//fmt.Printf("%#v\n", jason.Id.String())
 	fmt.Printf("%#v\n", jason.CreatedAt.String())
 
 	//

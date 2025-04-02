@@ -13,7 +13,8 @@ import (
 	"strings"
 )
 
-var _cookie = "_ga=GA1.1.952339838.1743478159; _bl_uid=5qmId8h8xUwxLhvvIqLy878nX7vz; csrftoken=ZsUzP3PB1b6hFsu7R9hhRsKO5qOSvsvSRMDrqXqq2gRbLywwsr4toHEUZNzTdYk7; sessionid=23qxazzhkz6it7ow8gtz1p3ua2bqx6x3; detect_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyYW5kb21fc3RyIjoiMzQzNDY5In0.ZYla82HwE6OqaEgJblSdjD08FvRXlWm0YbeermrRhE4; _ga_40VGDGQFCB=GS1.1.1743572931.3.1.1743573087.0.0.0; _ga_5X5Z4KZ7PC=GS1.1.1743572931.3.1.1743573087.0.0.0"
+// var _cookie = "_ga=GA1.1.23337514.1742894564; _bl_uid=O8m7m8ksonwa0Ifjgw0erRqd9147; _ga_SGF4VCWFZY=GS1.1.1743951867.11.0.1743951889.0.0.0; detect_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyYW5kb21fc3RyIjoiNjU4NzU2In0.XlQWiKHwcSVhudgcCCagmPZDUtW7Y1axXLWxEbigUrQ; csrftoken=3lTa4N2nsgqA0cgdJkmTdwHRyybtryyN6BI58JYklWnKcQA4H5iMkw9pLjyYSRof; sessionid=cmiphu4p0v1q171wtu3qfdpill564tme; _ga_40VGDGQFCB=GS1.1.1744159244.23.1.1744159268.0.0.0; _ga_5X5Z4KZ7PC=GS1.1.1744159244.23.1.1744159268.0.0.0"
+var _cookie = "_ga=GA1.1.23337514.1742894564; _bl_uid=O8m7m8ksonwa0Ifjgw0erRqd9147; _ga_SGF4VCWFZY=GS1.1.1743951867.11.0.1743951889.0.0.0; detect_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyYW5kb21fc3RyIjoiODQ5MjkzIn0.gh7RR9KIoVg8TlJjB01J91s6k3F_Q0nZLV0ZUc9yBfo; csrftoken=o0RrH85R5v62McbN2XE70W5ExMVf0sv3EfVc716lpyIYX9WTfSWvdLijxNNmrW9j; sessionid=qh47nuzec5o5750ghs2plb3wyl2hf5zi; _ga_40VGDGQFCB=GS1.1.1744344467.27.1.1744344507.0.0.0; _ga_5X5Z4KZ7PC=GS1.1.1744344467.27.1.1744344507.0.0.0"
 
 type MisttrackHandler struct{}
 
@@ -97,14 +98,25 @@ func (h *MisttrackHandler) Handle(b bot.IBot, message *tgbotapi.Message) error {
 
 			_text13 := "📄 详细分析报告 ➜ 50 TRX" + "\n"
 
-			_text99 := "主要交易对手分析：" + "\n"
+			_text99 := "危险交易对手分析：" + "\n"
+
+			lableAddresList := getNotSafeAddress(_symbol, _message)
+
+			_text100 := ""
+			if len(lableAddresList.GraphDic.NodeList) > 0 {
+				for _, data := range lableAddresList.GraphDic.NodeList {
+					if strings.Contains(data.Label, "huione") {
+						_text100 = _text100 + data.Title[0:5] + "..." + data.Title[29:34] + "\n"
+					}
+				}
+			}
 
 			_text14 := "每日免费查询剩余：0 次" + "\n"
 
 			_text15 := "超额查询 ➜ 10 TRX / 次" + "\n"
 			_text16 := "🛡️ U盾在手，链上无忧！" + "\n"
 
-			_text = _text + _text7 + _text8 + _text9 + _text10 + _text11 + _text12 + _text13 + _text99 + _text14 + _text15 + _text16
+			_text = _text + _text7 + _text8 + _text9 + _text10 + _text11 + _text12 + _text13 + _text99 + _text100 + _text14 + _text15 + _text16
 
 		}
 		msg = domain.MessageToSend{
@@ -126,6 +138,72 @@ func (h *MisttrackHandler) Handle(b bot.IBot, message *tgbotapi.Message) error {
 	b.GetSwitcher().Next(message.Chat.ID)
 	_ = b.SendMessage(msg, bot.DefaultChannel)
 	return nil
+}
+
+func getNotSafeAddress(_coin string, _address string) LableAddresList {
+	url := "https://dashboard.misttrack.io/api/v1/address_graph_analysis?coin=" + _coin + "&address=" + _address + "&time_filter="
+	req, _ := http.NewRequest("GET", url, nil)
+
+	req.Header.Add("accept", "application/json, text/plain, */*")
+
+	//req.Header.Add("cookie", "_ga=GA1.1.23337514.1742894564; _bl_uid=O8m7m8ksonwa0Ifjgw0erRqd9147; _ga_SGF4VCWFZY=GS1.1.1743393981.8.0.1743393981.0.0.0; detect_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyYW5kb21fc3RyIjoiMzI0Njk1In0.t5lYLE_oSwyNIJUSWAwxL7YrzXN5Di38sh4Vh9gjyJE; csrftoken=AOzVpYUl0Wdyk2gtoIzUQ5uOUEOxRBSMsqlINKjOh30dCmHX2ajNk8EcwFxrWy6g; sessionid=rn1a71d9nkn3coczdn08ahc00u5mw46i; _ga_40VGDGQFCB=GS1.1.1743393983.12.1.1743394123.0.0.0; _ga_5X5Z4KZ7PC=GS1.1.1743393983.12.1.1743394123.0.0.0")
+	req.Header.Add("cookie", _cookie)
+	req.Header.Add("language", "EN")
+
+	//req.Header.Add("referer", "https://dashboard.misttrack.io/address/ETH/0xf510e53ef8da4e45ffa59eb554511a7410e5efd3")
+	req.Header.Add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36")
+
+	res, _ := http.DefaultClient.Do(req)
+	defer res.Body.Close()
+	body, _ := io.ReadAll(res.Body)
+
+	log.Println(string(body))
+
+	var lableAddresList LableAddresList
+	if err := json.Unmarshal(body, &lableAddresList); err != nil { // Parse []byte to go struct pointer
+		fmt.Println("Can not unmarshal JSON")
+	}
+	return lableAddresList
+}
+
+type LableAddresList struct {
+	Success  bool   `json:"success"`
+	Msg      string `json:"msg"`
+	GraphDic struct {
+		NodeList []struct {
+			ID        string `json:"id"`
+			Label     string `json:"label"`
+			Title     string `json:"title"`
+			Layer     int    `json:"layer"`
+			Addr      string `json:"addr"`
+			Track     string `json:"track"`
+			Pid       int    `json:"pid"`
+			Color     string `json:"color,omitempty"`
+			Shape     string `json:"shape,omitempty"`
+			Expanded  bool   `json:"expanded"`
+			Malicious int    `json:"malicious,omitempty"`
+			Dex       int    `json:"dex"`
+		} `json:"node_list"`
+		EdgeList []struct {
+			From       string   `json:"from"`
+			To         string   `json:"to"`
+			Label      string   `json:"label"`
+			Val        float64  `json:"val"`
+			TxHashList []string `json:"tx_hash_list"`
+			TxTime     string   `json:"tx_time"`
+			Color      struct {
+				Color     string `json:"color"`
+				Highlight string `json:"highlight"`
+			} `json:"color"`
+		} `json:"edge_list"`
+		TxCount                 int    `json:"tx_count"`
+		FirstTxDatetime         string `json:"first_tx_datetime"`
+		LatestTxDatetime        string `json:"latest_tx_datetime"`
+		AddressFirstTxDatetime  string `json:"address_first_tx_datetime"`
+		AddressLatestTxDatetime string `json:"address_latest_tx_datetime"`
+	} `json:"graph_dic"`
+	AddressFirstTxDatetime  string `json:"address_first_tx_datetime"`
+	AddressLatestTxDatetime string `json:"address_latest_tx_datetime"`
 }
 
 type AddressProfile struct {

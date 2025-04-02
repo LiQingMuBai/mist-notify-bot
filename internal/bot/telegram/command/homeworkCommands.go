@@ -1,6 +1,7 @@
 package command
 
 import (
+	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"homework_bot/internal/bot"
 	"homework_bot/internal/domain"
@@ -23,7 +24,7 @@ func (c *StartCommand) Exec(b bot.IBot, message *tgbotapi.Message) error {
 
 	if user.Username == "" {
 		log.Println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>空的，需要创建<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
-		user = *domain.NewUser(message.From.UserName, "", "", "", "", "", "")
+		user = *domain.NewUser(message.From.UserName, "", fmt.Sprintf("%d", message.Chat.ID), "", "", "", "")
 		err = b.GetServices().IUserService.Create(user)
 
 	} else {
@@ -40,8 +41,8 @@ func (c *StartCommand) Exec(b bot.IBot, message *tgbotapi.Message) error {
 		"🎁 新用户福利：\n🎉 免费绑定 1 个地址，开启实时风险监控\n🎉 每日赠送 1 次地址风险查询\n\n" +
 		"💡常用指令：\n" +
 		"/check 地址 ➜ 查詢地址風險\n" +
-		"/monitor 地址 ➜ 開啓地址實時監控\n" +
-		"/vip ➜ 升級會員，解鎖更多權益\n" +
+		"/monitor_address 地址 ➜ 開啓地址實時監控\n" +
+		"/upgrade_vip ➜ 升級會員，解鎖更多權益\n" +
 		"📞聯繫客服：@Ushield001\n"
 
 	//"🚀用戶標識:" + user.UserID + "\n🏆推廣人數:0\n🔎查詢積分:0\n🕙註冊時間:+" + "\n+-----------------------+\n/query – 地址查詢\n/help –   幫助\n – 更多功能請聯繫我們的客服\n+--------------------+\n🔍@Ushield001"
