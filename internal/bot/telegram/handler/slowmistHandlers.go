@@ -64,7 +64,16 @@ func (h *MisttrackHandler) Handle(b bot.IBot, message *tgbotapi.Message) error {
 			_text11 := "最後活躍時間：" + addressProfile.LastTxTime + "\n"
 			_text12 := "交易次數：" + addressProfile.TxCount + "筆" + "\n"
 
-			_text = _text + _text7 + _text8 + _text9 + _text10 + _text11 + _text12
+			_text13 := "📄 详细分析报告 ➜ 50 TRX" + "\n"
+
+			_text99 := "主要交易对手分析：" + "\n"
+
+			_text14 := "每日免费查询剩余：0 次" + "\n"
+
+			_text15 := "超额查询 ➜ 10 TRX / 次" + "\n"
+			_text16 := "🛡️ U盾在手，链上无忧！" + "\n"
+
+			_text = _text + _text7 + _text8 + _text9 + _text10 + _text11 + _text12 + _text13 + _text99 + _text14 + _text15 + _text16
 
 		}
 		if strings.HasPrefix(_message, "T") && len(_message) == 34 {
@@ -86,7 +95,16 @@ func (h *MisttrackHandler) Handle(b bot.IBot, message *tgbotapi.Message) error {
 			_text11 := "最後活躍時間：" + addressProfile.LastTxTime + "\n"
 			_text12 := "交易次數：" + addressProfile.TxCount + "筆" + "\n"
 
-			_text = _text + _text7 + _text8 + _text9 + _text10 + _text11 + _text12
+			_text13 := "📄 详细分析报告 ➜ 50 TRX" + "\n"
+
+			_text99 := "主要交易对手分析：" + "\n"
+
+			_text14 := "每日免费查询剩余：0 次" + "\n"
+
+			_text15 := "超额查询 ➜ 10 TRX / 次" + "\n"
+			_text16 := "🛡️ U盾在手，链上无忧！" + "\n"
+
+			_text = _text + _text7 + _text8 + _text9 + _text10 + _text11 + _text12 + _text13 + _text99 + _text14 + _text15 + _text16
 
 		}
 		msg = domain.MessageToSend{
