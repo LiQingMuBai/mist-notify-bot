@@ -41,8 +41,7 @@ func main() {
 	//})
 
 	// Database connection string
-	dsn := "root:12345678901234567890@(156.251.17.226:6033)/gva"
-
+	
 	// Initialize a mysql database connection
 	db, err := sqlx.Connect("mysql", dsn)
 	if err != nil {
@@ -54,9 +53,9 @@ func main() {
 	}
 
 	//bot, err = tgbotapi.NewBotAPI(os.Getenv("TG_BOT_API"))
-	const token = "7551982200:AAHdSLHtqDj25ugn3uD1hth9i2iRU8OYWnU"
+
 	bot, err = tgbotapi.NewBotAPI(token)
-	//bot, err = tgbotapi.NewBotAPI("7668068911:AAFOXuA7KpWOfur0rcoVbZTwGOgsBCjkI3s")
+
 	if err != nil {
 		fmt.Println(err.Error())
 		return
@@ -79,7 +78,7 @@ func main() {
 
 func asyncNotify(tgBot *telegram.Bot, token string) {
 	for {
-		fmt.Println(">>>>>>>>>>>>>>>>>>>>>>>>Hello, World<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
+		
 		addresses, _ := tgBot.GetServices().IUserService.NotifyTronAddress()
 
 		for _, address := range addresses {
