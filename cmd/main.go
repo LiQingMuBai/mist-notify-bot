@@ -15,6 +15,7 @@ import (
 	"homework_bot/internal/bot/telegram"
 	repository "homework_bot/internal/infrastructure/repositories"
 	"net/http"
+	"os"
 	"time"
 )
 
@@ -30,7 +31,7 @@ func main() {
 	if err := godotenv.Load(); err != nil {
 		logrus.Fatalf("load .env file err: %s", err.Error())
 	}
-
+	//
 	//db, err := configs.NewPostgresDB(configs.Config{
 	//	Host:     viper.GetString("db.host"),
 	//	Port:     viper.GetString("db.port"),
@@ -41,8 +42,7 @@ func main() {
 	//})
 
 	// Database connection string
-	
-	// Initialize a mysql database connection
+	dsn := ""
 	db, err := sqlx.Connect("mysql", dsn)
 	if err != nil {
 		panic("Failed to connect to the database: " + err.Error())
@@ -52,9 +52,10 @@ func main() {
 		logrus.Fatalf("init db err: %s", err.Error())
 	}
 
-	//bot, err = tgbotapi.NewBotAPI(os.Getenv("TG_BOT_API"))
-
+	token := os.Getenv("TG_BOT_API")
 	bot, err = tgbotapi.NewBotAPI(token)
+
+	//bot, err = tgbotapi.NewBotAPI(token)
 
 	if err != nil {
 		fmt.Println(err.Error())
@@ -67,7 +68,7 @@ func main() {
 	service := services.NewService(repos)
 
 	tgBot := telegram.NewBot(bot, service)
-	go asyncNotify(tgBot, token)
+	//go asyncNotify(tgBot, token)
 
 	err = tgBot.Start()
 
@@ -78,7 +79,7 @@ func main() {
 
 func asyncNotify(tgBot *telegram.Bot, token string) {
 	for {
-		
+
 		addresses, _ := tgBot.GetServices().IUserService.NotifyTronAddress()
 
 		for _, address := range addresses {

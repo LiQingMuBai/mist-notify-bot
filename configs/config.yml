@@ -1,9 +1,9 @@
 db:
-  host: "8.219.148.240"
-  port: "5432"
-  username: "admin"
-  password: "severn_2025"
-  dbname: "mydb"
+  host: ""
+  port: ""
+  username: ""
+  password: ""
+  dbname: ""
   sslmode: "disable"
 
   ##docker run --name postgresql -e POSTGRES_USER=admin -e POSTGRES_PASSWORD=severn_2025 -e POSTGRES_DB=mydb -p 5432:5432 -d postgres
