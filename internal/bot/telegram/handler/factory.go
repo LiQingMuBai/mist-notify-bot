@@ -52,6 +52,12 @@ func (f *Factory) GetHandler(b bot.IBot, message *tgbotapi.Message) IHandler {
 	if len(meta) == 42 && strings.HasPrefix(meta, "0x") {
 		return NewMisttrackHandler()
 	}
+	if strings.Contains(message.Text, "get_account") {
+		return NewCommandHandler()
+	}
+	if strings.Contains(message.Text, "exchange_energy") {
+		return NewCommandHandler()
+	}
 
 	switch {
 

@@ -27,7 +27,7 @@ const (
 	CommandHelp = "help"
 
 	CommandScoreEnergy                 = "check"
-	CommandExchangeEnergy              = "exchange"
+	CommandExchangeEnergy              = "exchange_energy"
 	CommandCheckBlacklist              = "bind"
 	GET_TODAY_FROZEN_TOTAL             = "get_today_frozen_total"
 	GET_TODAY_FROZEN_ADDRESSES         = "get_today_frozen_addresses"
