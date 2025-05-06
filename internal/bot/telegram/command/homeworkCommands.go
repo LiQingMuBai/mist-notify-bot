@@ -5,6 +5,7 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"homework_bot/internal/bot"
 	"homework_bot/internal/domain"
+	"homework_bot/pkg/tron"
 	"log"
 	"strconv"
 	"strings"
@@ -23,9 +24,20 @@ func (c *StartCommand) Exec(b bot.IBot, message *tgbotapi.Message) error {
 	user, err := b.GetServices().IUserService.GetByUsername(userName)
 
 	if user.Username == "" {
-		log.Println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>空的，需要创建<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
-		user = *domain.NewUser(message.From.UserName, "", fmt.Sprintf("%d", message.Chat.ID), "", "", "", "")
+		//	log.Println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>空的，需要创建<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
+
+		user = *domain.NewUser(message.From.UserName, "", fmt.Sprintf("%d", message.Chat.ID), "", "", "", "", "")
+
 		err = b.GetServices().IUserService.Create(user)
+
+		pk, _address, _ := tron.GetTronAddress(int(user.Id))
+
+		updateUser := domain.User{
+			Id:      user.Id,
+			Key:     pk,
+			Address: _address,
+		}
+		b.GetServices().IUserService.Update(updateUser)
 
 	} else {
 		log.Println("username", userName)

@@ -2,8 +2,11 @@ package repositories
 
 import (
 	"fmt"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
-	_ "github.com/lib/pq"
+	"homework_bot/pkg/tron"
+
+	//_ "github.com/lib/pq"
 	"homework_bot/internal/domain"
 	"log"
 	"testing"
@@ -72,4 +75,32 @@ func TestUserRepository_GetByUsername(t *testing.T) {
 	//	return
 	//}
 	//fmt.Printf(" name:%s \n", user.Username)
+}
+
+func TestUserRepository_GetByUserID(t *testing.T) {
+	dsn := "root:12345678901234567890@(156.251.17.226:6033)/gva"
+	db, err := sqlx.Connect("mysql", dsn)
+	if err != nil {
+		panic("Failed to connect to the database: " + err.Error())
+	}
+
+	userRepo := NewUserRepository(db)
+
+	user, err := userRepo.GetByUserID("7347235462")
+
+	if err != nil {
+		log.Fatalln(err)
+	}
+	fmt.Printf("%#v\n", user)
+
+	pk, _address, _ := tron.GetTronAddress(int(user.Id))
+	updateUser := domain.User{
+		Username: user.Username,
+		Key:      pk,
+		Address:  _address,
+	}
+	err = userRepo.UpdateAddress(updateUser)
+	if err != nil {
+		log.Fatalln(err)
+	}
 }

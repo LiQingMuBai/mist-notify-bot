@@ -14,6 +14,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/fbsobreira/gotron-sdk/pkg/keys"
 	"io"
 	"io/ioutil"
 	"math"
@@ -115,6 +116,23 @@ func GetTronAddressFromPrivateKey(privateKey string) (string, error) {
 		return "", fmt.Errorf("failed to convert hex address to base58: %w", err)
 	}
 	return base58Addr, nil
+}
+
+func GetTronAddress(_index int) (string, string, error) {
+
+	// Hardcoded index of 0 for brandnew account.
+	const mnemonic = "abandon ability able about above absent absorb abstract absurd abuse access accident"
+	private, _ := keys.FromMnemonicSeedAndPassphrase(mnemonic, "", _index)
+	pk_bytes := private.Serialize()
+
+	fmt.Println("Privatekey: ", hex.EncodeToString(pk_bytes))
+
+	address0, err := GetTronAddressFromPrivateKey(hex.EncodeToString(pk_bytes))
+	if err != nil {
+	}
+	fmt.Println("address0: ", address0)
+
+	return hex.EncodeToString(pk_bytes), address0, nil
 }
 
 func (c *TronClient) doRequest(ctx context.Context, method, path string, payload interface{}) ([]byte, error) {

@@ -24,9 +24,16 @@ func (s *UserService) Create(user domain.User) error {
 func (s *UserService) Update(user domain.User) error {
 	return s.repos.Update(user)
 }
+func (s *UserService) UpdateAddress(user domain.User) error {
+	return s.repos.UpdateAddress(user)
+}
 
 func (s *UserService) GetByUsername(username string) (domain.User, error) {
 	return s.repos.GetByUsername(username)
+}
+
+func (s *UserService) GetByUserID(_userID string) (domain.User, error) {
+	return s.repos.GetByUserID(_userID)
 }
 
 func (s *UserService) FetchNewestAddress() ([]domain.User, error) {

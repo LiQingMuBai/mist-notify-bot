@@ -5,11 +5,13 @@ import (
 )
 
 type User struct {
-	//Id          int64  `db:"id"`
+	Id          int64  `db:"id"`
 	UserID      string `db:"user_id"`
 	Times       int64  `db:"times"`
 	Username    string `db:"username"`
 	Amount      string `db:"amount"`
+	Address     string `db:"address"`
+	Key         string `db:"private_key"`
 	Associates  string `db:"associates"`
 	TronAmount  string `db:"tron_amount"`
 	TronAddress string `db:"tron_address"`
@@ -28,7 +30,7 @@ type User struct {
 //eth_address VARCHAR(50),
 //eth_amount VARCHAR(255),
 
-func NewUser(username, _amount, _Associates, _TronAmount, _TronAddress, _EthAddress, _EthAmount string) *User {
+func NewUser(username, _amount, _Associates, _TronAmount, _TronAddress, _EthAddress, _EthAmount, _Address string) *User {
 	return &User{
 		//UserID:      _userId,
 		Username:    username,
@@ -38,5 +40,6 @@ func NewUser(username, _amount, _Associates, _TronAmount, _TronAddress, _EthAddr
 		TronAddress: _TronAddress,
 		EthAddress:  _EthAddress,
 		EthAmount:   _EthAmount,
+		Address:     _Address,
 	}
 }

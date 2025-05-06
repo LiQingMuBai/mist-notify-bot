@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
 	"homework_bot/internal/domain"
 	"log"
@@ -40,8 +41,14 @@ func (r *UserRepository) Update(user domain.User) error {
 	return err
 }
 
+func (r *UserRepository) UpdateAddress(user domain.User) error {
+	query := "UPDATE tg_users SET address = ? , private_key = ?  WHERE username = ?"
+	_, err := r.db.Exec(query, user.Address, user.Key, user.Username)
+	return err
+}
+
 func (r *UserRepository) UpdateTimes(_times uint64, _username string) error {
-	query := "UPDATE tg_users SET times = ? WHERE username = ?"
+	query := "UPDATE tg_users SET times = ?  WHERE username = ?"
 	_, err := r.db.Exec(query, _times, _username)
 	return err
 }
@@ -63,6 +70,11 @@ func (r *UserRepository) GetByUsername(_username string) (domain.User, error) {
 	err := r.db.Get(&jason, "SELECT  user_id,username,amount,associates, tron_amount,tron_address,eth_address,eth_amount,times FROM tg_users WHERE username=?", _username)
 
 	//log.Println(err)
+	return jason, err
+}
+func (r *UserRepository) GetByUserID(_userID string) (domain.User, error) {
+	jason := domain.User{}
+	err := r.db.Get(&jason, "SELECT  id, user_id,username,amount,associates, tron_amount,tron_address,eth_address,eth_amount,times FROM tg_users WHERE associates=?", _userID)
 	return jason, err
 }
 

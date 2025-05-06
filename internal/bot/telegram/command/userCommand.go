@@ -4,6 +4,8 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"homework_bot/internal/bot"
 	"homework_bot/internal/domain"
+	"homework_bot/pkg/tron"
+	"log"
 )
 
 type ExchangeEnergyCommand struct{}
@@ -14,9 +16,19 @@ func NewExchangeEnergyCommand() *ExchangeEnergyCommand {
 
 func (c *ExchangeEnergyCommand) Exec(b bot.IBot, message *tgbotapi.Message) error {
 	userId := message.From.ID
+	userName := message.From.UserName
+
+	textStart := "\n\n\n💖您好" + userName + ",🛡️U盾在手，链上无忧！\n" +
+		"歡迎使用U盾鏈上風控助手\n" +
+		" 📢請輸入兌換能量筆數，格式如下：\n\n" +
+		"地址" + "英文下劃綫" + "筆數" + "\n\n" +
+		"案例TJCo98saj6WND61g1uuKwJ9GMWMT9WkJFo轉賬一筆能量" + "\n" +
+		"TJCo98saj6WND61g1uuKwJ9GMWMT9WkJFo_1" + "\n" +
+		"📞聯繫客服：@Ushield001\n"
+
 	msg := domain.MessageToSend{
 		ChatId: message.Chat.ID,
-		Text:   "兑换能量",
+		Text:   textStart,
 	}
 	b.GetSwitcher().ISwitcherUser.Next(userId)
 	err := b.SendMessage(msg, bot.DefaultChannel)
@@ -31,9 +43,47 @@ func NewGetAccountCommand() *GetAccountCommand {
 
 func (c *GetAccountCommand) Exec(b bot.IBot, message *tgbotapi.Message) error {
 	userId := message.From.ID
+	userName := message.From.UserName
+
+	log.Println("userid>>", userId)
+	user, errmsg := b.GetServices().IUserService.GetByUsername(userName)
+
+	if errmsg != nil {
+
+		log.Println("error", errmsg)
+
+	}
+	log.Println("user>>", user)
+	textStart := "\n\n\n💖您好" + userName + ",🛡️U盾在手，链上无忧！\n" +
+		"歡迎使用U盾鏈上風控助手\n" +
+		"🚀您的地址，請充值：\n" +
+		user.Address + "\n" +
+		"✅您的餘額\n" +
+		" 📢" + user.Amount + "\n" +
+		"📞聯繫客服：@Ushield001\n"
+
+	if len(user.Username) > 0 && len(user.Address) == 0 {
+
+		log.Println("新增地址")
+		pk, _address, _ := tron.GetTronAddress(int(user.Id))
+		updateUser := domain.User{
+			Username: userName,
+			Key:      pk,
+			Address:  _address,
+		}
+		b.GetServices().IUserService.UpdateAddress(updateUser)
+		textStart = "\n\n\n💖您好" + userName + ",🛡️U盾在手，链上无忧！\n" +
+			"歡迎使用U盾鏈上風控助手\n" +
+			"🚀您的地址，請充值：\n" +
+			_address + "\n" +
+			"✅您的餘額\n" +
+			"📢0.0" + "\n" +
+			"📞聯繫客服：@Ushield001\n"
+	}
+
 	msg := domain.MessageToSend{
 		ChatId: message.Chat.ID,
-		Text:   "获取账户信息",
+		Text:   textStart,
 	}
 	b.GetSwitcher().ISwitcherUser.Next(userId)
 	err := b.SendMessage(msg, bot.DefaultChannel)
