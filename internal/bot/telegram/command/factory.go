@@ -9,23 +9,10 @@ import (
 )
 
 const (
-	commandStart            = "start"
-	commandAdd              = "add"
-	commandUpdate           = "update"
-	commandDelete           = "delete"
-	commandHelp             = "help"
-	commandGetAll           = "get_all"
-	commandGetOnWeek        = "get_on_week"
-	commandGetOnToday       = "get_on_today"
-	commandGetOnTomorrow    = "get_on_tomorrow"
-	commandGetOnDate        = "get_on_date"
-	commandGetOnId          = "get_on_id"
-	commandScheduleWeek     = "schedule_week"
-	commandScheduleDate     = "schedule_date"
-	commandScheduleToday    = "schedule_today"
-	commandScheduleTomorrow = "schedule_tomorrow"
-	commandScheduleNextWeek = "schedule_next_week"
-	commandAskGroup         = "ask_group"
+	commandStart          = "start"
+	commandHelp           = "help"
+	commandGetAccount     = "get_account"
+	commandExchangeEnergy = "exchange_energy"
 )
 
 type Factory struct {
@@ -52,48 +39,17 @@ func (f *Factory) isAdmin(chatId int64) bool {
 }
 
 func (f *Factory) GetCommand(message *tgbotapi.Message) ICommand {
-	if f.isAdmin(message.Chat.ID) {
-		switch message.Command() {
-		case commandAdd:
-			return NewAddCommand()
-		case commandUpdate:
-			return NewUpdateCommand()
-		case commandDelete:
-			return NewDeleteCommand()
-		}
-	}
-
 	switch message.Command() {
 	//case用户关系
 
 	case commandStart:
 		return NewStartCommand()
-	case commandAskGroup:
-		return NewAskGroupCommand()
+	case commandExchangeEnergy:
+		return NewExchangeEnergyCommand()
 	case commandHelp:
 		return NewHelpCommand()
-	case commandGetAll:
-		return NewGetAllCommand()
-	case commandGetOnId:
-		return NewGetOnIdCommand()
-	case commandGetOnWeek:
-		return NewGetOnWeekCommand()
-	case commandGetOnToday:
-		return NewGetOnTodayCommand()
-	case commandGetOnTomorrow:
-		return NewGetOnTomorrowCommand()
-	case commandGetOnDate:
-		return NewGetOnDateCommand()
-	case commandScheduleWeek:
-		return NewScheduleWeekCommand()
-	case commandScheduleDate:
-		return NewScheduleDayCommand()
-	case commandScheduleToday:
-		return NewScheduleTodayCommand()
-	case commandScheduleTomorrow:
-		return NewScheduleTomorrowCommand()
-	case commandScheduleNextWeek:
-		return NewScheduleNextWeakCommand()
+	case commandGetAccount:
+		return NewGetAccountCommand()
 	default:
 		return NewDefaultCommand()
 	}

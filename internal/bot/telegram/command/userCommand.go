@@ -6,17 +6,34 @@ import (
 	"homework_bot/internal/domain"
 )
 
-type AskGroupCommand struct{}
+type ExchangeEnergyCommand struct{}
 
-func NewAskGroupCommand() *AskGroupCommand {
-	return &AskGroupCommand{}
+func NewExchangeEnergyCommand() *ExchangeEnergyCommand {
+	return &ExchangeEnergyCommand{}
 }
 
-func (c *AskGroupCommand) Exec(b bot.IBot, message *tgbotapi.Message) error {
+func (c *ExchangeEnergyCommand) Exec(b bot.IBot, message *tgbotapi.Message) error {
 	userId := message.From.ID
 	msg := domain.MessageToSend{
 		ChatId: message.Chat.ID,
-		Text:   "Напишите номер группы, которая вам нужна. Формат: Б9122-09.03.04 4, где 4 - это 4я подгруппа",
+		Text:   "兑换能量",
+	}
+	b.GetSwitcher().ISwitcherUser.Next(userId)
+	err := b.SendMessage(msg, bot.DefaultChannel)
+	return err
+}
+
+type GetAccountCommand struct{}
+
+func NewGetAccountCommand() *GetAccountCommand {
+	return &GetAccountCommand{}
+}
+
+func (c *GetAccountCommand) Exec(b bot.IBot, message *tgbotapi.Message) error {
+	userId := message.From.ID
+	msg := domain.MessageToSend{
+		ChatId: message.Chat.ID,
+		Text:   "获取账户信息",
 	}
 	b.GetSwitcher().ISwitcherUser.Next(userId)
 	err := b.SendMessage(msg, bot.DefaultChannel)

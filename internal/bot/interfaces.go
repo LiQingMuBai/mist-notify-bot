@@ -22,23 +22,10 @@ type IBot interface {
 }
 
 const (
-	CommandStart                       = "start"
-	CommandAdd                         = "add"
-	CommandUpdate                      = "update"
-	CommandDelete                      = "delete"
-	CommandHelp                        = "help"
-	CommandGetAll                      = "get_all"
-	CommandGetOnWeek                   = "get_on_week"
-	CommandGetOnToday                  = "get_on_today"
-	CommandGetOnTomorrow               = "get_on_tomorrow"
-	CommandGetOnDate                   = "get_on_date"
-	CommandGetOnId                     = "get_on_id"
-	CommandScheduleWeek                = "schedule_week"
-	CommandScheduleDate                = "schedule_date"
-	CommandScheduleToday               = "schedule_today"
-	CommandScheduleTomorrow            = "schedule_tomorrow"
-	CommandScheduleNextWeek            = "schedule_next_week"
-	CommandAskGroup                    = "ask_group"
+	CommandStart = "start"
+
+	CommandHelp = "help"
+
 	CommandScoreEnergy                 = "check"
 	CommandExchangeEnergy              = "exchange"
 	CommandCheckBlacklist              = "bind"
@@ -50,6 +37,7 @@ const (
 	ADDRESS_BEHAVIOR_REPORT            = "get_address_behavior_report "
 	GET_VIP                            = "upgrade_vip "
 	MONITOR_ADDRESS                    = "monitor_address"
+	CommandGetAccount                  = "get_account"
 )
 
 const (
