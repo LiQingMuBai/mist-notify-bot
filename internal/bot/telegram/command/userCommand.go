@@ -55,11 +55,11 @@ func (c *GetAccountCommand) Exec(b bot.IBot, message *tgbotapi.Message) error {
 	}
 	log.Println("user>>", user)
 	textStart := "\n\n\n💖您好" + userName + ",🛡️U盾在手，链上无忧！\n" +
-		"歡迎使用U盾鏈上風控助手\n" +
-		"🚀您的地址，請充值：\n" +
+		"歡迎使用U盾鏈上風控助手\n\n" +
+		"🚀您的地址，請充值：\n\n" +
 		user.Address + "\n" +
 		"✅您的餘額\n" +
-		" 📢" + user.Amount + "\n" +
+		" 📢" + user.Amount + "\n\n" +
 		"📞聯繫客服：@Ushield001\n"
 
 	if len(user.Username) > 0 && len(user.Address) == 0 {
