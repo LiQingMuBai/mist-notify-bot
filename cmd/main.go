@@ -31,18 +31,16 @@ func main() {
 	if err := godotenv.Load(); err != nil {
 		logrus.Fatalf("load .env file err: %s", err.Error())
 	}
-	//
-	//db, err := configs.NewPostgresDB(configs.Config{
-	//	Host:     viper.GetString("db.host"),
-	//	Port:     viper.GetString("db.port"),
-	//	Username: viper.GetString("db.username"),
-	//	Password: viper.GetString("db.password"),
-	//	DBName:   viper.GetString("db.dbname"),
-	//	SSLMode:  viper.GetString("db.sslmode"),
-	//})
 
 	// Database connection string
-	dsn := ""
+	host := viper.GetString("db.host")
+	port := viper.GetString("db.port")
+	username := viper.GetString("db.username")
+	password := viper.GetString("db.password")
+	dbname := viper.GetString("db.dbname")
+
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", username, password, host, port, dbname)
+
 	db, err := sqlx.Connect("mysql", dsn)
 	if err != nil {
 		panic("Failed to connect to the database: " + err.Error())
