@@ -1,8 +1,8 @@
 package services
 
 import (
-	"homework_bot/internal/application/interfaces"
-	"homework_bot/internal/infrastructure/repositories"
+	"ushield_bot/internal/application/interfaces"
+	"ushield_bot/internal/infrastructure/repositories"
 )
 
 type Service struct {

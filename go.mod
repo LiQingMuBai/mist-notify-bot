@@ -1,4 +1,4 @@
-module homework_bot
+module ushield_bot
 
 go 1.24
 

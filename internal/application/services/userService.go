@@ -2,8 +2,8 @@ package services
 
 import (
 	"github.com/google/uuid"
-	"homework_bot/internal/application/interfaces"
-	"homework_bot/internal/domain"
+	"ushield_bot/internal/application/interfaces"
+	"ushield_bot/internal/domain"
 )
 
 type UserService struct {

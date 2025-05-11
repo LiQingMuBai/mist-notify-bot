@@ -4,13 +4,13 @@ import (
 	"encoding/json"
 	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
-	"homework_bot/internal/bot"
-	"homework_bot/internal/domain"
 	"io"
 	"log"
 	"net/http"
 	"strconv"
 	"strings"
+	"ushield_bot/internal/bot"
+	"ushield_bot/internal/domain"
 )
 
 // var _cookie = "_ga=GA1.1.23337514.1742894564; _bl_uid=O8m7m8ksonwa0Ifjgw0erRqd9147; _ga_SGF4VCWFZY=GS1.1.1743951867.11.0.1743951889.0.0.0; detect_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyYW5kb21fc3RyIjoiNjU4NzU2In0.XlQWiKHwcSVhudgcCCagmPZDUtW7Y1axXLWxEbigUrQ; csrftoken=3lTa4N2nsgqA0cgdJkmTdwHRyybtryyN6BI58JYklWnKcQA4H5iMkw9pLjyYSRof; sessionid=cmiphu4p0v1q171wtu3qfdpill564tme; _ga_40VGDGQFCB=GS1.1.1744159244.23.1.1744159268.0.0.0; _ga_5X5Z4KZ7PC=GS1.1.1744159244.23.1.1744159268.0.0.0"

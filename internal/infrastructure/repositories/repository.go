@@ -2,7 +2,7 @@ package repositories
 
 import (
 	"github.com/jmoiron/sqlx"
-	"homework_bot/internal/application/interfaces"
+	"ushield_bot/internal/application/interfaces"
 )
 
 type Repository struct {

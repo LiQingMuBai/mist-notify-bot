@@ -1,7 +1,7 @@
 package interfaces
 
 import (
-	"homework_bot/internal/domain"
+	"ushield_bot/internal/domain"
 )
 
 type IUserRepository interface {

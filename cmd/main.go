@@ -11,12 +11,12 @@ import (
 	_ "github.com/lib/pq"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
-	"homework_bot/internal/application/services"
-	"homework_bot/internal/bot/telegram"
-	repository "homework_bot/internal/infrastructure/repositories"
 	"net/http"
 	"os"
 	"time"
+	"ushield_bot/internal/application/services"
+	"ushield_bot/internal/bot/telegram"
+	repository "ushield_bot/internal/infrastructure/repositories"
 )
 
 var bot *tgbotapi.BotAPI

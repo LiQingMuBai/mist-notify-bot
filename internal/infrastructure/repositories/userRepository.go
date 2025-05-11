@@ -3,8 +3,8 @@ package repositories
 import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
-	"homework_bot/internal/domain"
 	"log"
+	"ushield_bot/internal/domain"
 )
 
 type UserRepository struct {

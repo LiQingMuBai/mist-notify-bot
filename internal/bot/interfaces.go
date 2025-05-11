@@ -2,9 +2,9 @@ package bot
 
 import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
-	"homework_bot/internal/application/services"
-	"homework_bot/internal/domain"
-	"homework_bot/pkg/switcher"
+	"ushield_bot/internal/application/services"
+	"ushield_bot/internal/domain"
+	"ushield_bot/pkg/switcher"
 )
 
 type IBot interface {

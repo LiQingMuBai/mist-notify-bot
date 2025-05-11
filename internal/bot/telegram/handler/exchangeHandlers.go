@@ -2,11 +2,11 @@ package handler
 
 import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
-	"homework_bot/internal/bot"
-	"homework_bot/internal/domain"
 	"log"
 	"strconv"
 	"strings"
+	"ushield_bot/internal/bot"
+	"ushield_bot/internal/domain"
 )
 
 type ExchangeHandler struct{}

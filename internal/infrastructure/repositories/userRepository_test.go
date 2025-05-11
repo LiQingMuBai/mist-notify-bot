@@ -4,12 +4,12 @@ import (
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
-	"homework_bot/pkg/tron"
+	"ushield_bot/pkg/tron"
 
 	//_ "github.com/lib/pq"
-	"homework_bot/internal/domain"
 	"log"
 	"testing"
+	"ushield_bot/internal/domain"
 )
 
 var db *sqlx.DB

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"github.com/go-playground/validator/v10"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
-	"homework_bot/internal/bot"
 	"strings"
+	"ushield_bot/internal/bot"
 )
 
 type AskGroupHandler struct{}

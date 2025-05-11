@@ -2,7 +2,7 @@ package telegram
 
 import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
-	bot "homework_bot/internal/bot"
+	bot "ushield_bot/internal/bot"
 )
 
 func getCommandMenu() tgbotapi.SetMyCommandsConfig {
