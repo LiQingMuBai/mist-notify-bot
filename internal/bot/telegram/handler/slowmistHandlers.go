@@ -31,7 +31,6 @@ func (h *MisttrackHandler) Handle(b bot.IBot, message *tgbotapi.Message) error {
 		Text:   "系統錯誤，請重新輸入地址",
 	}
 	if err != nil {
-		b.GetSwitcher().Next(message.Chat.ID)
 		_ = b.SendMessage(msg, bot.DefaultChannel)
 		return nil
 	}
@@ -134,8 +133,6 @@ func (h *MisttrackHandler) Handle(b bot.IBot, message *tgbotapi.Message) error {
 			}
 		}
 	}
-
-	b.GetSwitcher().Next(message.Chat.ID)
 	_ = b.SendMessage(msg, bot.DefaultChannel)
 	return nil
 }

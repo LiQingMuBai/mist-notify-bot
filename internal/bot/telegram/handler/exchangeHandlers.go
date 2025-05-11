@@ -20,8 +20,6 @@ func (h *ExchangeHandler) Handle(b bot.IBot, message *tgbotapi.Message) error {
 		ChatId: message.Chat.ID,
 		Text:   "请输入能量转移目标地址\n" + "余额 100trx\n",
 	}
-
-	b.GetSwitcher().Next(message.Chat.ID)
 	_ = b.SendMessage(msg, bot.DefaultChannel)
 
 	//message.From.
@@ -45,7 +43,6 @@ func (h *ExchangeExecHandler) Handle(b bot.IBot, message *tgbotapi.Message) erro
 			ChatId: message.Chat.ID,
 			Text:   "请输入正确的转账格式，地址_笔数\n",
 		}
-		b.GetSwitcher().Next(message.Chat.ID)
 		_ = b.SendMessage(msg, bot.DefaultChannel)
 	} else {
 
@@ -58,7 +55,6 @@ func (h *ExchangeExecHandler) Handle(b bot.IBot, message *tgbotapi.Message) erro
 				ChatId: message.Chat.ID,
 				Text:   "请输入能量转移目标地址\n" + "余额 100trx\n",
 			}
-			b.GetSwitcher().Next(message.Chat.ID)
 			_ = b.SendMessage(msg, bot.DefaultChannel)
 		} else {
 			userAmount, _ := strconv.ParseFloat(user.Amount, 64)
@@ -68,7 +64,7 @@ func (h *ExchangeExecHandler) Handle(b bot.IBot, message *tgbotapi.Message) erro
 					ChatId: message.Chat.ID,
 					Text:   "对不起你的资金不够，请充值\n",
 				}
-				b.GetSwitcher().Next(message.Chat.ID)
+
 				_ = b.SendMessage(msg, bot.DefaultChannel)
 			}
 
@@ -87,7 +83,6 @@ func (h *ExchangeExecHandler) Handle(b bot.IBot, message *tgbotapi.Message) erro
 				Text:   "请输入能量转移目标地址\n" + "余额 100trx\n",
 			}
 
-			b.GetSwitcher().Next(message.Chat.ID)
 			_ = b.SendMessage(msg, bot.DefaultChannel)
 		}
 	}

@@ -18,8 +18,6 @@ func (h *VIPHandler) Handle(b bot.IBot, message *tgbotapi.Message) error {
 		ChatId: message.Chat.ID,
 		Text:   "📞VIP請聯繫客服 @Ushield001\n",
 	}
-
-	b.GetSwitcher().Next(message.Chat.ID)
 	_ = b.SendMessage(msg, bot.DefaultChannel)
 	return nil
 }

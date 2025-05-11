@@ -15,33 +15,15 @@ import (
 type Bot struct {
 	bot        *tgbotapi.BotAPI
 	userStates map[int64]string
-
-	services *services.Service
-	switcher *switcher.Switcher
-
-	Task *switcher.TaskFlowManager
+	services   *services.Service
+	Task       *switcher.TaskFlowManager
 }
 
 func NewBot(b *tgbotapi.BotAPI, service *services.Service) *Bot {
-	statusesAdd := []string{
-		bot.WaitingName,
-		bot.WaitingDescription,
-		bot.WaitingImages,
-		bot.WaitingTags,
-		bot.WaitingDeadline,
-	}
-
-	statusesUpdate := []string{bot.WaitingId}
-	statusesUpdate = append(statusesUpdate, statusesAdd...)
-	statusesGetTags := []string{bot.WaitingTags}
-	statusesAskGroup := []string{bot.WaitingGroup}
-
 	manager := switcher.NewTaskFlowManager()
-
 	return &Bot{
 		bot:        b,
 		services:   service,
-		switcher:   switcher.NewSwitcher(statusesAdd, statusesUpdate, statusesGetTags, statusesAskGroup),
 		userStates: make(map[int64]string),
 		Task:       manager,
 	}
@@ -54,11 +36,6 @@ func (b *Bot) GetUserStates() map[int64]string {
 func (b *Bot) GetServices() *services.Service {
 	return b.services
 }
-
-func (b *Bot) GetSwitcher() *switcher.Switcher {
-	return b.switcher
-}
-
 func (b *Bot) Start() error {
 	_, err := b.bot.Request(getCommandMenu())
 	if err != nil {

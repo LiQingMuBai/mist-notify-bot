@@ -17,8 +17,6 @@ func (h *TronShieldHandler) Handle(b bot.IBot, message *tgbotapi.Message) error 
 		ChatId: message.Chat.ID,
 		Text:   "請輸入地址，會自動匹配，默認是波場USDT地址風險評估",
 	}
-
-	b.GetSwitcher().Next(message.Chat.ID)
 	_ = b.SendMessage(msg, bot.DefaultChannel)
 	return nil
 }

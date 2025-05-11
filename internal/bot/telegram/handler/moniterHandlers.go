@@ -72,9 +72,6 @@ func (h *MoniterHandler) Handle(b bot.IBot, message *tgbotapi.Message) error {
 				"\n",
 		}
 	}
-
-	b.GetSwitcher().Next(message.Chat.ID)
-
 	_ = b.SendMessage(msg, bot.DefaultChannel)
 	return nil
 }

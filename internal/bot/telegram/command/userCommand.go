@@ -87,7 +87,6 @@ func (c *GetAccountCommand) Exec(b bot.IBot, message *tgbotapi.Message) error {
 		ChatId: message.Chat.ID,
 		Text:   textStart,
 	}
-	b.GetSwitcher().ISwitcherUser.Next(userId)
 	err := b.SendMessage(msg, bot.DefaultChannel)
 	return err
 }
@@ -99,12 +98,11 @@ func NewUserRelationCommand() *UserRelationCommand {
 }
 
 func (c *UserRelationCommand) Exec(b bot.IBot, message *tgbotapi.Message) error {
-	userId := message.From.ID
+	//userId := message.From.ID
 	msg := domain.MessageToSend{
 		ChatId: message.Chat.ID,
 		Text:   "绑定上级关系成功",
 	}
-	b.GetSwitcher().ISwitcherUser.Next(userId)
 	err := b.SendMessage(msg, bot.DefaultChannel)
 	return err
 }

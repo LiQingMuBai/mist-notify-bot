@@ -17,8 +17,6 @@ func (h *AccountHandler) Handle(b bot.IBot, message *tgbotapi.Message) error {
 		ChatId: message.Chat.ID,
 		Text:   "您的波场地址\n" + "余额 100trx\n",
 	}
-
-	b.GetSwitcher().Next(message.Chat.ID)
 	_ = b.SendMessage(msg, bot.DefaultChannel)
 
 	//message.From.

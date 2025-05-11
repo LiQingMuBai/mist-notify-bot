@@ -13,7 +13,7 @@ type IBot interface {
 	GetUserStates() map[int64]string
 	//SetUserStates(userStates map[int64]string)
 	GetServices() *services.Service
-	GetSwitcher() *switcher.Switcher
+	//GetSwitcher() *switcher.Switcher
 	GetBot() *tgbotapi.BotAPI
 	GetTaskManager() *switcher.TaskFlowManager
 }
