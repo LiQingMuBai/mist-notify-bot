@@ -6,15 +6,11 @@ import (
 )
 
 type Service struct {
-	interfaces.IHomeworkService
-	interfaces.IScheduleService
 	interfaces.IUserService
 }
 
 func NewService(repos *repositories.Repository) *Service {
 	return &Service{
-		IHomeworkService: NewHomeworkService(repos.IHomeworkRepository),
-		IScheduleService: NewScheduleFefuService(),
-		IUserService:     NewUserService(repos.IUserRepository),
+		IUserService: NewUserService(repos.IUserRepository),
 	}
 }

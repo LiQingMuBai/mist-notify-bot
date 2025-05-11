@@ -8,17 +8,18 @@ import (
 	"homework_bot/internal/bot"
 	"homework_bot/internal/bot/telegram/handler"
 	"homework_bot/internal/domain"
-	"homework_bot/pkg/converter"
+
 	"homework_bot/pkg/switcher"
 )
 
 type Bot struct {
 	bot        *tgbotapi.BotAPI
 	userStates map[int64]string
-	userData   map[int64]domain.Homework
-	services   *services.Service
-	switcher   *switcher.Switcher
-	conv       *converter.Converter
+
+	services *services.Service
+	switcher *switcher.Switcher
+
+	Task *switcher.TaskFlowManager
 }
 
 func NewBot(b *tgbotapi.BotAPI, service *services.Service) *Bot {
@@ -35,30 +36,19 @@ func NewBot(b *tgbotapi.BotAPI, service *services.Service) *Bot {
 	statusesGetTags := []string{bot.WaitingTags}
 	statusesAskGroup := []string{bot.WaitingGroup}
 
+	manager := switcher.NewTaskFlowManager()
+
 	return &Bot{
 		bot:        b,
 		services:   service,
 		switcher:   switcher.NewSwitcher(statusesAdd, statusesUpdate, statusesGetTags, statusesAskGroup),
-		conv:       converter.NewConverter(),
-		userData:   make(map[int64]domain.Homework),
 		userStates: make(map[int64]string),
+		Task:       manager,
 	}
 }
 
 func (b *Bot) GetUserStates() map[int64]string {
 	return b.userStates
-}
-
-func (b *Bot) GetUserData() map[int64]domain.Homework {
-	return b.userData
-}
-
-func (b *Bot) SetUserStates(userStates map[int64]string) {
-	b.userStates = userStates
-}
-
-func (b *Bot) SetUserData(userData map[int64]domain.Homework) {
-	b.userData = userData
 }
 
 func (b *Bot) GetServices() *services.Service {
@@ -78,20 +68,11 @@ func (b *Bot) Start() error {
 	b.handleUpdates(updates)
 	return nil
 }
-
+func (b *Bot) GetTaskManager() *switcher.TaskFlowManager {
+	return b.Task
+}
 func (b *Bot) GetBot() *tgbotapi.BotAPI {
 	return b.bot
-}
-
-func (b *Bot) create(message *tgbotapi.Message) error {
-	userId := message.From.ID
-	id, err := b.services.IHomeworkService.Create(b.userData[userId])
-	if err != nil {
-		return err
-	}
-
-	_, err = b.bot.Send(tgbotapi.NewMessage(message.Chat.ID, fmt.Sprintf("Запись успешно сконфигурирована! ID: %d", id)))
-	return err
 }
 
 func (b *Bot) handleUpdate(update tgbotapi.Update) {
@@ -164,39 +145,6 @@ func (b *Bot) sendText(message domain.MessageToSend, channel int) error {
 
 	_, err := b.bot.Send(msg)
 	return err
-}
-
-func (b *Bot) SendHomework(homework domain.HomeworkToGet, chatId int64, channel int) error {
-	text := b.conv.HomeworkToText(homework)
-	msg := domain.MessageToSend{
-		ChatId: chatId,
-		Text:   text,
-		Images: homework.Images,
-	}
-
-	err := b.SendMessage(msg, channel)
-	return err
-}
-
-func (b *Bot) SendSchedule(schedule domain.Schedule, chatId int64, channel int) error {
-	messages := b.conv.ScheduleToText(schedule)
-	daysOfWeek := []string{"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"}
-	for _, day := range daysOfWeek {
-		text, ok := messages[day]
-		if !ok {
-			continue
-		}
-
-		msg := domain.MessageToSend{
-			ChatId: chatId,
-			Text:   text,
-		}
-		err := b.SendMessage(msg, channel)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
 }
 
 func (b *Bot) SendMessage(message domain.MessageToSend, channel int) error {

@@ -8,17 +8,14 @@ import (
 )
 
 type IBot interface {
-	SendHomework(homework domain.HomeworkToGet, chatId int64, channel int) error
-	SendSchedule(schedule domain.Schedule, chatId int64, channel int) error
 	SendMessage(message domain.MessageToSend, channel int) error
-	SendInputError(message *tgbotapi.Message) error
+	//SendInputError(message *tgbotapi.Message) error
 	GetUserStates() map[int64]string
-	GetUserData() map[int64]domain.Homework
-	SetUserStates(userStates map[int64]string)
-	SetUserData(userData map[int64]domain.Homework)
+	//SetUserStates(userStates map[int64]string)
 	GetServices() *services.Service
 	GetSwitcher() *switcher.Switcher
 	GetBot() *tgbotapi.BotAPI
+	GetTaskManager() *switcher.TaskFlowManager
 }
 
 const (

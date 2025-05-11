@@ -4,6 +4,7 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"homework_bot/internal/bot"
 	"homework_bot/internal/domain"
+	"homework_bot/pkg/switcher"
 	"homework_bot/pkg/tron"
 	"log"
 )
@@ -30,7 +31,8 @@ func (c *ExchangeEnergyCommand) Exec(b bot.IBot, message *tgbotapi.Message) erro
 		ChatId: message.Chat.ID,
 		Text:   textStart,
 	}
-	b.GetSwitcher().ISwitcherUser.Next(userId)
+	//b.GetSwitcher().ISwitcherUser.Next(userId)
+	b.GetTaskManager().SetTaskStatus(userId, "exchange", switcher.StatusBefore)
 	err := b.SendMessage(msg, bot.DefaultChannel)
 	return err
 }
