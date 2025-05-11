@@ -6,9 +6,11 @@ import (
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
-	"github.com/jmoiron/sqlx"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
+
 	"github.com/joho/godotenv"
-	_ "github.com/lib/pq"
+
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"net/http"
@@ -40,8 +42,7 @@ func main() {
 	dbname := viper.GetString("db.dbname")
 
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", username, password, host, port, dbname)
-
-	db, err := sqlx.Connect("mysql", dsn)
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic("Failed to connect to the database: " + err.Error())
 	}

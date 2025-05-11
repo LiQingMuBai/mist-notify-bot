@@ -2,9 +2,8 @@ package repositories
 
 import (
 	"fmt"
-	_ "github.com/go-sql-driver/mysql"
-	"github.com/jmoiron/sqlx"
-	"ushield_bot/pkg/tron"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 
 	//_ "github.com/lib/pq"
 	"log"
@@ -12,95 +11,61 @@ import (
 	"ushield_bot/internal/domain"
 )
 
-var db *sqlx.DB
-
-//db:
-//host: "8.219.148.240"
-//port: "5432"
-//username: "admin"
-//password: "severn_2025"
-//dbname: "mydb"
-//sslmode: "disable"
-
-//##docker run --name postgresql -e POSTGRES_USER=admin -e POSTGRES_PASSWORD=severn_2025 -e POSTGRES_DB=mydb -p 5432:5432 -d postgres
-
-func TestUserRepository_GetByUsername(t *testing.T) {
-
-	//connect to a PostgreSQL database
-	// Replace the connection details (user, dbname, password, host) with your own
-	db, err := sqlx.Connect("postgres", "user=admin dbname=mydb sslmode=disable password=severn_2025 host=8.219.148.240")
-	if err != nil {
-		log.Fatalln(err)
-	}
-
-	defer db.Close()
-
-	// Test the connection to the database
-	if err := db.Ping(); err != nil {
-		log.Fatal(err)
-	} else {
-		log.Println("Successfully Connected")
-	}
-
-	place := domain.User{}
-
-	rows, _ := db.Queryx("SELECT  id,username,amount,associates, tron_amount,tron_address,eth_address,eth_amount FROM tg_users")
-	for rows.Next() {
-		err := rows.StructScan(&place)
-		if err != nil {
-			log.Fatalln(err)
-		}
-		fmt.Printf(">>>>>>>>>>>>>>>>>>>>>>name:%s \n", place.Username)
-
-	}
-
-	log.Printf("%#v\n", place)
-
-	jason := domain.User{}
-	err = db.Get(&jason, "SELECT  id,username,amount,associates, tron_amount,tron_address,eth_address,eth_amount ,create_at,update_at FROM tg_users WHERE username=$1", "avachow101")
-	//fmt.Printf("%#v\n", jason.Id.String())
-	fmt.Printf("%#v\n", jason.CreatedAt.String())
-
-	//
-	//db, err := sqlx.Connect("postgres", "user=foo dbname=bar sslmode=disable")
-	//if err != nil {
-	//	log.Fatalln(err)
-	//}
-	//
-	//query := "SELECT id,associates,amount, tron_amount,tron_address,eth_address,eth_amount FROM tg_users WHERE username = ? "
-	//var user domain.User
-	//err = db.Get(&user, query, "avachow101")
-	//if err != nil {
-	//	fmt.Printf("get failed, err:%v\n", err)
-	//	return
-	//}
-	//fmt.Printf(" name:%s \n", user.Username)
-}
-
-func TestUserRepository_GetByUserID(t *testing.T) {
+func TestUserRepository_UpdateAddress(t *testing.T) {
 	dsn := "root:12345678901234567890@(156.251.17.226:6033)/gva"
-	db, err := sqlx.Connect("mysql", dsn)
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic("Failed to connect to the database: " + err.Error())
 	}
+	//userRepo := NewUserRepository(db)
 
 	userRepo := NewUserRepository(db)
-
 	user, err := userRepo.GetByUserID("7347235462")
-
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
 	}
 	fmt.Printf("%#v\n", user)
 
-	pk, _address, _ := tron.GetTronAddress(int(user.Id))
+	log.Println("=============================================================")
 	updateUser := domain.User{
-		Username: user.Username,
-		Key:      pk,
-		Address:  _address,
+		Id:       3,
+		Username: "avachow101",
+		Key:      "6cec7800bca14e2f28d44e731a437e991399e1410973b02b74eb8217b04a1f96",
+		Address:  "TJLmSN4sbsAg4bKxqSv9SZL1RqnWFRfrRm",
 	}
 	err = userRepo.UpdateAddress(updateUser)
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
 	}
+}
+func TestUserRepository_GetByUsername(t *testing.T) {
+	dsn := "root:12345678901234567890@(156.251.17.226:6033)/gva"
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	if err != nil {
+		panic("Failed to connect to the database: " + err.Error())
+	}
+	//userRepo := NewUserRepository(db)
+
+	userRepo := NewUserRepository(db)
+
+	err = userRepo.Create(domain.User{
+		Username: "masion",
+		UserID:   "11223",
+	})
+
+	if err != nil {
+		log.Println(err)
+	}
+}
+func TestUserRepository_GetByUserID(t *testing.T) {
+	dsn := "root:12345678901234567890@(156.251.17.226:6033)/gva"
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	if err != nil {
+		panic("Failed to connect to the database: " + err.Error())
+	}
+	//userRepo := NewUserRepository(db)
+
+	userRepo := NewUserRepository(db)
+
+	userRepo.FetchNewestAddress()
 }

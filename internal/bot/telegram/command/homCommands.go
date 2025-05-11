@@ -22,13 +22,9 @@ func (c *StartCommand) Exec(b bot.IBot, message *tgbotapi.Message) error {
 
 	if user.Username == "" {
 		//	log.Println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>空的，需要创建<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
-
 		user = *domain.NewUser(message.From.UserName, "", fmt.Sprintf("%d", message.Chat.ID), "", "", "", "", "")
-
 		err = b.GetServices().IUserService.Create(user)
-
 		pk, _address, _ := tron.GetTronAddress(int(user.Id))
-
 		updateUser := domain.User{
 			Id:      user.Id,
 			Key:     pk,

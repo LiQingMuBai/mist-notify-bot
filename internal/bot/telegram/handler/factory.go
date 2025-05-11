@@ -22,11 +22,6 @@ func (f *Factory) GetHandler(b bot.IBot, message *tgbotapi.Message) IHandler {
 
 	status, flag := b.GetTaskManager().GetTaskStatus(userId, "exchange")
 
-	log.Println("=================")
-	log.Println(status)
-	log.Println(flag)
-	log.Println("=================")
-
 	meta := message.Text
 	state := b.GetUserStates()[message.Chat.ID]
 	if strings.Contains(message.Text, "monitor") {
