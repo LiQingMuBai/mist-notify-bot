@@ -17,15 +17,18 @@ type Bot struct {
 	userStates map[int64]string
 	services   *services.Service
 	Task       *switcher.TaskFlowManager
+	Cookie     string
 }
 
-func NewBot(b *tgbotapi.BotAPI, service *services.Service) *Bot {
+func NewBot(b *tgbotapi.BotAPI, service *services.Service, _cookie string) *Bot {
 	manager := switcher.NewTaskFlowManager()
+
 	return &Bot{
 		bot:        b,
 		services:   service,
 		userStates: make(map[int64]string),
 		Task:       manager,
+		Cookie:     _cookie,
 	}
 }
 
@@ -48,6 +51,11 @@ func (b *Bot) Start() error {
 func (b *Bot) GetTaskManager() *switcher.TaskFlowManager {
 	return b.Task
 }
+
+func (b *Bot) GetCookie() string {
+	return b.Cookie
+}
+
 func (b *Bot) GetBot() *tgbotapi.BotAPI {
 	return b.bot
 }

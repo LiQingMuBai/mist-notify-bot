@@ -52,6 +52,7 @@ func main() {
 	}
 
 	token := os.Getenv("TG_BOT_API")
+	_cookie := os.Getenv("COOKIE")
 	bot, err = tgbotapi.NewBotAPI(token)
 
 	//bot, err = tgbotapi.NewBotAPI(token)
@@ -66,7 +67,7 @@ func main() {
 	repos := repository.NewRepository(db)
 	service := services.NewService(repos)
 
-	tgBot := telegram.NewBot(bot, service)
+	tgBot := telegram.NewBot(bot, service, _cookie)
 	//go asyncNotify(tgBot, token)
 
 	err = tgBot.Start()

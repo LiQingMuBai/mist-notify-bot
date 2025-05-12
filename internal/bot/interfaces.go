@@ -9,13 +9,11 @@ import (
 
 type IBot interface {
 	SendMessage(message domain.MessageToSend, channel int) error
-	//SendInputError(message *tgbotapi.Message) error
 	GetUserStates() map[int64]string
-	//SetUserStates(userStates map[int64]string)
 	GetServices() *services.Service
-	//GetSwitcher() *switcher.Switcher
 	GetBot() *tgbotapi.BotAPI
 	GetTaskManager() *switcher.TaskFlowManager
+	GetCookie() string
 }
 
 const (
