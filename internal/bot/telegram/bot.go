@@ -121,12 +121,13 @@ func (b *Bot) sendMediaGroup(message domain.MessageToSend, channel int) error {
 func (b *Bot) sendText(message domain.MessageToSend, channel int) error {
 	msg := tgbotapi.NewMessage(message.ChatId, "")
 	msg.Text = message.Text
-
+	//msg.ParseMode = "MarkdownV2"
 	if channel == bot.ChannelBot {
 		msg.ReplyToMessageID = bot.ChannelBot
 	} else if channel == bot.ChannelInformation {
 		msg.ReplyToMessageID = bot.ChannelInformation
 	}
+	msg.ParseMode = "HTML"
 
 	_, err := b.bot.Send(msg)
 	return err

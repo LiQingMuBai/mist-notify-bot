@@ -89,3 +89,34 @@ func (h *ExchangeExecHandler) Handle(b bot.IBot, message *tgbotapi.Message) erro
 	//message.From.
 	return nil
 }
+
+type ExchangeEnergyExecHandler struct{}
+
+func NewExchangeEnergyExecHandler() *ExchangeEnergyExecHandler {
+	return &ExchangeEnergyExecHandler{}
+}
+
+func (h *ExchangeEnergyExecHandler) Handle(b bot.IBot, message *tgbotapi.Message) error {
+	//text := message.Text
+	username := message.From.UserName
+
+	log.Println(username)
+
+	msg := domain.MessageToSend{
+		ChatId: message.Chat.ID,
+		Text: "📢 能量兑换说明\n" +
+			"充值地址：[此处填写TRX地址]" + "\n" +
+			"费用规则：" + "\n" +
+			"每笔兑换需支付 4 TRX 作为手续费。+" + "\n" +
+			"若需兑换多笔，请转账 4 TRX × 笔数（例如：3笔 = 12 TRX）。" + "\n" +
+			"到账方式：能量将自动按充值地址 原路返回，无需额外操作。" + "\n" +
+			"注意：" + "\n" +
+			"请确保转账金额精确，不足或超额均无法处理。" + "\n" +
+			"交易成功后，系统将在5分钟内完成兑换。" + "\n" +
+			"❗ 重要提示：非官方渠道索要转账均属诈骗，请勿相信！",
+	}
+	_ = b.SendMessage(msg, bot.DefaultChannel)
+
+	//message.From.
+	return nil
+}

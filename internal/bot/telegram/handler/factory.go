@@ -65,7 +65,7 @@ func (f *Factory) GetHandler(b bot.IBot, message *tgbotapi.Message) IHandler {
 		return NewCommandHandler()
 	}
 	if flag && status == switcher.StatusBefore {
-		return NewExchangeExecHandler()
+		return NewExchangeEnergyExecHandler()
 	}
 
 	return NewMessageHandler()
