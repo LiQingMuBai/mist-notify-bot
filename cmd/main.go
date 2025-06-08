@@ -8,6 +8,7 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"log"
 
 	"github.com/joho/godotenv"
 
@@ -20,6 +21,11 @@ import (
 	"ushield_bot/internal/bot/telegram"
 	repository "ushield_bot/internal/infrastructure/repositories"
 )
+
+//机器人完成
+//同步任务监听地址充值
+//调用trxfee平台发能量
+//地址监控
 
 var bot *tgbotapi.BotAPI
 
@@ -67,7 +73,10 @@ func main() {
 	repos := repository.NewRepository(db)
 	service := services.NewService(repos)
 
-	tgBot := telegram.NewBot(bot, service, _cookie)
+	agent := viper.GetString("agent")
+
+	log.Println("agent:", agent)
+	tgBot := telegram.NewBot(bot, service, _cookie, agent, db)
 	//go asyncNotify(tgBot, token)
 
 	err = tgBot.Start()

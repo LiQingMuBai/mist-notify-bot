@@ -4,6 +4,7 @@ import (
 	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/sirupsen/logrus"
+	"gorm.io/gorm"
 	"ushield_bot/internal/application/services"
 	"ushield_bot/internal/bot"
 	"ushield_bot/internal/bot/telegram/handler"
@@ -18,17 +19,20 @@ type Bot struct {
 	services   *services.Service
 	Task       *switcher.TaskFlowManager
 	Cookie     string
+	Agent      string
+	DB         *gorm.DB
 }
 
-func NewBot(b *tgbotapi.BotAPI, service *services.Service, _cookie string) *Bot {
+func NewBot(b *tgbotapi.BotAPI, service *services.Service, _cookie string, _agent string, db *gorm.DB) *Bot {
 	manager := switcher.NewTaskFlowManager()
-
 	return &Bot{
 		bot:        b,
 		services:   service,
 		userStates: make(map[int64]string),
 		Task:       manager,
 		Cookie:     _cookie,
+		Agent:      _agent,
+		DB:         db,
 	}
 }
 
@@ -51,11 +55,16 @@ func (b *Bot) Start() error {
 func (b *Bot) GetTaskManager() *switcher.TaskFlowManager {
 	return b.Task
 }
+func (b *Bot) GetDB() *gorm.DB {
+	return b.DB
+}
 
 func (b *Bot) GetCookie() string {
 	return b.Cookie
 }
-
+func (b *Bot) GetAgent() string {
+	return b.Agent
+}
 func (b *Bot) GetBot() *tgbotapi.BotAPI {
 	return b.bot
 }

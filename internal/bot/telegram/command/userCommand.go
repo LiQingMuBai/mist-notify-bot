@@ -18,7 +18,7 @@ func NewExchangeEnergyCommand() *ExchangeEnergyCommand {
 func (c *ExchangeEnergyCommand) Exec(b bot.IBot, message *tgbotapi.Message) error {
 	userId := message.From.ID
 	userName := message.From.UserName
-
+	log.Println("=> : " + b.GetAgent())
 	//textStart := "\n\n\n💖您好" + userName + ",🛡️U盾在手，链上无忧！\n" +
 	//	"歡迎使用U盾鏈上風控助手\n" +
 	//	" 📢請輸入兌換能量筆數，格式如下：\n\n" +
@@ -26,12 +26,16 @@ func (c *ExchangeEnergyCommand) Exec(b bot.IBot, message *tgbotapi.Message) erro
 	//	"案例TJCo98saj6WND61g1uuKwJ9GMWMT9WkJFo轉賬一筆能量" + "\n" +
 	//	"TJCo98saj6WND61g1uuKwJ9GMWMT9WkJFo_1" + "\n" +
 	//	"📞聯繫客服：@Ushield001\n"
-
+	//user, _ := b.GetServices().IUserService.GetByUsername(userName)
+	var collectionAddress string
+	// 查询单条记录
+	b.GetDB().Raw("select address from sys_users where username= ?", userName).Scan(&collectionAddress)
+	//collectionAddress := user.Address
 	textStart := "\n您好" + userName + ",🛡️U盾在手，链上无忧！\n" + "📢 U盾能量闪兑\n" +
 		"🔸转账  4Trx=  1 笔能量" + "\n" +
 		"🔸转账  8Trx=  2 笔能量" + "\n" +
 		"闪兑能量收款地址" + "\n" +
-		"<code>TKSrmhVx4EfvTa8LnmqmukHmeLXNgieEas</code>" + "\n" +
+		"<code>" + collectionAddress + "</code>" + "\n" +
 		"重要提示：" + "\n" +
 		"1.单笔 4Trx，以此类推，一次最大 10笔（40TRX，超出不予入账）" + "\n" +
 		"2.向无U地址转账，需要购买两笔能量" + "\n" +

@@ -102,6 +102,9 @@ func (h *ExchangeEnergyExecHandler) Handle(b bot.IBot, message *tgbotapi.Message
 
 	log.Println(username)
 
+	log.Println("==========================================================================")
+	log.Println("1111111111111111agent : " + b.GetAgent())
+
 	msg := domain.MessageToSend{
 		ChatId: message.Chat.ID,
 		Text: "📢 能量兑换说明\n" +

@@ -46,11 +46,10 @@ func (c *StartCommand) Exec(b bot.IBot, message *tgbotapi.Message) error {
 		"✅USDT凍結警報提醒（秒級響應，讓你的U永不被凍結）\n" +
 		"🎁 新用户福利：\n🎉 免费绑定 1 个地址，开启实时风险监控\n🎉 每日赠送 1 次地址风险查询\n\n" +
 		"💡常用指令：\n" +
+		"/exchange_energy ➜ 兌換能量，一筆交易4trx\n" +
 		"/check 地址 ➜ 查詢地址風險\n" +
 		"/monitor_address 地址 ➜ 開啓地址實時監控\n" +
 		"/upgrade_vip ➜ 升級會員，解鎖更多權益\n" +
-		//"/get_account ➜ 獲取會員信息\n" +
-		"/exchange_energy ➜ 兌換能量，一筆交易4trx\n" +
 		"📞聯繫客服：@Ushield001\n"
 
 	//"🚀用戶標識:" + user.UserID + "\n🏆推廣人數:0\n🔎查詢積分:0\n🕙註冊時間:+" + "\n+-----------------------+\n/query – 地址查詢\n/help –   幫助\n – 更多功能請聯繫我們的客服\n+--------------------+\n🔍@Ushield001"

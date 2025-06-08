@@ -2,6 +2,7 @@ package bot
 
 import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	"gorm.io/gorm"
 	"ushield_bot/internal/application/services"
 	"ushield_bot/internal/domain"
 	"ushield_bot/pkg/switcher"
@@ -14,6 +15,8 @@ type IBot interface {
 	GetBot() *tgbotapi.BotAPI
 	GetTaskManager() *switcher.TaskFlowManager
 	GetCookie() string
+	GetAgent() string
+	GetDB() *gorm.DB
 }
 
 const (
