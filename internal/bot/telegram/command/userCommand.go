@@ -29,7 +29,7 @@ func (c *ExchangeEnergyCommand) Exec(b bot.IBot, message *tgbotapi.Message) erro
 	//user, _ := b.GetServices().IUserService.GetByUsername(userName)
 	var collectionAddress string
 	// 查询单条记录
-	b.GetDB().Raw("select address from sys_users where username= ?", userName).Scan(&collectionAddress)
+	b.GetDB().Raw("select address from sys_users where username= ?", b.GetAgent()).Scan(&collectionAddress)
 	//collectionAddress := user.Address
 	textStart := "\n您好" + userName + ",🛡️U盾在手，链上无忧！\n" + "📢 U盾能量闪兑\n" +
 		"🔸转账  4Trx=  1 笔能量" + "\n" +
@@ -40,8 +40,8 @@ func (c *ExchangeEnergyCommand) Exec(b bot.IBot, message *tgbotapi.Message) erro
 		"1.单笔 4Trx，以此类推，一次最大 10笔（40TRX，超出不予入账）" + "\n" +
 		"2.向无U地址转账，需要购买两笔能量" + "\n" +
 		"3.向闪兑地址转账成功后能量将即时按充值地址原路完成闪兑" + "\n" +
-		"4.禁止使用交易所钱包提币使用" + "\n" +
-		"5.非官方渠道索要转账均属诈骗，请勿相信！" + "\n"
+		"4.禁止使用交易所钱包提币使用" + "\n"
+	//"5.非官方渠道索要转账均属诈骗，请勿相信！" + "\n"
 
 	msg := domain.MessageToSend{
 		ChatId: message.Chat.ID,

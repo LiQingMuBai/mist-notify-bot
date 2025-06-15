@@ -115,8 +115,8 @@ func (h *ExchangeEnergyExecHandler) Handle(b bot.IBot, message *tgbotapi.Message
 			"到账方式：能量将自动按充值地址 原路返回，无需额外操作。" + "\n" +
 			"注意：" + "\n" +
 			"请确保转账金额精确，不足或超额均无法处理。" + "\n" +
-			"交易成功后，系统将在5分钟内完成兑换。" + "\n" +
-			"❗ 重要提示：非官方渠道索要转账均属诈骗，请勿相信！",
+			"交易成功后，系统将在5分钟内完成兑换。" + "\n",
+		//	"❗ 重要提示：非官方渠道索要转账均属诈骗，请勿相信！",
 	}
 	_ = b.SendMessage(msg, bot.DefaultChannel)
 

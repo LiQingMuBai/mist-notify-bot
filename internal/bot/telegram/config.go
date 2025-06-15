@@ -9,7 +9,7 @@ func getCommandMenu() tgbotapi.SetMyCommandsConfig {
 	menu := tgbotapi.NewSetMyCommands(
 		tgbotapi.BotCommand{
 			Command:     bot.CommandExchangeEnergy,
-			Description: "能量兑换",
+			Description: "能量闪兑",
 		},
 		tgbotapi.BotCommand{
 			Command:     bot.CommandStart,
@@ -21,7 +21,7 @@ func getCommandMenu() tgbotapi.SetMyCommandsConfig {
 		},
 		tgbotapi.BotCommand{
 			Command:     bot.MONITOR_ADDRESS,
-			Description: "跟踪地址",
+			Description: "地址黑名单预警",
 		},
 		//tgbotapi.BotCommand{
 		//	Command:     bot.CommandGetAccount,

@@ -73,7 +73,7 @@ func main() {
 	repos := repository.NewRepository(db)
 	service := services.NewService(repos)
 
-	agent := viper.GetString("agent")
+	agent := os.Getenv("Agent")
 
 	log.Println("agent:", agent)
 	tgBot := telegram.NewBot(bot, service, _cookie, agent, db)
