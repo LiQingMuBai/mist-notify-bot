@@ -23,6 +23,10 @@ func (h *MisttrackHandler) Handle(b bot.IBot, message *tgbotapi.Message) error {
 
 	userName := message.From.UserName
 	user, err := b.GetServices().IUserService.GetByUsername(userName)
+
+	if strings.Contains(userName, "Ushield") {
+		user.Times = 10000
+	}
 	msg := domain.MessageToSend{
 		ChatId: message.Chat.ID,
 		Text:   "系統錯誤，請重新輸入地址",
@@ -244,7 +248,17 @@ func getText(addressInfo SlowMistAddressInfo) string {
 	_item1 := addressInfo.RiskDic.TriangleLevel[1]
 	_item2 := addressInfo.RiskDic.TriangleLevel[2]
 
-	_text0 := "🔍風險評分:" + strconv.Itoa(addressInfo.RiskDic.Score) + "\n"
+	_text0 := "🔍風險評分:" + strconv.Itoa(addressInfo.RiskDic.Score)
+
+	if addressInfo.RiskDic.Score <= 3 {
+		_text0 += "（🟢）低风险绿色，中风险黄色，高风险红色" + "\n"
+	}
+	if addressInfo.RiskDic.Score > 3 && addressInfo.RiskDic.Score <= 60 {
+		_text0 += "（🟡）低风险绿色，中风险黄色，高风险红色" + "\n"
+	}
+	if addressInfo.RiskDic.Score > 60 {
+		_text0 += "（🔴）低风险绿色，中风险黄色，高风险红色" + "\n"
+	}
 	_text1 := ""
 	_text2 := ""
 	_text3 := ""
