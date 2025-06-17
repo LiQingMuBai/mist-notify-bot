@@ -65,16 +65,16 @@ func (h *MisttrackHandler) Handle(b bot.IBot, message *tgbotapi.Message) error {
 			_text11 := "最後活躍時間：" + addressProfile.LastTxTime + "\n"
 			_text12 := "交易次數：" + addressProfile.TxCount + "筆" + "\n"
 
-			_text13 := "📄 详细分析报告 ➜ 50 TRX" + "\n"
+			//_text13 := "📄 详细分析报告 ➜ 50 TRX" + "\n"
 
 			_text99 := "主要交易对手分析：" + "\n"
 
-			_text14 := "每日免费查询剩余：0 次" + "\n"
-
-			_text15 := "超额查询 ➜ 10 TRX / 次" + "\n"
+			//_text14 := "每日免费查询剩余：0 次" + "\n"
+			_text5 := "📢更多查询請聯繫客服 @Ushield001\n"
+			//_text15 := "超额查询 ➜ 10 TRX / 次" + "\n"
 			_text16 := "🛡️ U盾在手，链上无忧！" + "\n"
 
-			_text = _text + _text7 + _text8 + _text9 + _text10 + _text11 + _text12 + _text13 + _text99 + _text14 + _text15 + _text16
+			_text = _text + _text7 + _text8 + _text9 + _text10 + _text11 + _text12 + _text99 + _text5 + _text16
 
 		}
 		if strings.HasPrefix(_message, "T") && len(_message) == 34 {
@@ -96,7 +96,7 @@ func (h *MisttrackHandler) Handle(b bot.IBot, message *tgbotapi.Message) error {
 			_text11 := "最後活躍時間：" + addressProfile.LastTxTime + "\n"
 			_text12 := "交易次數：" + addressProfile.TxCount + "筆" + "\n"
 
-			_text13 := "📄 详细分析报告 ➜ 50 TRX" + "\n"
+			//_text13 := "📄 详细分析报告 ➜ 50 TRX" + "\n"
 
 			_text99 := "危险交易对手分析：" + "\n"
 
@@ -111,12 +111,12 @@ func (h *MisttrackHandler) Handle(b bot.IBot, message *tgbotapi.Message) error {
 				}
 			}
 
-			_text14 := "每日免费查询剩余：0 次" + "\n"
-
-			_text15 := "超额查询 ➜ 10 TRX / 次" + "\n"
+			//_text14 := "每日免费查询剩余：0 次" + "\n"
+			_text5 := "📢更多查询請聯繫客服 @Ushield001\n"
+			//_text15 := "超额查询 ➜ 10 TRX / 次" + "\n"
 			_text16 := "🛡️ U盾在手，链上无忧！" + "\n"
 
-			_text = _text + _text7 + _text8 + _text9 + _text10 + _text11 + _text12 + _text13 + _text99 + _text100 + _text14 + _text15 + _text16
+			_text = _text + _text7 + _text8 + _text9 + _text10 + _text11 + _text12 + _text99 + _text100 + _text5 + _text16
 
 		}
 		msg = domain.MessageToSend{
@@ -251,13 +251,13 @@ func getText(addressInfo SlowMistAddressInfo) string {
 	_text0 := "🔍風險評分:" + strconv.Itoa(addressInfo.RiskDic.Score)
 
 	if addressInfo.RiskDic.Score <= 3 {
-		_text0 += "（🟢）低风险绿色，中风险黄色，高风险红色" + "\n"
+		_text0 += " 🟢" + "\n"
 	}
 	if addressInfo.RiskDic.Score > 3 && addressInfo.RiskDic.Score <= 60 {
-		_text0 += "（🟡）低风险绿色，中风险黄色，高风险红色" + "\n"
+		_text0 += " 🟡" + "\n"
 	}
 	if addressInfo.RiskDic.Score > 60 {
-		_text0 += "（🔴）低风险绿色，中风险黄色，高风险红色" + "\n"
+		_text0 += " 🔴" + "\n"
 	}
 	_text1 := ""
 	_text2 := ""
@@ -292,10 +292,10 @@ func getText(addressInfo SlowMistAddressInfo) string {
 	//		"📢📢📢更詳細報告請聯繫客服@ushield001\n",
 	//}
 	//log.Println(events)
-	_text5 := "📢📢📢更詳細報告請聯繫客服 @Ushield001\n"
+
 	_text6 := "📊 地址概览\n"
 
-	text := _text0 + _text1 + _text2 + _text3 + _text4 + _text5 + _text6
+	text := _text0 + _text1 + _text2 + _text3 + _text4 + _text6
 	return text
 }
 
