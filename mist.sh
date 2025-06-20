@@ -5,7 +5,7 @@
 PROCESS_NAME="mist-agent"
 PROCESS_CMD="/seven/agent/mist-agent"    # Full path to your binary
 PROCESS_ARGS=""                               # Add any required arguments here
-CHECK_INTERVAL=10                             # Check every 10 seconds
+CHECK_INTERVAL=30                             # Check every 30 seconds
 LOG_DIR="/seven/agent/logs"              # Dedicated log directory
 LOG_FILE="${LOG_DIR}/monitor.log"             # Monitor log file
 PROCESS_LOG="${LOG_DIR}/mist-agent.log"       # Process output log
