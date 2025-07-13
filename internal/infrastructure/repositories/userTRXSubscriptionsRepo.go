@@ -6,19 +6,19 @@ import (
 	"ushield_bot/internal/domain"
 )
 
-type UserUsdtSubscriptionsRepository struct {
+type UserTRXSubscriptionsRepository struct {
 	db *gorm.DB
 }
 
-func NewUserUsdtSubscriptionsRepository(db *gorm.DB) *UserUsdtSubscriptionsRepository {
-	return &UserUsdtSubscriptionsRepository{
+func NewUserTRXSubscriptionsRepository(db *gorm.DB) *UserTRXSubscriptionsRepository {
+	return &UserTRXSubscriptionsRepository{
 		db: db,
 	}
 }
-func (r *UserUsdtSubscriptionsRepository) ListAll(ctx context.Context) ([]domain.UserUsdtSubscriptions, error) {
-	var subscriptions []domain.UserUsdtSubscriptions
+func (r *UserTRXSubscriptionsRepository) ListAll(ctx context.Context) ([]domain.UserTRXSubscriptions, error) {
+	var subscriptions []domain.UserTRXSubscriptions
 	err := r.db.WithContext(ctx).
-		Model(&domain.UserUsdtSubscriptions{}).
+		Model(&domain.UserTRXSubscriptions{}).
 		Select("id", "name", "amount").
 		Where("status = ?", 0).
 		Scan(&subscriptions).Error

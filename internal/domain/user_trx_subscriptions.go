@@ -4,7 +4,7 @@ import (
 	"time"
 )
 
-type UserUsdtSubscriptions struct {
+type UserTRXSubscriptions struct {
 	Id        int64     `json:"id" form:"id" gorm:"primarykey;column:id;size:20;"`    //id字段
 	Status    int64     `json:"status" form:"status" gorm:"column:status;"`           //   `db:"user_id"`
 	Name      string    `json:"name" form:"name" gorm:"column:name;"`                 // `db:"times"`
@@ -14,6 +14,6 @@ type UserUsdtSubscriptions struct {
 }
 
 // TableName ronUsers表 RonUsers自定义表名 ron_users
-func (UserUsdtSubscriptions) TableName() string {
-	return "user_usdt_subscriptions"
+func (UserTRXSubscriptions) TableName() string {
+	return "user_trx_subscriptions"
 }

@@ -6,22 +6,22 @@ import (
 	"ushield_bot/internal/domain"
 )
 
-type UserTRXPlaceholdersRepository struct {
+type UserOperationBundlesRepository struct {
 	db *gorm.DB
 }
 
-func NewUserTRXPlaceholdersRepository(db *gorm.DB) *UserTRXPlaceholdersRepository {
-	return &UserTRXPlaceholdersRepository{
+func NewUserOperationBundlesRepository(db *gorm.DB) *UserOperationBundlesRepository {
+	return &UserOperationBundlesRepository{
 		db: db,
 	}
 }
-func (r *UserTRXPlaceholdersRepository) ListAll(ctx context.Context) ([]domain.UserTRXPlaceholders, error) {
-	var Placeholders []domain.UserTRXPlaceholders
+func (r *UserOperationBundlesRepository) ListAll(ctx context.Context) ([]domain.UserOperationBundles, error) {
+	var bundles []domain.UserOperationBundles
 	err := r.db.WithContext(ctx).
-		Model(&domain.UserTRXPlaceholders{}).
-		Select("id", "placeholder").
+		Model(&domain.UserOperationBundles{}).
+		Select("id", "name", "amount").
 		Where("status = ?", 0).
-		Scan(&Placeholders).Error
-	return Placeholders, err
+		Scan(&bundles).Error
+	return bundles, err
 
 }
