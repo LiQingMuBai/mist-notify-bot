@@ -1,0 +1,27 @@
+package repositories
+
+import (
+	"context"
+	"gorm.io/gorm"
+	"ushield_bot/internal/domain"
+)
+
+type UserTRXPlaceholdersRepository struct {
+	db *gorm.DB
+}
+
+func NewUserTRXPlaceholdersRepository(db *gorm.DB) *UserTRXPlaceholdersRepository {
+	return &UserTRXPlaceholdersRepository{
+		db: db,
+	}
+}
+func (r *UserTRXPlaceholdersRepository) ListAll(ctx context.Context) ([]domain.UserTRXPlaceholders, error) {
+	var Placeholders []domain.UserTRXPlaceholders
+	err := r.db.WithContext(ctx).
+		Model(&domain.UserTRXPlaceholders{}).
+		Select("id", "placeholder").
+		Where("status = ?", 0).
+		Scan(&Placeholders).Error
+	return Placeholders, err
+
+}

@@ -1,0 +1,27 @@
+package repositories
+
+import (
+	"context"
+	"gorm.io/gorm"
+	"ushield_bot/internal/domain"
+)
+
+type UserOperationBundlesRepository struct {
+	db *gorm.DB
+}
+
+func NewUserOperationBundlesRepository(db *gorm.DB) *UserOperationBundlesRepository {
+	return &UserOperationBundlesRepository{
+		db: db,
+	}
+}
+func (r *UserOperationBundlesRepository) ListAll(ctx context.Context) ([]domain.UserOperationBundles, error) {
+	var bundles []domain.UserOperationBundles
+	err := r.db.WithContext(ctx).
+		Model(&domain.UserOperationBundles{}).
+		Select("id", "name", "amount").
+		Where("status = ?", 0).
+		Scan(&bundles).Error
+	return bundles, err
+
+}
