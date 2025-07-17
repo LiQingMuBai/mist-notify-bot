@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"context"
 	_ "github.com/go-sql-driver/mysql"
 
 	"gorm.io/gorm"
@@ -15,6 +16,10 @@ func NewUserRepository(db *gorm.DB) *UserRepository {
 	return &UserRepository{
 		db: db,
 	}
+}
+
+func (r *UserRepository) Create2(ctx context.Context, user *domain.User) error {
+	return r.db.WithContext(ctx).Create(user).Error
 }
 
 func (r *UserRepository) Create(user domain.User) error {
@@ -58,10 +63,10 @@ func (r *UserRepository) GetByUsername(_username string) (domain.User, error) {
 
 	return jason, err
 }
-func (r *UserRepository) GetByUserID(_userID string) (domain.User, error) {
+func (r *UserRepository) GetByUserID(_chatID int64) (domain.User, error) {
 	jason := domain.User{}
 
-	err := r.db.Where(" associates=?", _userID).First(&jason).Error
+	err := r.db.Where(" associates=?", _chatID).First(&jason).Error
 
 	return jason, err
 }

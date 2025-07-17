@@ -9,6 +9,7 @@ type UserTRXDeposits struct {
 	UserID      int64     `json:"user_id" form:"user_id" gorm:"column:user_id;"`             //   `db:"user_id"`
 	Status      int64     `json:"status" form:"status" gorm:"column:status;"`                //   `db:"user_id"`
 	Placeholder string    `json:"placeholder" form:"placeholder" gorm:"column:placeholder;"` // `db:"times"`
+	OrderNO     string    `json:"order_no" form:"order_no" gorm:"column:order_no;"`          // `db:"times"`
 	Address     string    `json:"address" form:"address" gorm:"column:address;"`             // `db:"times"`
 	TxHash      string    `json:"tx_hash" form:"tx_hash" gorm:"column:tx_hash;"`             // `db:"times"`
 	Block       string    `json:"block" form:"block" gorm:"column:block;"`                   // `db:"times"`

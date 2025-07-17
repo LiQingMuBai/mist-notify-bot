@@ -16,13 +16,13 @@ func NewUserTRXPlaceholdersRepository(db *gorm.DB) *UserTRXPlaceholdersRepositor
 	}
 }
 func (r *UserTRXPlaceholdersRepository) ListAll(ctx context.Context) ([]domain.UserTRXPlaceholders, error) {
-	var Placeholders []domain.UserTRXPlaceholders
+	var placeholders []domain.UserTRXPlaceholders
 	err := r.db.WithContext(ctx).
 		Model(&domain.UserTRXPlaceholders{}).
 		Select("id", "placeholder").
 		Where("status = ?", 0).
-		Scan(&Placeholders).Error
-	return Placeholders, err
+		Scan(&placeholders).Error
+	return placeholders, err
 
 }
 
@@ -30,4 +30,14 @@ func (r *UserTRXPlaceholdersRepository) Update(ctx context.Context, ID int64, _s
 	return r.db.WithContext(ctx).Model(&domain.UserTRXPlaceholders{}).
 		Where("id = ?", ID).
 		Update("status", _status).Error
+}
+func (r *UserTRXPlaceholdersRepository) Find(ctx context.Context) (domain.UserTRXPlaceholders, error) {
+	var placeholders []domain.UserTRXPlaceholders
+	err := r.db.WithContext(ctx).
+		Model(&domain.UserTRXPlaceholders{}).
+		Select("id", "placeholder").
+		Where("status = ?", 0).
+		Scan(&placeholders).Error
+	return placeholders[0], err
+
 }
