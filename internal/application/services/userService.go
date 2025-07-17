@@ -32,7 +32,7 @@ func (s *UserService) GetByUsername(username string) (domain.User, error) {
 	return s.repos.GetByUsername(username)
 }
 
-func (s *UserService) GetByUserID(_userID string) (domain.User, error) {
+func (s *UserService) GetByUserID(_userID int64) (domain.User, error) {
 	return s.repos.GetByUserID(_userID)
 }
 

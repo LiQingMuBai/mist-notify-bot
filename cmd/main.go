@@ -146,8 +146,11 @@ func handleStartCommand(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbota
 	keyboard.ResizeKeyboard = true
 	keyboard.Selective = false
 
-	msg := tgbotapi.NewMessage(message.Chat.ID, "U盾，做您链上资产的护盾！\n\n我们不仅关注低价能量，更专注于交易安全！\n\n让每一笔转账都更安心，让每一次链上交互都值得信任！\n\n🤖 ****三大实用功能，助您安全、高效地管理链上资产\n\n🔋 波场**能量闪兑**\n\n🕵️ **地址风险检测**\n\n🚨 USDT**冻结预警**\n\n开始/start\n\n您好：（用户名） 欢迎使用U盾机器人\n\nU盾，做您链上资产的护盾！\n\n🔋 波场**能量闪兑,** 节省超过70%!\n\n🕵️ **地址风险检测,** 让每一笔转账都更安心!\n\n🚨 USDT**冻结预警,秒级响应，让您的U永不冻结！**\n\n新用户福利：\n\n每日一次地址风险查询\n\n常用指令：\n\n个人中心\n\n能量闪兑\n\n地址风险检测\n\nUSDT冻结预警\n\n客服：@Ushield001")
+	msg := tgbotapi.NewMessage(message.Chat.ID, "U盾，做您链上资产的护盾！\n\n我们不仅关注低价能量，更专注于交易安全！\n\n让每一笔转账都更安心，让每一次链上交互都值得信任！\n\n🤖 "+
+		"<b>三大实用功能，助您安全、高效地管理链上资产</b>\n\n🔋 波场<b>能量闪兑</b>\n\n🕵️ <b>地址风险检测</b>\n\n🚨 <b>USDT冻结预警</b>\n\n开始/start\n\n您好："+message.Chat.UserName+" 欢迎使用U盾机器人\n\nU盾，做您链上资产的护盾！\n\n🔋 <b>波场能量闪兑</b>, 节省超过70%!\n\n🕵️ <b>地址风险检测,</b> 让每一笔转账都更安心!\n\n"+
+		"🚨 <b>USDT冻结预警,秒级响应，让您的U永不冻结！</b>\n\n新用户福利：\n\n每日一次地址风险查询\n\n常用指令：\n\n个人中心\n\n能量闪兑\n\n地址风险检测\n\nUSDT冻结预警\n\n客服：@Ushield001")
 	msg.ReplyMarkup = keyboard
+	msg.ParseMode = "HTML"
 	bot.Send(msg)
 }
 
@@ -197,8 +200,20 @@ func handleRegularMessage(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbo
 		cache.Set(strconv.FormatInt(message.Chat.ID, 10), "usdt_risk_query", expiration)
 
 	case "USDT冻结预警":
-		msg := tgbotapi.NewMessage(message.Chat.ID, "💬"+"<b>"+"请输入需跟踪地址: "+"</b>"+"\n")
+		msg := tgbotapi.NewMessage(message.Chat.ID, "🛡️ U盾，做您链上资产的护盾！实时守护您的资产安全！\n\n地址一旦被链上风控冻，资产将难以追回，损失巨大！\n\n每天都有数百个 USDT 钱包地址被冻结锁定，风险就在身边！\n\nU盾将为您的地址提供 24 小时不间断监控\n\n⏰ 系统将在冻结前持续 10 分钟启动预警机制，每分钟推送提醒，通知您及时转移资产\n\n✅ 适用于经常收付款 / 高频交易 / 风险暴露地址\n\n✅ 支持在TRON网络下的USDT 钱包地址\n\n📌 服务价格（每地址）：\n\n- 2800 TRX / 30天\n- 或 800 USDT / 30天\n\n🎯 服务开启后系统将 24 小时不间断监控\n\n📩 所有预警信息将通过 Telegram 实时推送\n\n点击下方按钮开始 👇")
 		msg.ParseMode = "HTML"
+
+		inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
+			tgbotapi.NewInlineKeyboardRow(
+				tgbotapi.NewInlineKeyboardButtonData("开启冻结预警", "deposit_amount"),
+				tgbotapi.NewInlineKeyboardButtonData("地址监控列表", "deposit_amount"),
+			),
+			tgbotapi.NewInlineKeyboardRow(
+				tgbotapi.NewInlineKeyboardButtonData("充值", "deposit_amount"),
+			),
+		)
+		msg.ReplyMarkup = inlineKeyboard
+
 		bot.Send(msg)
 
 		expiration := 1 * time.Minute // 短时间缓存空值
@@ -241,7 +256,6 @@ func handleRegularMessage(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbo
 		user, _ := userRepo.GetByUserID(message.Chat.ID)
 
 		msg := tgbotapi.NewMessage(message.Chat.ID,
-
 			"💬"+"<b>"+"用户姓名: "+"</b>"+user.Username+"\n"+
 				"👤"+"<b>"+"用户电报ID: "+"</b>"+user.Associates+"\n"+
 				"💵"+"<b>"+"TRX余额:  "+"</b>"+user.TronAmount+" TRX"+"\n"+
@@ -343,6 +357,8 @@ func handleRegularMessage(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbo
 		bot.Send(tgbotapi.NewMessage(message.Chat.ID, "帮助信息：\n- 点击'按钮 1'显示内联菜单\n- 使用 /start 重新显示键盘\n- 使用 /hide 隐藏键盘"))
 	default:
 		status, _ := cache.Get(strconv.FormatInt(message.Chat.ID, 10))
+
+		log.Printf("用户状态staus %s", status)
 		switch {
 		case strings.HasPrefix(status, "bundle_"):
 			//fmt.Printf("bundle: %s", status)
@@ -364,8 +380,7 @@ func handleRegularMessage(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbo
 				bot.Send(msg)
 			}
 
-			msg := tgbotapi.NewMessage(message.Chat.ID,
-				"💬"+"<b>"+"綁定地址成功弄，如果有 "+"</b>"+"\n")
+			msg := tgbotapi.NewMessage(message.Chat.ID, "")
 
 			//msg.ReplyMarkup = inlineKeyboard
 			msg.ParseMode = "HTML"
@@ -375,11 +390,7 @@ func handleRegularMessage(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbo
 		case strings.HasPrefix(status, "usdt_risk_query"):
 			//fmt.Printf("bundle: %s", status)
 
-			if !IsValidAddress(message.Text) {
-				msg := tgbotapi.NewMessage(message.Chat.ID, "💬"+"<b>"+"地址有误，请重新输入地址: "+"</b>"+"\n")
-				msg.ParseMode = "HTML"
-				bot.Send(msg)
-			} else {
+			if IsValidAddress(message.Text) || IsValidEthereumAddress(message.Text) {
 				userRepo := repositories.NewUserRepository(db)
 				user, _ := userRepo.GetByUserID(message.Chat.ID)
 				if strings.Contains(message.Chat.UserName, "Ushield") {
@@ -447,8 +458,13 @@ func handleRegularMessage(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbo
 					//msg.ReplyMarkup = inlineKeyboard
 					msg.ParseMode = "HTML"
 					bot.Send(msg)
+					userRepo.UpdateTimesByChatID(1, message.Chat.ID)
 				}
 
+			} else {
+				msg := tgbotapi.NewMessage(message.Chat.ID, "💬"+"<b>"+"地址有误，请重新输入地址: "+"</b>"+"\n")
+				msg.ParseMode = "HTML"
+				bot.Send(msg)
 			}
 
 		}

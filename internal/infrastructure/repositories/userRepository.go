@@ -48,6 +48,12 @@ func (r *UserRepository) UpdateTimes(_times uint64, _username string) error {
 	return tx.Error
 }
 
+func (r *UserRepository) UpdateTimesByChatID(_times uint64, _chatID int64) error {
+	query := "UPDATE tg_users SET times = ?  WHERE associates = ?"
+	tx := r.db.Exec(query, _times, _chatID)
+	return tx.Error
+}
+
 //associates VARCHAR(255),
 //amount VARCHAR(255) ,
 //tron_amount VARCHAR(255),

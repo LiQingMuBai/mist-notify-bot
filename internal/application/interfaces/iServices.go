@@ -10,7 +10,7 @@ type IUserService interface {
 	UpdateAddress(user domain.User) error
 	UpdateTimes(_times uint64, _username string) error
 	GetByUsername(username string) (domain.User, error)
-	GetByUserID(_userID string) (domain.User, error)
+	GetByUserID(_userID int64) (domain.User, error)
 	FetchNewestAddress() ([]domain.User, error)
 	NotifyTronAddress() ([]domain.User, error)
 	NotifyEthereumAddress() ([]domain.User, error)
