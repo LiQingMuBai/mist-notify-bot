@@ -292,13 +292,17 @@ func handleRegularMessage(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbo
 				tgbotapi.NewInlineKeyboardButtonData("💵充值", "deposit_amount"),
 			),
 		)
+		_agent := os.Getenv("Agent")
+
+		dictRepo := repositories.NewSysDictionariesRepo(db)
+		receiveAddress, _ := dictRepo.GetReceiveAddress(_agent)
 
 		msg := tgbotapi.NewMessage(message.Chat.ID, "【⚡️能量闪租】\n🔸转账  3 Trx=  1 笔能量\n🔸转账  6 Trx=  2 笔能量\n\n单笔 3 Trx，以此类推，最大 5 笔\n"+
 			"1.向无U地址转账，需要双倍能量。\n2.请在1小时内转账，否则过期回收。\n\n🔸闪租能量收款地址:\n"+
 			//"```\n"+
 			//"TQSrBJjbzgUThwE3N1ZJWoQ2mYgB581xij"+
 			//"```\n\n"+
-			"<code>"+"TQSrBJjbzgUThwE3N1ZJWoQ2mYgB581xij"+"</code>"+"\n"+
+			"<code>"+receiveAddress+"</code>"+"\n"+
 			"➖➖➖➖➖➖➖➖➖\n以下按钮可以选择其他能量租用模式：\n温馨提醒：\n闪租地址保存地址本要打上醒目标识，以免转账转错！")
 		msg.ReplyMarkup = inlineKeyboard
 		msg.ParseMode = "HTML"
@@ -623,9 +627,10 @@ func handleCallbackQuery(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery 
 		usdtDeposit.Placeholder = placeholder.Placeholder
 
 		dictRepo := repositories.NewSysDictionariesRepo(db)
-		_address, _ := dictRepo.GetDictionary("address")
+		_agent := os.Getenv("Agent")
+		depositAddress, _ := dictRepo.GetDepositAddress(_agent)
 
-		usdtDeposit.Address = _address
+		usdtDeposit.Address = depositAddress
 		usdtDeposit.Amount = realTransferAmount
 		usdtDeposit.CreatedAt = time.Now()
 
@@ -682,9 +687,10 @@ func handleCallbackQuery(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery 
 		trxDeposit.Placeholder = placeholder.Placeholder
 
 		dictRepo := repositories.NewSysDictionariesRepo(db)
-		_address, _ := dictRepo.GetDictionary("address")
+		_agent := os.Getenv("Agent")
+		depositAddress, _ := dictRepo.GetDepositAddress(_agent)
 
-		trxDeposit.Address = _address
+		trxDeposit.Address = depositAddress
 		trxDeposit.Amount = realTransferAmount
 		trxDeposit.CreatedAt = time.Now()
 
