@@ -52,8 +52,8 @@ func main() {
 	if err != nil {
 		panic("Failed to connect to the database: " + err.Error())
 	}
-
-	bot, err := tgbotapi.NewBotAPI("7850692856:AAEuCJK0cYfs9ntwsT0-tH1BNam-_MpsRbc")
+	TG_BOT_API := os.Getenv("TG_BOT_API")
+	bot, err := tgbotapi.NewBotAPI(TG_BOT_API)
 	if err != nil {
 		log.Panic(err)
 	}
@@ -147,8 +147,8 @@ func handleStartCommand(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbota
 	keyboard.Selective = false
 
 	msg := tgbotapi.NewMessage(message.Chat.ID, "U盾，做您链上资产的护盾！\n\n我们不仅关注低价能量，更专注于交易安全！\n\n让每一笔转账都更安心，让每一次链上交互都值得信任！\n\n🤖 "+
-		"<b>三大实用功能，助您安全、高效地管理链上资产</b>\n\n🔋 波场<b>能量闪兑</b>\n\n🕵️ <b>地址风险检测</b>\n\n🚨 <b>USDT冻结预警</b>\n\n开始/start\n\n您好："+message.Chat.UserName+" 欢迎使用U盾机器人\n\nU盾，做您链上资产的护盾！\n\n🔋 <b>波场能量闪兑</b>, 节省超过70%!\n\n🕵️ <b>地址风险检测,</b> 让每一笔转账都更安心!\n\n"+
-		"🚨 <b>USDT冻结预警,秒级响应，让您的U永不冻结！</b>\n\n新用户福利：\n\n每日一次地址风险查询\n\n常用指令：\n\n个人中心\n\n能量闪兑\n\n地址风险检测\n\nUSDT冻结预警\n\n客服：@Ushield001")
+		"三大实用功能，助您安全、高效地管理链上资产\n\n🔋 波场能量闪兑\n\n🕵️ 地址风险检测\n\n🚨 USDT冻结预警\n\n开始/start\n\n您好："+message.Chat.UserName+" 欢迎使用U盾机器人\nU盾，做您链上资产的护盾！\n\n🔋 波场能量闪兑, 节省超过70%!\n🕵️ 地址风险检测, 让每一笔转账都更安心!\n"+
+		"🚨 USDT冻结预警,秒级响应，让您的U永不冻结！\n新用户福利：\n每日一次地址风险查询\n常用指令：\n个人中心\n能量闪兑\n地址风险检测\n\nUSDT冻结预警\n\n客服：@Ushield001")
 	msg.ReplyMarkup = keyboard
 	msg.ParseMode = "HTML"
 	bot.Send(msg)
@@ -254,6 +254,13 @@ func handleRegularMessage(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbo
 
 		userRepo := repositories.NewUserRepository(db)
 		user, _ := userRepo.GetByUserID(message.Chat.ID)
+		if IsEmpty(user.Amount) {
+			user.Amount = "0.00"
+		}
+
+		if IsEmpty(user.TronAmount) {
+			user.TronAmount = "0.00"
+		}
 
 		msg := tgbotapi.NewMessage(message.Chat.ID,
 			"💬"+"<b>"+"用户姓名: "+"</b>"+user.Username+"\n"+
@@ -349,6 +356,12 @@ func handleRegularMessage(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbo
 		bot.Send(msg)
 	case "客服":
 		msg := tgbotapi.NewMessage(message.Chat.ID, "📞联系客服：@Ushield001\n")
+		msg.ParseMode = "HTML"
+
+		bot.Send(msg)
+
+	case "账单":
+		msg := tgbotapi.NewMessage(message.Chat.ID, "暂时无账单\n")
 		msg.ParseMode = "HTML"
 
 		bot.Send(msg)
@@ -527,6 +540,13 @@ func handleCallbackQuery(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery 
 		userRepo := repositories.NewUserRepository(db)
 
 		user, _ := userRepo.GetByUserID(callbackQuery.Message.Chat.ID)
+		if IsEmpty(user.Amount) {
+			user.Amount = "0.00"
+		}
+
+		if IsEmpty(user.TronAmount) {
+			user.TronAmount = "0.00"
+		}
 
 		msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID,
 			"💬"+"<b>"+"用户姓名: "+"</b>"+user.Username+"\n"+
@@ -733,6 +753,13 @@ func handleCallbackQuery(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery 
 		userRepo := repositories.NewUserRepository(db)
 
 		user, _ := userRepo.GetByUserID(callbackQuery.Message.Chat.ID)
+		if IsEmpty(user.Amount) {
+			user.Amount = "0.00"
+		}
+
+		if IsEmpty(user.TronAmount) {
+			user.TronAmount = "0.00"
+		}
 
 		msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID,
 			"💬"+"<b>"+"用户姓名: "+"</b>"+user.Username+"\n"+
