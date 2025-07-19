@@ -206,11 +206,11 @@ func handleRegularMessage(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbo
 		inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 			tgbotapi.NewInlineKeyboardRow(
 				tgbotapi.NewInlineKeyboardButtonData("开启冻结预警", "deposit_amount"),
-				tgbotapi.NewInlineKeyboardButtonData("地址监控列表", "deposit_amount"),
+				tgbotapi.NewInlineKeyboardButtonData("地址管理", "address_manager"),
 			),
-			tgbotapi.NewInlineKeyboardRow(
-				tgbotapi.NewInlineKeyboardButtonData("充值", "deposit_amount"),
-			),
+			//tgbotapi.NewInlineKeyboardRow(
+			//	tgbotapi.NewInlineKeyboardButtonData("地址", ""),
+			//),
 		)
 		msg.ReplyMarkup = inlineKeyboard
 
@@ -377,6 +377,48 @@ func handleRegularMessage(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbo
 
 		log.Printf("用户状态staus %s", status)
 		switch {
+		case strings.HasPrefix(status, "address_manager_remove"):
+			if IsValidAddress(message.Text) || IsValidEthereumAddress(message.Text) {
+				userRepo := repositories.NewUserAddressMonitorRepo(db)
+				err := userRepo.Remove(context.Background(), message.Chat.ID, message.Text)
+				if err != nil {
+				}
+				msg := tgbotapi.NewMessage(message.Chat.ID, "💬"+"<b>"+"地址删除成功 "+"</b>"+"\n")
+				msg.ParseMode = "HTML"
+				bot.Send(msg)
+			} else {
+				msg := tgbotapi.NewMessage(message.Chat.ID, "💬"+"<b>"+"地址有误，请重新输入需删除的地址: "+"</b>"+"\n")
+				msg.ParseMode = "HTML"
+				bot.Send(msg)
+			}
+
+		case strings.HasPrefix(status, "address_manager_add"):
+			if IsValidAddress(message.Text) || IsValidEthereumAddress(message.Text) {
+				userRepo := repositories.NewUserAddressMonitorRepo(db)
+				var record domain.UserAddressMonitor
+				record.ChatID = message.Chat.ID
+				record.Address = message.Text
+				record.Status = 1
+				if IsValidAddress(message.Text) {
+					record.Network = "tron"
+				}
+				if IsValidAddress(message.Text) {
+					record.Network = "ethereum"
+				}
+				errsg := userRepo.Create(context.Background(), &record)
+				if errsg != nil {
+				}
+
+				msg := tgbotapi.NewMessage(message.Chat.ID, "💬"+"<b>"+"地址添加成功 "+"</b>"+"\n")
+				msg.ParseMode = "HTML"
+				bot.Send(msg)
+
+			} else {
+				msg := tgbotapi.NewMessage(message.Chat.ID, "💬"+"<b>"+"地址有误，请重新输入需添加的地址: "+"</b>"+"\n")
+				msg.ParseMode = "HTML"
+				bot.Send(msg)
+			}
+
 		case strings.HasPrefix(status, "bundle_"):
 			//fmt.Printf("bundle: %s", status)
 
@@ -502,15 +544,66 @@ func handleCallbackQuery(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery 
 	var responseText string
 	switch {
 
+	case callbackQuery.Data == "address_manager_add":
+		msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, "💬"+"<b>"+"请输入需添加的地址: "+"</b>"+"\n")
+		msg.ParseMode = "HTML"
+		bot.Send(msg)
+
+		expiration := 1 * time.Minute // 短时间缓存空值
+
+		//设置用户状态
+		cache.Set(strconv.FormatInt(callbackQuery.Message.Chat.ID, 10), callbackQuery.Data, expiration)
+	case callbackQuery.Data == "address_manager_remove":
+		msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, "💬"+"<b>"+"请输入需删除的地址: "+"</b>"+"\n")
+		msg.ParseMode = "HTML"
+		bot.Send(msg)
+
+		expiration := 1 * time.Minute // 短时间缓存空值
+
+		//设置用户状态
+		cache.Set(strconv.FormatInt(callbackQuery.Message.Chat.ID, 10), callbackQuery.Data, expiration)
+	case callbackQuery.Data == "address_manager":
+		userAddressRepo := repositories.NewUserAddressMonitorRepo(db)
+
+		addresses, _ := userAddressRepo.Query(context.Background(), callbackQuery.Message.Chat.ID)
+
+		result := ""
+		for _, item := range addresses {
+			result += item.Address + "\n"
+		}
+		msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, "👇以下监控地址信息列表"+"\n"+result)
+		//地址绑定
+
+		msg.ParseMode = "HTML"
+
+		inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
+			tgbotapi.NewInlineKeyboardRow(
+				tgbotapi.NewInlineKeyboardButtonData("➕添加钱包", "address_manager_add"),
+				//tgbotapi.NewInlineKeyboardButtonData("设置钱包", "address_manager"),
+				tgbotapi.NewInlineKeyboardButtonData("➖删除钱包", "address_manager_remove"),
+			),
+			tgbotapi.NewInlineKeyboardRow(
+				tgbotapi.NewInlineKeyboardButtonData("⬅️返回", "123456"),
+			),
+		)
+		msg.ReplyMarkup = inlineKeyboard
+
+		bot.Send(msg)
+
+		expiration := 1 * time.Minute // 短时间缓存空值
+
+		//设置用户状态
+		cache.Set(strconv.FormatInt(callbackQuery.Message.Chat.ID, 10), "address_manager", expiration)
+
 	case callbackQuery.Data == "deposit_amount":
 
 		trxSubscriptionsRepo := repositories.NewUserTRXSubscriptionsRepository(db)
 
-		trxlist, err := trxSubscriptionsRepo.ListAll(context.Background())
+		trxlist, _ := trxSubscriptionsRepo.ListAll(context.Background())
 
-		if err != nil {
-
-		}
+		//if err != nil {
+		//
+		//}
 		var allButtons []tgbotapi.InlineKeyboardButton
 		var extraButtons []tgbotapi.InlineKeyboardButton
 		var keyboard [][]tgbotapi.InlineKeyboardButton
