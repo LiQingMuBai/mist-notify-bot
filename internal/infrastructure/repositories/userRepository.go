@@ -17,7 +17,9 @@ func NewUserRepository(db *gorm.DB) *UserRepository {
 		db: db,
 	}
 }
-
+func (r *UserRepository) Update2(ctx context.Context, user *domain.User) error {
+	return r.db.WithContext(ctx).Save(user).Error
+}
 func (r *UserRepository) Create2(ctx context.Context, user *domain.User) error {
 	return r.db.WithContext(ctx).Create(user).Error
 }

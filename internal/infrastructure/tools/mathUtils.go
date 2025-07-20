@@ -6,6 +6,39 @@ import (
 	"time"
 )
 
+func SubtractStringNumbers(a, b string, n float64) (string, error) {
+	// 1. 将字符串转为 float64
+	numA, err := strconv.ParseFloat(a, 64)
+	if err != nil {
+		return "", fmt.Errorf("转换 %s 失败: %v", a, err)
+	}
+
+	numB, err := strconv.ParseFloat(b, 64)
+	if err != nil {
+		return "", fmt.Errorf("转换 %s 失败: %v", b, err)
+	}
+
+	// 2. 计算减法
+	result := numA - numB*n
+
+	// 3. 将结果转为字符串
+	return fmt.Sprintf("%v", result), nil
+}
+func CompareStringsWithFloat(a, b string, n float64) bool {
+	// 将字符串转换为 float64
+	floatA, errA := strconv.ParseFloat(a, 64)
+	floatB, errB := strconv.ParseFloat(b, 64)
+
+	if errA != nil || errB != nil {
+		return false
+	}
+
+	// 计算 b * 2
+	bTimesTwo := floatB * n
+
+	// 比较 a 和 b * 2
+	return floatA > bTimesTwo
+}
 func AddStringsAsFloats(a, b string) string {
 	// 1. 将第一个字符串转换成 float64
 	num1, err := strconv.ParseFloat(a, 64)

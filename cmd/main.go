@@ -205,11 +205,15 @@ func handleRegularMessage(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbo
 
 		inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 			tgbotapi.NewInlineKeyboardRow(
-				tgbotapi.NewInlineKeyboardButtonData("开启冻结预警", "deposit_amount"),
+				tgbotapi.NewInlineKeyboardButtonData("开启冻结预警", "start_freeze_risk"),
 				tgbotapi.NewInlineKeyboardButtonData("地址管理", "address_manager"),
 			),
+			tgbotapi.NewInlineKeyboardRow(
+				tgbotapi.NewInlineKeyboardButtonData("地址监控列表", "address_list_trace"),
+			),
 			//tgbotapi.NewInlineKeyboardRow(
-			//	tgbotapi.NewInlineKeyboardButtonData("地址", ""),
+			//	tgbotapi.NewInlineKeyboardButtonData("第二紧急通知", "address_manager_return"),
+			//	//tgbotapi.NewInlineKeyboardButtonData("第二紧急通知", ""),
 			//),
 		)
 		msg.ReplyMarkup = inlineKeyboard
@@ -377,6 +381,48 @@ func handleRegularMessage(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbo
 
 		log.Printf("用户状态staus %s", status)
 		switch {
+		case strings.HasPrefix(status, "start_freeze_risk"):
+			//msg := tgbotapi.NewMessage(message.Chat.ID, "📡 系统将自动启动 24 小时预警服务\n如检测到潜在冻结风险，系统将在冻结前持续 10 分钟预警\n每分钟推送提醒，通知您及时转移资产，避免冻结损失\n📌 服务费用：2800 TRX / 30 天 或 800 USDT / 30 天\n是否确认启用该服务？")
+			//msg.ParseMode = "HTML"
+			//
+			//inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
+			//	tgbotapi.NewInlineKeyboardRow(
+			//		tgbotapi.NewInlineKeyboardButtonData("✅ 确认开通", "start_freeze_risk"),
+			//		tgbotapi.NewInlineKeyboardButtonData("❌ 取消操作", "address_manager"),
+			//	),
+			//	//tgbotapi.NewInlineKeyboardRow(
+			//	//	tgbotapi.NewInlineKeyboardButtonData("地址", ""),
+			//	//),
+			//)
+			//msg.ReplyMarkup = inlineKeyboard
+			//
+			//bot.Send(msg)
+			//
+			//expiration := 1 * time.Minute // 短时间缓存空值
+			//
+			////设置用户状态
+			//cache.Set(strconv.FormatInt(message.Chat.ID, 10), "usdt_risk_monitor", expiration)
+		case strings.HasPrefix(status, "address_list_trace"):
+		//msg := tgbotapi.NewMessage(message.Chat.ID, "📡 系统将自动启动 24 小时预警服务\n如检测到潜在冻结风险，系统将在冻结前持续 10 分钟预警\n每分钟推送提醒，通知您及时转移资产，避免冻结损失\n📌 服务费用：2800 TRX / 30 天 或 800 USDT / 30 天\n是否确认启用该服务？")
+		//msg.ParseMode = "HTML"
+		//
+		//inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
+		//	tgbotapi.NewInlineKeyboardRow(
+		//		tgbotapi.NewInlineKeyboardButtonData("✅ 确认开通", "start_freeze_risk"),
+		//		tgbotapi.NewInlineKeyboardButtonData("❌ 取消操作", "address_manager"),
+		//	),
+		//	//tgbotapi.NewInlineKeyboardRow(
+		//	//	tgbotapi.NewInlineKeyboardButtonData("地址", ""),
+		//	//),
+		//)
+		//msg.ReplyMarkup = inlineKeyboard
+		//
+		//bot.Send(msg)
+		//
+		//expiration := 1 * time.Minute // 短时间缓存空值
+		//
+		////设置用户状态
+		//cache.Set(strconv.FormatInt(message.Chat.ID, 10), "usdt_risk_monitor", expiration)
 		case strings.HasPrefix(status, "address_manager_remove"):
 			if IsValidAddress(message.Text) || IsValidEthereumAddress(message.Text) {
 				userRepo := repositories.NewUserAddressMonitorRepo(db)
@@ -543,6 +589,214 @@ func handleCallbackQuery(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery 
 	// 根据回调数据执行不同操作
 	var responseText string
 	switch {
+	case callbackQuery.Data == "address_list_trace":
+		userAddressEventRepo := repositories.NewUserAddressMonitorEventRepo(db)
+		addresses, _ := userAddressEventRepo.Query(context.Background(), callbackQuery.Message.Chat.ID)
+		// 初始化结果字符串
+		var result string
+
+		// 遍历数组并拼接字符串
+		for i, item := range addresses {
+			if i > 0 {
+				result += " ✅\n\n" // 添加分隔符
+			}
+
+			restDays := fmt.Sprintf("%d", 30-item.Days)
+
+			result += item.Address + "（剩余" + restDays + "）"
+		}
+		result += " ✅\n\n" // 添加分隔符
+		//查看余额
+		userRepo := repositories.NewUserRepository(db)
+		user, _ := userRepo.GetByUserID(callbackQuery.Message.Chat.ID)
+		if IsEmpty(user.Amount) {
+			user.Amount = "0.00"
+		}
+
+		if IsEmpty(user.TronAmount) {
+			user.TronAmount = "0.00"
+		}
+
+		msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, "有服务进行中\n\n📊 当前正在监控的地址：\n\n"+
+			result+
+			"💼 当前余额："+"\n- "+user.TronAmount+" TRX \n - "+user.Amount+" USDT \n"+
+			"📌请保持余额充足，到期将自动续费\n"+
+			"如需中止服务，可随时")
+		msg.ParseMode = "HTML"
+
+		inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
+			tgbotapi.NewInlineKeyboardRow(
+				tgbotapi.NewInlineKeyboardButtonData("解绑地址", "free_monitor_address"),
+				tgbotapi.NewInlineKeyboardButtonData("停止监控", "stop_monitor_address"),
+			),
+			tgbotapi.NewInlineKeyboardRow(
+				tgbotapi.NewInlineKeyboardButtonData("第二紧急通知", "user_backup_notify"),
+				//tgbotapi.NewInlineKeyboardButtonData("第二紧急通知", ""),
+			),
+		)
+		msg.ReplyMarkup = inlineKeyboard
+
+		bot.Send(msg)
+
+		expiration := 1 * time.Minute // 短时间缓存空值
+
+		//设置用户状态
+		cache.Set(strconv.FormatInt(callbackQuery.Message.Chat.ID, 10), "address_list_trace", expiration)
+	case callbackQuery.Data == "user_backup_notify":
+		msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, "💬"+"<b>"+"请输入需添加的第二紧急通知用户名: "+"</b>"+"\n")
+		msg.ParseMode = "HTML"
+		bot.Send(msg)
+
+		expiration := 1 * time.Minute // 短时间缓存空值
+
+		//设置用户状态
+		cache.Set(strconv.FormatInt(callbackQuery.Message.Chat.ID, 10), callbackQuery.Data, expiration)
+	case callbackQuery.Data == "start_freeze_risk_1":
+		//查看余额
+		userRepo := repositories.NewUserRepository(db)
+		user, _ := userRepo.GetByUserID(callbackQuery.Message.Chat.ID)
+		if IsEmpty(user.Amount) {
+			user.Amount = "0.00"
+		}
+
+		if IsEmpty(user.TronAmount) {
+			user.TronAmount = "0.00"
+		}
+
+		userAddressRepo := repositories.NewUserAddressMonitorRepo(db)
+
+		addresses, _ := userAddressRepo.Query(context.Background(), callbackQuery.Message.Chat.ID)
+
+		nums := len(addresses)
+		if CompareStringsWithFloat(user.TronAmount, "2800", float64(nums)) || CompareStringsWithFloat(user.Amount, "800", float64(nums)) {
+			//扣减
+
+			//扣trx
+			if CompareStringsWithFloat(user.TronAmount, "2800", float64(nums)) {
+				rest, _ := SubtractStringNumbers(user.TronAmount, "2800", float64(nums))
+
+				user.TronAmount = rest
+				userRepo.Update2(context.Background(), &user)
+				fmt.Printf("rest: %s", rest)
+
+			} else if CompareStringsWithFloat(user.Amount, "800", float64(nums)) {
+				rest, _ := SubtractStringNumbers(user.Amount, "800", float64(nums))
+				fmt.Printf("rest: %s", rest)
+				user.Amount = rest
+				userRepo.Update2(context.Background(), &user)
+			}
+
+			//添加记录
+			userAddressEventRepo := repositories.NewUserAddressMonitorEventRepo(db)
+
+			for _, address := range addresses {
+				var event domain.UserAddressMonitorEvent
+				event.ChatID = callbackQuery.Message.Chat.ID
+				event.Status = 1
+				event.Address = address.Address
+				event.Network = address.Network
+				event.Days = 1
+				userAddressEventRepo.Create(context.Background(), &event)
+			}
+			//后台跟踪起来
+			user, _ := userRepo.GetByUserID(callbackQuery.Message.Chat.ID)
+			msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID,
+				"💬"+"<b>"+"用户姓名: "+"</b>"+user.Username+"\n"+
+					"👤"+"<b>"+"用户电报ID: "+"</b>"+user.Associates+"\n"+
+					"💵"+"<b>"+"当前TRX余额:  "+"</b>"+user.TronAmount+" TRX"+"\n"+
+					"💴"+"<b>"+"当前USDT余额:  "+"</b>"+user.Amount+" USDT")
+			msg.ParseMode = "HTML"
+			inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
+				tgbotapi.NewInlineKeyboardRow(
+					tgbotapi.NewInlineKeyboardButtonData("⬅️返回", "address_manager_return"),
+				),
+			)
+
+			msg.ReplyMarkup = inlineKeyboard
+			bot.Send(msg)
+		} else {
+
+			//余额不足，需充值
+			msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID,
+				"💬"+"<b>"+"用户姓名: "+"</b>"+user.Username+"\n"+
+					"👤"+"<b>"+"用户电报ID: "+"</b>"+user.Associates+"\n"+
+					"💵"+"<b>"+"当前TRX余额:  "+"</b>"+user.TronAmount+" TRX"+"\n"+
+					"💴"+"<b>"+"当前USDT余额:  "+"</b>"+user.Amount+" USDT")
+			msg.ParseMode = "HTML"
+			inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
+				tgbotapi.NewInlineKeyboardRow(
+					tgbotapi.NewInlineKeyboardButtonData("💵充值", "deposit_amount"),
+				),
+			)
+
+			msg.ReplyMarkup = inlineKeyboard
+			bot.Send(msg)
+		}
+
+	case callbackQuery.Data == "start_freeze_risk_0":
+		msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, "🛡️ U盾，做您链上资产的护盾！实时守护您的资产安全！\n\n地址一旦被链上风控冻，资产将难以追回，损失巨大！\n\n每天都有数百个 USDT 钱包地址被冻结锁定，风险就在身边！\n\nU盾将为您的地址提供 24 小时不间断监控\n\n⏰ 系统将在冻结前持续 10 分钟启动预警机制，每分钟推送提醒，通知您及时转移资产\n\n✅ 适用于经常收付款 / 高频交易 / 风险暴露地址\n\n✅ 支持在TRON网络下的USDT 钱包地址\n\n📌 服务价格（每地址）：\n\n- 2800 TRX / 30天\n- 或 800 USDT / 30天\n\n🎯 服务开启后系统将 24 小时不间断监控\n\n📩 所有预警信息将通过 Telegram 实时推送\n\n点击下方按钮开始 👇")
+		msg.ParseMode = "HTML"
+
+		inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
+			tgbotapi.NewInlineKeyboardRow(
+				tgbotapi.NewInlineKeyboardButtonData("开启冻结预警", "start_freeze_risk"),
+				tgbotapi.NewInlineKeyboardButtonData("地址管理", "address_manager"),
+			),
+			tgbotapi.NewInlineKeyboardRow(
+				tgbotapi.NewInlineKeyboardButtonData("地址监控列表", "address_list_trace"),
+			),
+		)
+		msg.ReplyMarkup = inlineKeyboard
+
+		bot.Send(msg)
+
+		expiration := 1 * time.Minute // 短时间缓存空值
+
+		//设置用户状态
+		cache.Set(strconv.FormatInt(callbackQuery.Message.Chat.ID, 10), "usdt_risk_monitor", expiration)
+	case callbackQuery.Data == "start_freeze_risk":
+		msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, "📡 系统将自动启动 24 小时预警服务\n如检测到潜在冻结风险，系统将在冻结前持续 10 分钟预警\n每分钟推送提醒，通知您及时转移资产，避免冻结损失\n📌 服务费用：2800 TRX / 30 天 或 800 USDT / 30 天\n是否确认启用该服务？")
+		msg.ParseMode = "HTML"
+
+		inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
+			tgbotapi.NewInlineKeyboardRow(
+				tgbotapi.NewInlineKeyboardButtonData("✅ 确认开通", "start_freeze_risk_1"),
+				tgbotapi.NewInlineKeyboardButtonData("❌ 取消操作", "start_freeze_risk_0"),
+			),
+			//tgbotapi.NewInlineKeyboardRow(
+			//	tgbotapi.NewInlineKeyboardButtonData("地址", ""),
+			//),
+		)
+		msg.ReplyMarkup = inlineKeyboard
+
+		bot.Send(msg)
+
+		expiration := 1 * time.Minute // 短时间缓存空值
+
+		//设置用户状态
+		cache.Set(strconv.FormatInt(callbackQuery.Message.Chat.ID, 10), "start_freeze_risk", expiration)
+
+	case callbackQuery.Data == "address_manager_return":
+		msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, "🛡️ U盾，做您链上资产的护盾！实时守护您的资产安全！\n\n地址一旦被链上风控冻，资产将难以追回，损失巨大！\n\n每天都有数百个 USDT 钱包地址被冻结锁定，风险就在身边！\n\nU盾将为您的地址提供 24 小时不间断监控\n\n⏰ 系统将在冻结前持续 10 分钟启动预警机制，每分钟推送提醒，通知您及时转移资产\n\n✅ 适用于经常收付款 / 高频交易 / 风险暴露地址\n\n✅ 支持在TRON网络下的USDT 钱包地址\n\n📌 服务价格（每地址）：\n\n- 2800 TRX / 30天\n- 或 800 USDT / 30天\n\n🎯 服务开启后系统将 24 小时不间断监控\n\n📩 所有预警信息将通过 Telegram 实时推送\n\n点击下方按钮开始 👇")
+		msg.ParseMode = "HTML"
+
+		inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
+			tgbotapi.NewInlineKeyboardRow(
+				tgbotapi.NewInlineKeyboardButtonData("开启冻结预警", "start_freeze_risk"),
+				tgbotapi.NewInlineKeyboardButtonData("地址管理", "address_manager"),
+			),
+			tgbotapi.NewInlineKeyboardRow(
+				tgbotapi.NewInlineKeyboardButtonData("地址监控列表", "address_list_trace"),
+			),
+		)
+		msg.ReplyMarkup = inlineKeyboard
+
+		bot.Send(msg)
+
+		expiration := 1 * time.Minute // 短时间缓存空值
+
+		//设置用户状态
+		cache.Set(strconv.FormatInt(callbackQuery.Message.Chat.ID, 10), "usdt_risk_monitor", expiration)
 
 	case callbackQuery.Data == "address_manager_add":
 		msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, "💬"+"<b>"+"请输入需添加的地址: "+"</b>"+"\n")
@@ -583,7 +837,7 @@ func handleCallbackQuery(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery 
 				tgbotapi.NewInlineKeyboardButtonData("➖删除钱包", "address_manager_remove"),
 			),
 			tgbotapi.NewInlineKeyboardRow(
-				tgbotapi.NewInlineKeyboardButtonData("⬅️返回", "123456"),
+				tgbotapi.NewInlineKeyboardButtonData("⬅️返回", "address_manager_return"),
 			),
 		)
 		msg.ReplyMarkup = inlineKeyboard
