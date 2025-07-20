@@ -38,3 +38,8 @@ func (r *UserAddressMonitorEventRepo) Query(ctx context.Context, _chatID int64) 
 	return subscriptions, err
 
 }
+func (r *UserAddressMonitorEventRepo) RemoveAll(ctx context.Context, _chatID int64) error {
+	//return r.db.WithContext(ctx).del(userAddress).Error
+
+	return r.db.WithContext(ctx).Delete(&domain.UserAddressMonitorEvent{}, "chat_id = ?", _chatID).Error
+}

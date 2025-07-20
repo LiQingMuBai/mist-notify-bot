@@ -381,6 +381,35 @@ func handleRegularMessage(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbo
 
 		log.Printf("用户状态staus %s", status)
 		switch {
+		case strings.HasPrefix(status, "user_backup_notify"):
+
+			chat_ID, err := strconv.ParseInt(message.Text, 10, 64)
+			if err != nil {
+
+				msg := tgbotapi.NewMessage(message.Chat.ID, "请输入正确的对方👤用户电报ID？")
+				msg.ParseMode = "HTML"
+				bot.Send(msg)
+				return
+			}
+
+			//用户电报ID
+			userRepo := repositories.NewUserRepository(db)
+			backupUser, esg := userRepo.GetByUserID(chat_ID)
+			if esg != nil {
+				msg := tgbotapi.NewMessage(message.Chat.ID, "👤用户电报ID未在机器人发现，请让对方用户电报登录机器人")
+				msg.ParseMode = "HTML"
+				bot.Send(msg)
+				return
+			}
+			user, _ := userRepo.GetByUserID(message.Chat.ID)
+			user.BackupChatID = backupUser.Associates
+			err2 := userRepo.Update2(context.Background(), &user)
+			if err2 == nil {
+				msg := tgbotapi.NewMessage(message.Chat.ID, "✅ 成功绑定第二紧急联系人: "+backupUser.Associates)
+				msg.ParseMode = "HTML"
+				bot.Send(msg)
+				return
+			}
 		case strings.HasPrefix(status, "start_freeze_risk"):
 			//msg := tgbotapi.NewMessage(message.Chat.ID, "📡 系统将自动启动 24 小时预警服务\n如检测到潜在冻结风险，系统将在冻结前持续 10 分钟预警\n每分钟推送提醒，通知您及时转移资产，避免冻结损失\n📌 服务费用：2800 TRX / 30 天 或 800 USDT / 30 天\n是否确认启用该服务？")
 			//msg.ParseMode = "HTML"
@@ -503,12 +532,100 @@ func handleRegularMessage(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbo
 				}
 
 				if user.Times == 1 {
-					msg := tgbotapi.NewMessage(message.Chat.ID,
-						"🔍普通用戶每日贈送 1 次地址風險查詢\n"+
-							"📞聯繫客服 @Ushield001\n")
-					//msg.ReplyMarkup = inlineKeyboard
-					msg.ParseMode = "HTML"
-					bot.Send(msg)
+
+					//需要扣钱 4trx或者1u
+					if CompareStringsWithFloat(user.Amount, "1", 1) || CompareStringsWithFloat(user.TronAmount, "4", 1) {
+
+						if CompareStringsWithFloat(user.Amount, "1", 1) {
+							amount, _ := SubtractStringNumbers(user.Amount, "1", 1)
+							user.Amount = amount
+							userRepo.Update2(context.Background(), &user)
+						}
+
+						if CompareStringsWithFloat(user.TronAmount, "4", 1) {
+							tronAmount, _ := SubtractStringNumbers(user.TronAmount, "4", 1)
+							user.TronAmount = tronAmount
+							userRepo.Update2(context.Background(), &user)
+						}
+						_text := ""
+						if strings.HasPrefix(message.Text, "0x") && len(message.Text) == 42 {
+							_symbol := "USDT-ERC20"
+							_addressInfo := handler.GetAddressInfo(_symbol, message.Text, _cookie)
+							_text = handler.GetText(_addressInfo)
+
+							addressProfile := handler.GetAddressProfile(_symbol, message.Text, _cookie)
+							_text7 := "余額：" + addressProfile.BalanceUsd + "\n"
+							_text8 := "累計收入：" + addressProfile.TotalReceivedUsd + "\n"
+							_text9 := "累计支出：" + addressProfile.TotalSpentUsd + "\n"
+							_text10 := "首次活躍時間：" + addressProfile.FirstTxTime + "\n"
+							_text11 := "最後活躍時間：" + addressProfile.LastTxTime + "\n"
+							_text12 := "交易次數：" + addressProfile.TxCount + "筆" + "\n"
+							_text99 := "主要交易对手分析：" + "\n"
+							_text5 := "📢更多查询請聯繫客服 @Ushield001\n"
+							_text16 := "🛡️ U盾在手，链上无忧！" + "\n"
+
+							_text = _text + _text7 + _text8 + _text9 + _text10 + _text11 + _text12 + _text99 + _text5 + _text16
+
+						}
+						if strings.HasPrefix(message.Text, "T") && len(message.Text) == 34 {
+							_symbol := "USDT-TRC20"
+							_addressInfo := handler.GetAddressInfo(_symbol, message.Text, _cookie)
+							_text = handler.GetText(_addressInfo)
+
+							addressProfile := handler.GetAddressProfile(_symbol, message.Text, _cookie)
+							_text7 := "余額：" + addressProfile.BalanceUsd + "\n"
+							_text8 := "累計收入：" + addressProfile.TotalReceivedUsd + "\n"
+							_text9 := "累计支出：" + addressProfile.TotalSpentUsd + "\n"
+							_text10 := "首次活躍時間：" + addressProfile.FirstTxTime + "\n"
+							_text11 := "最後活躍時間：" + addressProfile.LastTxTime + "\n"
+							_text12 := "交易次數：" + addressProfile.TxCount + "筆" + "\n"
+							_text99 := "危险交易对手分析：" + "\n"
+							lableAddresList := handler.GetNotSafeAddress(_symbol, message.Text, _cookie)
+
+							_text100 := ""
+							if len(lableAddresList.GraphDic.NodeList) > 0 {
+								for _, data := range lableAddresList.GraphDic.NodeList {
+									if strings.Contains(data.Label, "huione") {
+										_text100 = _text100 + data.Title[0:5] + "..." + data.Title[29:34] + "\n"
+									}
+								}
+							}
+							_text5 := "📢更多查询請聯繫客服 @Ushield001\n"
+							_text16 := "🛡️ U盾在手，链上无忧！" + "\n"
+
+							_text = _text + _text7 + _text8 + _text9 + _text10 + _text11 + _text12 + _text99 + _text100 + _text5 + _text16
+
+						}
+						msg := tgbotapi.NewMessage(message.Chat.ID, _text)
+						//msg.ReplyMarkup = inlineKeyboard
+						msg.ParseMode = "HTML"
+						bot.Send(msg)
+						userRepo.UpdateTimesByChatID(1, message.Chat.ID)
+					} else {
+						//msg := tgbotapi.NewMessage(message.Chat.ID,
+						//	"🔍普通用戶每日贈送 1 次地址風險查詢\n"+
+						//		"📞聯繫客服 @Ushield001\n")
+						//msg.ReplyMarkup = inlineKeyboard
+
+						msg := tgbotapi.NewMessage(message.Chat.ID,
+							"💬"+"<b>"+"🔍普通用戶每日贈送 1 次地址風險查詢 "+"</b>"+user.Username+"\n"+
+								"💬"+"<b>"+"用户姓名: "+"</b>"+user.Username+"\n"+
+								"👤"+"<b>"+"用户电报ID: "+"</b>"+user.Associates+"\n"+
+								"💵"+"<b>"+"当前TRX余额:  "+"</b>"+user.TronAmount+" TRX"+"\n"+
+								"💴"+"<b>"+"当前USDT余额:  "+"</b>"+user.Amount+" USDT")
+						msg.ParseMode = "HTML"
+						inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
+							tgbotapi.NewInlineKeyboardRow(
+								tgbotapi.NewInlineKeyboardButtonData("💵充值", "deposit_amount"),
+							),
+						)
+
+						msg.ReplyMarkup = inlineKeyboard
+						//bot.Send(msg)
+
+						msg.ParseMode = "HTML"
+						bot.Send(msg)
+					}
 				} else {
 					_text := ""
 					if strings.HasPrefix(message.Text, "0x") && len(message.Text) == 42 {
@@ -626,8 +743,8 @@ func handleCallbackQuery(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery 
 
 		inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 			tgbotapi.NewInlineKeyboardRow(
-				tgbotapi.NewInlineKeyboardButtonData("解绑地址", "free_monitor_address"),
-				tgbotapi.NewInlineKeyboardButtonData("停止监控", "stop_monitor_address"),
+				//tgbotapi.NewInlineKeyboardButtonData("解绑地址", "free_monitor_address"),
+				tgbotapi.NewInlineKeyboardButtonData("停止监控", "stop_freeze_risk"),
 			),
 			tgbotapi.NewInlineKeyboardRow(
 				tgbotapi.NewInlineKeyboardButtonData("第二紧急通知", "user_backup_notify"),
@@ -642,8 +759,9 @@ func handleCallbackQuery(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery 
 
 		//设置用户状态
 		cache.Set(strconv.FormatInt(callbackQuery.Message.Chat.ID, 10), "address_list_trace", expiration)
+	case callbackQuery.Data == "stop_monitor_address":
 	case callbackQuery.Data == "user_backup_notify":
-		msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, "💬"+"<b>"+"请输入需添加的第二紧急通知用户名: "+"</b>"+"\n")
+		msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, "💬"+"<b>"+"请输入需添加的第二紧急通知用户电报ID: "+"</b>"+"\n")
 		msg.ParseMode = "HTML"
 		bot.Send(msg)
 
@@ -733,6 +851,34 @@ func handleCallbackQuery(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery 
 			bot.Send(msg)
 		}
 
+	case callbackQuery.Data == "stop_freeze_risk_1":
+
+		//删除event表里面
+		userAddressEventRepo := repositories.NewUserAddressMonitorEventRepo(db)
+
+		userAddressEventRepo.RemoveAll(context.Background(), callbackQuery.Message.Chat.ID)
+
+		msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, "已经暂停所有监控")
+		msg.ParseMode = "HTML"
+
+		//inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
+		//	tgbotapi.NewInlineKeyboardRow(
+		//		tgbotapi.NewInlineKeyboardButtonData("开启冻结预警", "start_freeze_risk"),
+		//		tgbotapi.NewInlineKeyboardButtonData("地址管理", "address_manager"),
+		//	),
+		//	tgbotapi.NewInlineKeyboardRow(
+		//		tgbotapi.NewInlineKeyboardButtonData("地址监控列表", "address_list_trace"),
+		//	),
+		//)
+		//msg.ReplyMarkup = inlineKeyboard
+
+		bot.Send(msg)
+
+		expiration := 1 * time.Minute // 短时间缓存空值
+
+		//设置用户状态
+		cache.Set(strconv.FormatInt(callbackQuery.Message.Chat.ID, 10), "reset", expiration)
+
 	case callbackQuery.Data == "start_freeze_risk_0":
 		msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, "🛡️ U盾，做您链上资产的护盾！实时守护您的资产安全！\n\n地址一旦被链上风控冻，资产将难以追回，损失巨大！\n\n每天都有数百个 USDT 钱包地址被冻结锁定，风险就在身边！\n\nU盾将为您的地址提供 24 小时不间断监控\n\n⏰ 系统将在冻结前持续 10 分钟启动预警机制，每分钟推送提醒，通知您及时转移资产\n\n✅ 适用于经常收付款 / 高频交易 / 风险暴露地址\n\n✅ 支持在TRON网络下的USDT 钱包地址\n\n📌 服务价格（每地址）：\n\n- 2800 TRX / 30天\n- 或 800 USDT / 30天\n\n🎯 服务开启后系统将 24 小时不间断监控\n\n📩 所有预警信息将通过 Telegram 实时推送\n\n点击下方按钮开始 👇")
 		msg.ParseMode = "HTML"
@@ -754,6 +900,28 @@ func handleCallbackQuery(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery 
 
 		//设置用户状态
 		cache.Set(strconv.FormatInt(callbackQuery.Message.Chat.ID, 10), "usdt_risk_monitor", expiration)
+	case callbackQuery.Data == "stop_freeze_risk":
+		msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, "📡 是否确认停止该服务？")
+		msg.ParseMode = "HTML"
+
+		inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
+			tgbotapi.NewInlineKeyboardRow(
+				tgbotapi.NewInlineKeyboardButtonData("✅ 确认停止", "stop_freeze_risk_1"),
+				tgbotapi.NewInlineKeyboardButtonData("❌ 取消操作", "start_freeze_risk_0"),
+			),
+			//tgbotapi.NewInlineKeyboardRow(
+			//	tgbotapi.NewInlineKeyboardButtonData("地址", ""),
+			//),
+		)
+		msg.ReplyMarkup = inlineKeyboard
+
+		bot.Send(msg)
+
+		expiration := 1 * time.Minute // 短时间缓存空值
+
+		//设置用户状态
+		cache.Set(strconv.FormatInt(callbackQuery.Message.Chat.ID, 10), "start_freeze_risk", expiration)
+
 	case callbackQuery.Data == "start_freeze_risk":
 		msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, "📡 系统将自动启动 24 小时预警服务\n如检测到潜在冻结风险，系统将在冻结前持续 10 分钟预警\n每分钟推送提醒，通知您及时转移资产，避免冻结损失\n📌 服务费用：2800 TRX / 30 天 或 800 USDT / 30 天\n是否确认启用该服务？")
 		msg.ParseMode = "HTML"
