@@ -299,6 +299,7 @@ func handleRegularMessage(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbo
 		_agent := os.Getenv("Agent")
 		sysUserRepo := repositories.NewSysUsersRepository(db)
 		receiveAddress, _, _ := sysUserRepo.Find(context.Background(), _agent)
+
 		//dictRepo := repositories.NewSysDictionariesRepo(db)
 		//receiveAddress, _ := dictRepo.GetReceiveAddress(_agent)
 
@@ -370,7 +371,66 @@ func handleRegularMessage(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbo
 		bot.Send(msg)
 
 	case "账单":
-		msg := tgbotapi.NewMessage(message.Chat.ID, "暂时无账单\n")
+
+		userRepo := repositories.NewUserRepository(db)
+		user, _ := userRepo.GetByUserID(message.Chat.ID)
+		if IsEmpty(user.Amount) {
+			user.Amount = "0.00"
+		}
+
+		if IsEmpty(user.TronAmount) {
+			user.TronAmount = "0.00"
+		}
+
+		usdtDepositRepo := repositories.NewUserUSDTDepositsRepository(db)
+		usdtlist, _ := usdtDepositRepo.ListAll(context.Background(), message.Chat.ID, 1)
+
+		trxDepositRepo := repositories.NewUserTRXDepositsRepository(db)
+		trxlist, _ := trxDepositRepo.ListAll(context.Background(), message.Chat.ID, 1)
+
+		var builder strings.Builder
+		//- [6.29] +3000 TRX（订单 #TOPUP-92308）
+		for _, word := range trxlist {
+			builder.WriteString("[")
+			builder.WriteString(word.CreatedDate)
+			builder.WriteString("]")
+			builder.WriteString("+")
+			builder.WriteString(word.Amount)
+			builder.WriteString(" TRX ")
+			builder.WriteString(" （订单 #TOPUP- ")
+			builder.WriteString(word.OrderNO)
+			builder.WriteString("）")
+
+			builder.WriteString("\n") // 添加分隔符
+		}
+
+		// 去除最后一个空格
+		result := strings.TrimSpace(builder.String())
+
+		var builder2 strings.Builder
+		//- [6.29] +3000 TRX（订单 #TOPUP-92308）
+		for _, word := range usdtlist {
+			builder.WriteString("[")
+			builder.WriteString(word.CreatedDate)
+			builder.WriteString("]")
+			builder.WriteString("+")
+			builder.WriteString(word.Amount)
+			builder.WriteString(" USDT ")
+			builder.WriteString(" （订单 #TOPUP- ")
+			builder.WriteString(word.OrderNO)
+			builder.WriteString("）")
+
+			builder.WriteString("\n") // 添加分隔符
+		}
+
+		// 去除最后一个空格
+		result2 := strings.TrimSpace(builder2.String())
+
+		msg := tgbotapi.NewMessage(message.Chat.ID, "🧾 我的账单记录\n\n📌 "+
+			"当前余额：\n\n- TRX："+user.TronAmount+"\n- USDT："+user.Amount+"\n\n📥 "+
+			"充值记录：\n "+
+			result+"\n"+
+			result2+"\n")
 		msg.ParseMode = "HTML"
 
 		bot.Send(msg)
@@ -539,7 +599,7 @@ func handleRegularMessage(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbo
 				fmt.Println("rest :", rest)
 
 				msg := tgbotapi.NewMessage(message.Chat.ID,
-					"💬"+"<b>"+"✅笔数套餐订阅成功"+"</b>"+"\n"+
+					"<b>"+"✅笔数套餐订阅成功"+"</b>"+"\n"+
 						"💬"+"<b>"+"用户姓名: "+"</b>"+user.Username+"\n"+
 						"👤"+"<b>"+"用户电报ID: "+"</b>"+user.Associates+"\n"+
 						"💵"+"<b>"+"当前TRX余额:  "+"</b>"+user.TronAmount+" TRX"+"\n"+
@@ -565,13 +625,13 @@ func handleRegularMessage(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbo
 			//	user.TronAmount = "0.00"
 			//}
 
-			msg := tgbotapi.NewMessage(message.Chat.ID,
-				"💬"+"<b>"+"用户姓名: "+"</b>"+user.Username+"\n"+
-					"👤"+"<b>"+"用户电报ID: "+"</b>"+user.Associates+"\n"+
-					"💵"+"<b>"+"TRX余额:  "+"</b>"+user.TronAmount+" TRX"+"\n"+
-					"💴"+"<b>"+"USDT余额:  "+"</b>"+user.Amount+" USDT")
-			msg.ParseMode = "HTML"
-			bot.Send(msg)
+			//msg := tgbotapi.NewMessage(message.Chat.ID,
+			//	"💬"+"<b>"+"用户姓名: "+"</b>"+user.Username+"\n"+
+			//		"👤"+"<b>"+"用户电报ID: "+"</b>"+user.Associates+"\n"+
+			//		"💵"+"<b>"+"TRX余额:  "+"</b>"+user.TronAmount+" TRX"+"\n"+
+			//		"💴"+"<b>"+"USDT余额:  "+"</b>"+user.Amount+" USDT")
+			//msg.ParseMode = "HTML"
+			//bot.Send(msg)
 
 		case strings.HasPrefix(status, "usdt_risk_monitor"):
 			//fmt.Printf("bundle: %s", status)

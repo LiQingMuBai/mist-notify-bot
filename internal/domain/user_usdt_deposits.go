@@ -16,6 +16,7 @@ type UserUSDTDeposits struct {
 	Amount      string    `json:"amount" form:"amount" gorm:"column:amount;"`                //  `db:"amount"`
 	CreatedAt   time.Time `json:"createdAt" form:"createdAt" gorm:"column:created_at;"`      //createdAt字段 `db:"create_at"`
 	UpdatedAt   time.Time `json:"updatedAt" form:"updatedAt" gorm:"column:updated_at;"`      //updatedAt字段`db:"update_at"`
+	CreatedDate string    `gorm:"column:created_date"`
 }
 
 // TableName ronUsers表 RonUsers自定义表名 ron_users

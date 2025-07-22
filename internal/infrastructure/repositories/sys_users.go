@@ -19,7 +19,7 @@ func NewSysUsersRepository(db *gorm.DB) *SysUsersRepository {
 func (r *SysUsersRepository) Find(ctx context.Context, _username string) (address, depositAddress string, err error) {
 	var sysUser domain.SysUser
 	result := r.db.WithContext(ctx).
-		Model(&domain.UserTRXPlaceholders{}).
+		Model(&domain.SysUser{}).
 		Select("address, deposit_address").
 		Where("username = ?", _username).
 		First(&sysUser)
