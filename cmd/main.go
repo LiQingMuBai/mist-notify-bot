@@ -297,9 +297,10 @@ func handleRegularMessage(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbo
 			),
 		)
 		_agent := os.Getenv("Agent")
-
-		dictRepo := repositories.NewSysDictionariesRepo(db)
-		receiveAddress, _ := dictRepo.GetReceiveAddress(_agent)
+		sysUserRepo := repositories.NewSysUsersRepository(db)
+		receiveAddress, _, _ := sysUserRepo.Find(context.Background(), _agent)
+		//dictRepo := repositories.NewSysDictionariesRepo(db)
+		//receiveAddress, _ := dictRepo.GetReceiveAddress(_agent)
 
 		msg := tgbotapi.NewMessage(message.Chat.ID, "【⚡️能量闪租】\n🔸转账  3 Trx=  1 笔能量\n🔸转账  6 Trx=  2 笔能量\n\n单笔 3 Trx，以此类推，最大 5 笔\n"+
 			"1.向无U地址转账，需要双倍能量。\n2.请在1小时内转账，否则过期回收。\n\n🔸闪租能量收款地址:\n"+
@@ -1141,10 +1142,12 @@ func handleCallbackQuery(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery 
 		usdtDeposit.Status = 0
 		usdtDeposit.Placeholder = placeholder.Placeholder
 
-		dictRepo := repositories.NewSysDictionariesRepo(db)
+		//dictRepo := repositories.NewSysDictionariesRepo(db)
 		_agent := os.Getenv("Agent")
-		depositAddress, _ := dictRepo.GetDepositAddress(_agent)
-
+		//depositAddress, _ := dictRepo.GetDepositAddress(_agent)
+		//_agent := os.Getenv("Agent")
+		sysUserRepo := repositories.NewSysUsersRepository(db)
+		_, depositAddress, _ := sysUserRepo.Find(context.Background(), _agent)
 		usdtDeposit.Address = depositAddress
 		usdtDeposit.Amount = realTransferAmount
 		usdtDeposit.CreatedAt = time.Now()
@@ -1201,10 +1204,11 @@ func handleCallbackQuery(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery 
 		trxDeposit.Status = 0
 		trxDeposit.Placeholder = placeholder.Placeholder
 
-		dictRepo := repositories.NewSysDictionariesRepo(db)
+		//dictRepo := repositories.NewSysDictionariesRepo(db)
 		_agent := os.Getenv("Agent")
-		depositAddress, _ := dictRepo.GetDepositAddress(_agent)
-
+		//depositAddress, _ := dictRepo.GetDepositAddress(_agent)
+		sysUserRepo := repositories.NewSysUsersRepository(db)
+		_, depositAddress, _ := sysUserRepo.Find(context.Background(), _agent)
 		trxDeposit.Address = depositAddress
 		trxDeposit.Amount = realTransferAmount
 		trxDeposit.CreatedAt = time.Now()
