@@ -502,9 +502,76 @@ func handleRegularMessage(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbo
 				msg := tgbotapi.NewMessage(message.Chat.ID, "💬"+"<b>"+"地址有误，请重新输入能量接收地址: "+"</b>"+"\n")
 				msg.ParseMode = "HTML"
 				bot.Send(msg)
+				return
 			}
 			//扣款
 			//调用trxfee接口
+
+			userRepo := repositories.NewUserRepository(db)
+			user, _ := userRepo.GetByUserID(message.Chat.ID)
+
+			fee := status[7:len(status)]
+			fmt.Println("status : ", status)
+			fmt.Println("fee : ", fee)
+			fmt.Println("amount :", user.Amount)
+
+			if CompareStringsWithFloat(fee, user.Amount, 1) {
+				//余额不足，需充值
+				msg := tgbotapi.NewMessage(message.Chat.ID,
+					"💬"+"<b>"+"余额不足: "+"</b>"+"\n"+
+						"💬"+"<b>"+"用户姓名: "+"</b>"+user.Username+"\n"+
+						"👤"+"<b>"+"用户电报ID: "+"</b>"+user.Associates+"\n"+
+						"💵"+"<b>"+"当前TRX余额:  "+"</b>"+user.TronAmount+" TRX"+"\n"+
+						"💴"+"<b>"+"当前USDT余额:  "+"</b>"+user.Amount+" USDT")
+				msg.ParseMode = "HTML"
+				inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
+					tgbotapi.NewInlineKeyboardRow(
+						tgbotapi.NewInlineKeyboardButtonData("💵充值", "deposit_amount"),
+					),
+				)
+
+				msg.ReplyMarkup = inlineKeyboard
+				bot.Send(msg)
+			} else {
+				rest, _ := SubtractStringNumbers(user.Amount, fee, 1)
+				user.Amount = rest
+				userRepo.Update2(context.Background(), &user)
+				fmt.Println("rest :", rest)
+
+				msg := tgbotapi.NewMessage(message.Chat.ID,
+					"💬"+"<b>"+"✅笔数套餐订阅成功"+"</b>"+"\n"+
+						"💬"+"<b>"+"用户姓名: "+"</b>"+user.Username+"\n"+
+						"👤"+"<b>"+"用户电报ID: "+"</b>"+user.Associates+"\n"+
+						"💵"+"<b>"+"当前TRX余额:  "+"</b>"+user.TronAmount+" TRX"+"\n"+
+						"💴"+"<b>"+"当前USDT余额:  "+"</b>"+user.Amount+" USDT")
+				msg.ParseMode = "HTML"
+				inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
+					tgbotapi.NewInlineKeyboardRow(
+						tgbotapi.NewInlineKeyboardButtonData("💵充值", "deposit_amount"),
+					),
+				)
+
+				msg.ReplyMarkup = inlineKeyboard
+				bot.Send(msg)
+			}
+			//userRepo := repositories.NewUserRepository(db)
+			//user, _ := userRepo.GetByUserID(message.Chat.ID)
+
+			//if IsEmpty(user.Amount) {
+			//	user.Amount = "0.00"
+			//}
+			//
+			//if IsEmpty(user.TronAmount) {
+			//	user.TronAmount = "0.00"
+			//}
+
+			msg := tgbotapi.NewMessage(message.Chat.ID,
+				"💬"+"<b>"+"用户姓名: "+"</b>"+user.Username+"\n"+
+					"👤"+"<b>"+"用户电报ID: "+"</b>"+user.Associates+"\n"+
+					"💵"+"<b>"+"TRX余额:  "+"</b>"+user.TronAmount+" TRX"+"\n"+
+					"💴"+"<b>"+"USDT余额:  "+"</b>"+user.Amount+" USDT")
+			msg.ParseMode = "HTML"
+			bot.Send(msg)
 
 		case strings.HasPrefix(status, "usdt_risk_monitor"):
 			//fmt.Printf("bundle: %s", status)
@@ -528,9 +595,9 @@ func handleRegularMessage(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbo
 			if IsValidAddress(message.Text) || IsValidEthereumAddress(message.Text) {
 				userRepo := repositories.NewUserRepository(db)
 				user, _ := userRepo.GetByUserID(message.Chat.ID)
-				if strings.Contains(message.Chat.UserName, "Ushield") {
-					user.Times = 10000
-				}
+				//if strings.Contains(message.Chat.UserName, "Ushield") {
+				//	user.Times = 10000
+				//}
 
 				if user.Times == 1 {
 
