@@ -556,7 +556,7 @@ func handleRegularMessage(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbo
 			}
 
 		case strings.HasPrefix(status, "bundle_"):
-			//fmt.Printf("bundle: %s", status)
+			fmt.Printf(">>>>>>>>>>>>>>>>>>>>bundle: %s", status)
 
 			if !IsValidAddress(message.Text) {
 				msg := tgbotapi.NewMessage(message.Chat.ID, "💬"+"<b>"+"地址有误，请重新输入能量接收地址: "+"</b>"+"\n")
@@ -564,8 +564,6 @@ func handleRegularMessage(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbo
 				bot.Send(msg)
 				return
 			}
-			//扣款
-			//调用trxfee接口
 
 			userRepo := repositories.NewUserRepository(db)
 			user, _ := userRepo.GetByUserID(message.Chat.ID)
@@ -593,6 +591,20 @@ func handleRegularMessage(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbo
 				msg.ReplyMarkup = inlineKeyboard
 				bot.Send(msg)
 			} else {
+				bundlesRepo := repositories.NewUserOperationBundlesRepository(db)
+
+				bundleRecord, _ := bundlesRepo.Find(context.Background(), fee)
+				//10笔（12U）
+				bundleNum := bundleRecord.Name
+				count, _ := ExtractNumberBeforeBi(bundleNum)
+
+				fmt.Printf("笔数count : %d", count)
+				//扣款
+				//调用trxfee接口
+
+				//trxfeeHandler := handler.NewTrxfeeHandler()
+
+				//trxfeeHandler.RequestTimesOrder(context.Background(),"","",message.Text,)
 				rest, _ := SubtractStringNumbers(user.Amount, fee, 1)
 				user.Amount = rest
 				userRepo.Update2(context.Background(), &user)

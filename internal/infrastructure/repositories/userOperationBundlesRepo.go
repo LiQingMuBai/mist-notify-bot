@@ -25,3 +25,14 @@ func (r *UserOperationBundlesRepository) ListAll(ctx context.Context) ([]domain.
 	return bundles, err
 
 }
+
+func (r *UserOperationBundlesRepository) Find(ctx context.Context, _amount string) (domain.UserOperationBundles, error) {
+	var placeholders []domain.UserOperationBundles
+	err := r.db.WithContext(ctx).
+		Model(&domain.UserOperationBundles{}).
+		Select("id", "name").
+		Where("amount = ?", _amount).
+		Scan(&placeholders).Error
+	return placeholders[0], err
+
+}

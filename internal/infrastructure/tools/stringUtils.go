@@ -2,11 +2,35 @@ package tools
 
 import (
 	"crypto/rand"
+	"fmt"
 	"math/big"
 	"regexp"
+	"strconv"
 	"strings"
 	"unicode"
 )
+
+// 从字符串中提取"笔"前面的数值
+// 示例: ExtractNumberBeforeBi("10笔（12U）") 返回 10, nil
+// 如果找不到或转换失败，返回0和错误
+func ExtractNumberBeforeBi(s string) (int, error) {
+	// 找到"笔"的位置
+	biIndex := strings.Index(s, "笔")
+	if biIndex == -1 {
+		return 0, fmt.Errorf("未找到'笔'字")
+	}
+
+	// 提取"笔"前面的部分并去除空格
+	numStr := strings.TrimSpace(s[:biIndex])
+
+	// 转换为数字
+	num, err := strconv.Atoi(numStr)
+	if err != nil {
+		return 0, fmt.Errorf("转换数字失败: %v", err)
+	}
+
+	return num, nil
+}
 
 // IsEmpty 检查字符串是否为空
 func IsEmpty(s string) bool {
