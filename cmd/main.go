@@ -148,8 +148,8 @@ func handleStartCommand(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbota
 	keyboard.Selective = false
 
 	msg := tgbotapi.NewMessage(message.Chat.ID, "U盾，做您链上资产的护盾！\n\n我们不仅关注低价能量，更专注于交易安全！\n\n让每一笔转账都更安心，让每一次链上交互都值得信任！\n\n🤖 "+
-		"三大实用功能，助您安全、高效地管理链上资产\n\n🔋 波场能量闪兑\n\n🕵️ 地址风险检测\n\n🚨 USDT冻结预警\n\n开始/start\n\n您好："+message.Chat.UserName+" 欢迎使用U盾机器人\nU盾，做您链上资产的护盾！\n\n🔋 波场能量闪兑, 节省超过70%!\n🕵️ 地址风险检测, 让每一笔转账都更安心!\n"+
-		"🚨 USDT冻结预警,秒级响应，让您的U永不冻结！\n新用户福利：\n每日一次地址风险查询\n常用指令：\n个人中心\n能量闪兑\n地址风险检测\n\nUSDT冻结预警\n\n客服：@Ushield001")
+		"三大实用功能，助您安全、高效地管理链上资产\n\n🔋 波场能量闪兑\n\n🕵️ 地址风险检测\n\n🚨 USDT冻结预警\n\n您好："+message.Chat.UserName+" 欢迎使用U盾机器人\nU盾，做您链上资产的护盾！\n\n🔋 波场能量闪兑, 节省超过70%!\n🕵️ 地址风险检测, 让每一笔转账都更安心!\n"+
+		"🚨 USDT冻结预警,秒级响应，让您的U永不冻结！\n新用户福利：\n每日一次地址风险查询\n常用指令：\n个人中心\n能量闪兑\n地址风险检测\nUSDT冻结预警\n客服：@Ushield001")
 	msg.ReplyMarkup = keyboard
 	msg.ParseMode = "HTML"
 	bot.Send(msg)
@@ -383,9 +383,7 @@ func handleRegularMessage(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbo
 			),
 		)
 
-		msg := tgbotapi.NewMessage(message.Chat.ID, "U盾，做您链上资产的护盾！\n\n我们不仅关注低价能量，更专注于交易安全！\n\n让每一笔转账都更安心，让每一次链上交互都值得信任！\n\n🤖 "+
-			"三大实用功能，助您安全、高效地管理链上资产\n\n🔋 波场能量闪兑\n\n🕵️ 地址风险检测\n\n🚨 USDT冻结预警\n\n开始/start\n\n您好："+message.Chat.UserName+" 欢迎使用U盾机器人\nU盾，做您链上资产的护盾！\n\n🔋 波场能量闪兑, 节省超过70%!\n🕵️ 地址风险检测, 让每一笔转账都更安心!\n"+
-			"🚨 USDT冻结预警,秒级响应，让您的U永不冻结！\n新用户福利：\n每日一次地址风险查询\n常用指令：\n个人中心\n能量闪兑\n地址风险检测\n\nUSDT冻结预警\n\n客服：@Ushield001")
+		msg := tgbotapi.NewMessage(message.Chat.ID, "📇 我的账户\n\n🆔 用户ID：123456789\n\n👤 用户名：@YourUsername\n\n🔗 已绑定备用账号/未绑定备用帐号\n\n@BackupUser01（权限：观察者模式）\n\n💰 当前余额：\n\n- TRX：73.50\n- USDT：2.00")
 		msg.ReplyMarkup = inlineKeyboard
 		msg.ParseMode = "HTML"
 		bot.Send(msg)
@@ -925,7 +923,46 @@ func handleCallbackQuery(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery 
 
 		//设置用户状态
 		cache.Set(strconv.FormatInt(callbackQuery.Message.Chat.ID, 10), "address_list_trace", expiration)
-	case callbackQuery.Data == "stop_monitor_address":
+	case callbackQuery.Data == "back_home":
+
+		inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
+			tgbotapi.NewInlineKeyboardRow(
+				tgbotapi.NewInlineKeyboardButtonData("🆔我的账户", "click_my_account"),
+				tgbotapi.NewInlineKeyboardButtonData("💳充值", "click_my_deposit"),
+			),
+			tgbotapi.NewInlineKeyboardRow(
+				tgbotapi.NewInlineKeyboardButtonData("📄账单", "click_my_recepit"),
+				tgbotapi.NewInlineKeyboardButtonData("🛠️我的服务", "click_my_service"),
+			),
+			tgbotapi.NewInlineKeyboardRow(
+				tgbotapi.NewInlineKeyboardButtonData("🔗绑定备用帐号", "click_backup_account"),
+				tgbotapi.NewInlineKeyboardButtonData("🛎️客服", "click_callcenter"),
+				tgbotapi.NewInlineKeyboardButtonData("❓常见问题FAQ", "click_QA"),
+			),
+		)
+
+		msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, "📇 我的账户\n\n🆔 用户ID：123456789\n\n👤 用户名：@YourUsername\n\n🔗 已绑定备用账号/未绑定备用帐号\n\n@BackupUser01（权限：观察者模式）\n\n💰 当前余额：\n\n- TRX：73.50\n- USDT：2.00")
+		msg.ReplyMarkup = inlineKeyboard
+		msg.ParseMode = "HTML"
+		bot.Send(msg)
+
+	case callbackQuery.Data == "click_QA":
+		msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, "🧠 常见问题帮助\n\n💰充值\n\n1️⃣充值金额输错未到账怎么办？\n\n➡️联系客服，客服将为您提供一笔小额确认金额订单（例如：1.003 TRX），用于验证您对原转账钱包的控制权。请提供原错误订单的转账截图和新的身份验证订单转账截图一并发给客服，待确认身份后客服将给予入账。\n\n🔋 能量闪兑\n\n1️⃣ 为什么我转了 3 TRX 没有收到能量？\n\n➡️ 请确认是否向正确地址转账，系统只识别官方闪兑地址，请核对官方闪兑地址TENERGYxxxxxxxxxxxxx。\n\n2️⃣ 笔数套餐如何查看剩余？\n\n➡️ 点击 个人中心/我的服务 查看剩余笔数与补能设置。\n\n3️⃣ 为什么 购买能量后USDT 转账时还是扣除了钱包的TRX作为手续费\n\n➡️ 可能因向无U地址转账导致当前钱包能量不足，请根据钱包转账最后的手续费提示，如需扣除TRX建议再次购买一笔能量以抵扣手续费。\n\n📍 地址检测\n\n1️⃣ 每天免费次数是多少？\n\n➡️ 每位用户每天可免费检测 1 次，之后需付费。\n\n2️⃣ 检测时余额不足怎么办？\n\n➡️ 系统将提示充值链接并生成支付订单。\n\n3️⃣ 地址风险评分是如何判断的？\n\n➡️ 基于链上行为、交互对象与风险标签等维度综合评分。\n\n🚨 冻结预警\n\n1️⃣ 如何判断地址是否被冻结？\n\n➡️ 预警服务采用多个服务综合判断确保地址在冻结前 持续10 分钟发送连续警报提醒用户转移资产。\n\n2️⃣ 服务能否转移到其他地址？\n\n➡️ 当前按地址计费，不支持转移或换绑。\n\n3️⃣ 到期是否自动续费？\n\n➡️ 系统将尝试自动扣费，余额不足会提前通知用户。\n\n4️⃣一个账号能绑定多个地址同时进行监控吗？\n\n➡️是的，单个账号可绑定多个地址进行服务监控\n\n每个地址单独计费。\n\n👥帐号问题\n\n1️⃣ 观察者模式与全局模式的区别\n\n➡️观察者模式只可接收冻结预警无法执行服务操作（如发能、查询、解绑）， 全局模式等同主账号权限，可进行所有操作（如检测、续费、管理服务），您可随时通过 /解绑地址 或 /更改权限进行调整。\n\n2️⃣  主账号被盗，丢失不可用应急说明\n\n➡️若备用账号为「全局模式」，可使用备用帐号正常继续使用所有服务  。\n\n➡️ 若为「观察者模式」，仅能查看推送，无法操作服务。\n\n如需更改备用帐号权限请准备主账号最近一个月有充值记录的钱包并联系客服确认身份")
+		inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
+			tgbotapi.NewInlineKeyboardRow(
+				//tgbotapi.NewInlineKeyboardButtonData("解绑地址", "free_monitor_address"),
+				tgbotapi.NewInlineKeyboardButtonData("返回主页", "back_home"),
+			),
+		)
+		msg.ReplyMarkup = inlineKeyboard
+		msg.ParseMode = "HTML"
+		bot.Send(msg)
+
+		expiration := 1 * time.Minute // 短时间缓存空值
+
+		//设置用户状态
+		cache.Set(strconv.FormatInt(callbackQuery.Message.Chat.ID, 10), callbackQuery.Data, expiration)
+
 	case callbackQuery.Data == "user_backup_notify":
 		msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, "💬"+"<b>"+"请输入需添加的第二紧急通知用户电报ID: "+"</b>"+"\n")
 		msg.ParseMode = "HTML"
