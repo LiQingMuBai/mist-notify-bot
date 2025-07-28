@@ -124,20 +124,21 @@ func handleStartCommand(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbota
 	// 创建永久性回复键盘
 	keyboard := tgbotapi.NewReplyKeyboard(
 		tgbotapi.NewKeyboardButtonRow(
-			tgbotapi.NewKeyboardButton("能量"),
+			tgbotapi.NewKeyboardButton("⚡能量闪兑"),
 			//tgbotapi.NewKeyboardButton("💰風控預警"),
-			tgbotapi.NewKeyboardButton("笔数套餐"),
+			tgbotapi.NewKeyboardButton("🖊️笔数套餐"),
 		),
 		tgbotapi.NewKeyboardButtonRow(
-			tgbotapi.NewKeyboardButton("地址检测"),
-			tgbotapi.NewKeyboardButton("USDT冻结预警"),
+			tgbotapi.NewKeyboardButton("🔍地址检测"),
+			tgbotapi.NewKeyboardButton("🚨USDT冻结预警"),
 			//tgbotapi.NewKeyboardButton("👮🏿地址监控"),
 		),
 		tgbotapi.NewKeyboardButtonRow(
-			tgbotapi.NewKeyboardButton("充值"),
-			tgbotapi.NewKeyboardButton("账单"),
+			tgbotapi.NewKeyboardButton("👤个人中心"),
+			//tgbotapi.NewKeyboardButton("充值"),
+			//tgbotapi.NewKeyboardButton("账单"),
 			//tgbotapi.NewKeyboardButton("理财"),
-			tgbotapi.NewKeyboardButton("客服"),
+			//tgbotapi.NewKeyboardButton("客服"),
 		),
 	)
 
@@ -165,7 +166,7 @@ func handleHideCommand(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbotap
 // 处理普通消息（键盘按钮点击）
 func handleRegularMessage(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbotapi.Message, db *gorm.DB, _cookie string) {
 	switch message.Text {
-	case "地址检测":
+	case "🔍地址检测":
 
 		userRepo := repositories.NewUserRepository(db)
 		user, _ := userRepo.GetByUserID(message.Chat.ID)
@@ -199,7 +200,7 @@ func handleRegularMessage(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbo
 		//设置用户状态
 		cache.Set(strconv.FormatInt(message.Chat.ID, 10), "usdt_risk_query", expiration)
 
-	case "USDT冻结预警":
+	case "🚨USDT冻结预警":
 		msg := tgbotapi.NewMessage(message.Chat.ID, "🛡️ U盾，做您链上资产的护盾！实时守护您的资产安全！\n\n地址一旦被链上风控冻，资产将难以追回，损失巨大！\n\n每天都有数百个 USDT 钱包地址被冻结锁定，风险就在身边！\n\nU盾将为您的地址提供 24 小时不间断监控\n\n⏰ 系统将在冻结前持续 10 分钟启动预警机制，每分钟推送提醒，通知您及时转移资产\n\n✅ 适用于经常收付款 / 高频交易 / 风险暴露地址\n\n✅ 支持在TRON网络下的USDT 钱包地址\n\n📌 服务价格（每地址）：\n\n- 2800 TRX / 30天\n- 或 800 USDT / 30天\n\n🎯 服务开启后系统将 24 小时不间断监控\n\n📩 所有预警信息将通过 Telegram 实时推送\n\n点击下方按钮开始 👇")
 		msg.ParseMode = "HTML"
 
@@ -225,7 +226,7 @@ func handleRegularMessage(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbo
 		//设置用户状态
 		cache.Set(strconv.FormatInt(message.Chat.ID, 10), "usdt_risk_monitor", expiration)
 
-	case "笔数套餐":
+	case "🖊️笔数套餐":
 
 		bundlesRepo := repositories.NewUserOperationBundlesRepository(db)
 
@@ -289,7 +290,7 @@ func handleRegularMessage(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbo
 
 		bot.Send(msg)
 
-	case "能量":
+	case "⚡能量闪兑":
 		// 当点击"按钮 1"时显示内联键盘
 		inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 			tgbotapi.NewInlineKeyboardRow(
@@ -364,6 +365,31 @@ func handleRegularMessage(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbo
 		msg.ParseMode = "HTML"
 
 		bot.Send(msg)
+	case "👤个人中心":
+
+		inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
+			tgbotapi.NewInlineKeyboardRow(
+				tgbotapi.NewInlineKeyboardButtonData("🆔我的账户", "click_my_account"),
+				tgbotapi.NewInlineKeyboardButtonData("💳充值", "click_my_deposit"),
+			),
+			tgbotapi.NewInlineKeyboardRow(
+				tgbotapi.NewInlineKeyboardButtonData("📄账单", "click_my_recepit"),
+				tgbotapi.NewInlineKeyboardButtonData("🛠️我的服务", "click_my_service"),
+			),
+			tgbotapi.NewInlineKeyboardRow(
+				tgbotapi.NewInlineKeyboardButtonData("🔗绑定备用帐号", "click_backup_account"),
+				tgbotapi.NewInlineKeyboardButtonData("🛎️客服", "click_callcenter"),
+				tgbotapi.NewInlineKeyboardButtonData("❓常见问题FAQ", "click_QA"),
+			),
+		)
+
+		msg := tgbotapi.NewMessage(message.Chat.ID, "U盾，做您链上资产的护盾！\n\n我们不仅关注低价能量，更专注于交易安全！\n\n让每一笔转账都更安心，让每一次链上交互都值得信任！\n\n🤖 "+
+			"三大实用功能，助您安全、高效地管理链上资产\n\n🔋 波场能量闪兑\n\n🕵️ 地址风险检测\n\n🚨 USDT冻结预警\n\n开始/start\n\n您好："+message.Chat.UserName+" 欢迎使用U盾机器人\nU盾，做您链上资产的护盾！\n\n🔋 波场能量闪兑, 节省超过70%!\n🕵️ 地址风险检测, 让每一笔转账都更安心!\n"+
+			"🚨 USDT冻结预警,秒级响应，让您的U永不冻结！\n新用户福利：\n每日一次地址风险查询\n常用指令：\n个人中心\n能量闪兑\n地址风险检测\n\nUSDT冻结预警\n\n客服：@Ushield001")
+		msg.ReplyMarkup = inlineKeyboard
+		msg.ParseMode = "HTML"
+		bot.Send(msg)
+
 	case "客服":
 		msg := tgbotapi.NewMessage(message.Chat.ID, "📞联系客服：@Ushield001\n")
 		msg.ParseMode = "HTML"
