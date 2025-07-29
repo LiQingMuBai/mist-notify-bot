@@ -125,20 +125,14 @@ func handleStartCommand(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbota
 	keyboard := tgbotapi.NewReplyKeyboard(
 		tgbotapi.NewKeyboardButtonRow(
 			tgbotapi.NewKeyboardButton("⚡能量闪兑"),
-			//tgbotapi.NewKeyboardButton("💰風控預警"),
 			tgbotapi.NewKeyboardButton("🖊️笔数套餐"),
 		),
 		tgbotapi.NewKeyboardButtonRow(
 			tgbotapi.NewKeyboardButton("🔍地址检测"),
 			tgbotapi.NewKeyboardButton("🚨USDT冻结预警"),
-			//tgbotapi.NewKeyboardButton("👮🏿地址监控"),
 		),
 		tgbotapi.NewKeyboardButtonRow(
 			tgbotapi.NewKeyboardButton("👤个人中心"),
-			//tgbotapi.NewKeyboardButton("充值"),
-			//tgbotapi.NewKeyboardButton("账单"),
-			//tgbotapi.NewKeyboardButton("理财"),
-			//tgbotapi.NewKeyboardButton("客服"),
 		),
 	)
 
@@ -381,10 +375,12 @@ func handleRegularMessage(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbo
 				tgbotapi.NewInlineKeyboardButtonData("🛠️我的服务", "click_my_service"),
 			),
 			tgbotapi.NewInlineKeyboardRow(
-				tgbotapi.NewInlineKeyboardButtonData("🔗绑定备用帐号", "click_backup_account"),
+				//tgbotapi.NewInlineKeyboardButtonData("🔗绑定备用帐号", "click_backup_account"),
+				tgbotapi.NewInlineKeyboardButtonData("👥商务合作", "click_business_cooperation"),
 				tgbotapi.NewInlineKeyboardButtonData("🛎️客服", "click_callcenter"),
 				tgbotapi.NewInlineKeyboardButtonData("❓常见问题FAQ", "click_QA"),
 			),
+			//tgbotapi.NewInlineKeyboardRow(),
 		)
 
 		userRepo := repositories.NewUserRepository(db)
@@ -959,15 +955,19 @@ func handleCallbackQuery(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery 
 			//	tgbotapi.NewInlineKeyboardButtonData("💳充值", "click_my_deposit"),
 			//),
 			tgbotapi.NewInlineKeyboardRow(
-				tgbotapi.NewInlineKeyboardButtonData("💳充值", "click_my_deposit"),
+				tgbotapi.NewInlineKeyboardButtonData("💳充值", "deposit_amount"),
 				tgbotapi.NewInlineKeyboardButtonData("📄账单", "click_my_recepit"),
 				tgbotapi.NewInlineKeyboardButtonData("🛠️我的服务", "click_my_service"),
 			),
 			tgbotapi.NewInlineKeyboardRow(
-				tgbotapi.NewInlineKeyboardButtonData("🔗绑定备用帐号", "click_backup_account"),
+				//tgbotapi.NewInlineKeyboardButtonData("🔗绑定备用帐号", "click_backup_account"),
+				tgbotapi.NewInlineKeyboardButtonData("👥商务合作", "click_business_cooperation"),
 				tgbotapi.NewInlineKeyboardButtonData("🛎️客服", "click_callcenter"),
 				tgbotapi.NewInlineKeyboardButtonData("❓常见问题FAQ", "click_QA"),
 			),
+			//tgbotapi.NewInlineKeyboardRow(
+			//	tgbotapi.NewInlineKeyboardButtonData("👥商务合作", "click_business_cooperation"),
+			//),
 		)
 		userRepo := repositories.NewUserRepository(db)
 		user, _ := userRepo.GetByUserID(callbackQuery.Message.Chat.ID)
@@ -999,13 +999,25 @@ func handleCallbackQuery(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery 
 		msg.ParseMode = "HTML"
 		bot.Send(msg)
 
+	case callbackQuery.Data == "click_business_cooperation":
+		msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, "👥加入商务合作VIP群：https://t.me/+OCevU0Q12V8wZGY1\n")
+		msg.ParseMode = "HTML"
+		inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
+			tgbotapi.NewInlineKeyboardRow(
+				//tgbotapi.NewInlineKeyboardButtonData("解绑地址", "free_monitor_address"),
+				tgbotapi.NewInlineKeyboardButtonData("返回个人中心", "back_home"),
+			),
+		)
+		msg.ReplyMarkup = inlineKeyboard
+		bot.Send(msg)
+
 	case callbackQuery.Data == "click_callcenter":
 		msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, "📞联系客服：@Ushield001\n")
 		msg.ParseMode = "HTML"
 		inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 			tgbotapi.NewInlineKeyboardRow(
 				//tgbotapi.NewInlineKeyboardButtonData("解绑地址", "free_monitor_address"),
-				tgbotapi.NewInlineKeyboardButtonData("返回主页", "back_home"),
+				tgbotapi.NewInlineKeyboardButtonData("返回个人中心", "back_home"),
 			),
 		)
 		msg.ReplyMarkup = inlineKeyboard
@@ -1076,7 +1088,7 @@ func handleCallbackQuery(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery 
 		inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 			tgbotapi.NewInlineKeyboardRow(
 				//tgbotapi.NewInlineKeyboardButtonData("解绑地址", "free_monitor_address"),
-				tgbotapi.NewInlineKeyboardButtonData("返回主页", "back_home"),
+				tgbotapi.NewInlineKeyboardButtonData("🔙返回个人中心", "back_home"),
 			),
 		)
 		msg.ReplyMarkup = inlineKeyboard
@@ -1086,7 +1098,7 @@ func handleCallbackQuery(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery 
 		inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 			tgbotapi.NewInlineKeyboardRow(
 				//tgbotapi.NewInlineKeyboardButtonData("解绑地址", "free_monitor_address"),
-				tgbotapi.NewInlineKeyboardButtonData("返回主页", "back_home"),
+				tgbotapi.NewInlineKeyboardButtonData("🔙返回个人中心", "back_home"),
 			),
 		)
 		msg.ReplyMarkup = inlineKeyboard
@@ -1379,7 +1391,7 @@ func handleCallbackQuery(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery 
 			allButtons = append(allButtons, tgbotapi.NewInlineKeyboardButtonData("🏦"+trx.Name, "deposit_trx_"+trx.Amount))
 		}
 
-		extraButtons = append(extraButtons, tgbotapi.NewInlineKeyboardButtonData("⚖️切换到USDT充值", "forward_deposit_usdt"), tgbotapi.NewInlineKeyboardButtonData("🔙返回上一级", "back_home"))
+		extraButtons = append(extraButtons, tgbotapi.NewInlineKeyboardButtonData("⚖️切换到USDT充值", "forward_deposit_usdt"), tgbotapi.NewInlineKeyboardButtonData("🔙返回个人中心", "back_home"))
 
 		for i := 0; i < len(allButtons); i += 2 {
 			end := i + 2
@@ -1503,7 +1515,7 @@ func handleCallbackQuery(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery 
 		}
 
 		msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID,
-			"<b>"+"订单号："+"</b>"+usdtDeposit.OrderNO+"\n"+
+			"<b>"+"订单号：#TOPUP-"+"</b>"+usdtDeposit.OrderNO+"\n"+
 				"<b>"+"转账金额："+"</b>"+"<code>"+usdtDeposit.Amount+"</code>"+" usdt （点击即可复制）"+"\n"+
 				"<b>"+"转账地址："+"</b>"+"<code>"+usdtDeposit.Address+"</code>"+"（点击即可复制）"+"\n"+
 				"<b>"+"充值时间："+"</b>"+Format4Chinesese(usdtDeposit.CreatedAt)+"\n"+
@@ -1514,13 +1526,18 @@ func handleCallbackQuery(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery 
 
 		inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 			tgbotapi.NewInlineKeyboardRow(
-				tgbotapi.NewInlineKeyboardButtonData("🕣請支付", "deposit_amount"),
+				tgbotapi.NewInlineKeyboardButtonData("🕣取消订单", "cancel_order"),
+				tgbotapi.NewInlineKeyboardButtonData("⬅️返回个人中心", "back_home"),
 			))
 		msg.ReplyMarkup = inlineKeyboard
 		msg.ParseMode = "HTML"
 		//msg.DisableWebPagePreview = true
 		bot.Send(msg)
 
+		expiration := 1 * time.Minute // 短时间缓存空值
+
+		//设置用户状态
+		cache.Set(strconv.FormatInt(callbackQuery.Message.Chat.ID, 10)+"_order_no", usdtDeposit.OrderNO, expiration)
 		//responseText = "你选择了选项 A"
 	case strings.HasPrefix(callbackQuery.Data, "deposit_trx"):
 
@@ -1564,7 +1581,7 @@ func handleCallbackQuery(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery 
 		}
 
 		msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID,
-			"<b>"+"订单号："+"</b>"+trxDeposit.OrderNO+"\n"+
+			"<b>"+"订单号：#TOPUP-"+"</b>"+trxDeposit.OrderNO+"\n"+
 				"<b>"+"转账金额："+"</b>"+"<code>"+trxDeposit.Amount+"</code>"+" TRX （点击即可复制）"+"\n"+
 				"<b>"+"转账地址："+"</b>"+"<code>"+trxDeposit.Address+"</code>"+"（点击即可复制）"+"\n"+
 				"<b>"+"充值时间："+"</b>"+Format4Chinesese(trxDeposit.CreatedAt)+"\n"+
@@ -1575,11 +1592,75 @@ func handleCallbackQuery(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery 
 
 		inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 			tgbotapi.NewInlineKeyboardRow(
-				tgbotapi.NewInlineKeyboardButtonData("🕣請支付", "deposit_amount"),
+				tgbotapi.NewInlineKeyboardButtonData("🕣取消订单", "cancel_order"),
+				tgbotapi.NewInlineKeyboardButtonData("⬅️返回个人中心", "back_home"),
 			))
 		msg.ReplyMarkup = inlineKeyboard
 		msg.ParseMode = "HTML"
 		//msg.DisableWebPagePreview = true
+		bot.Send(msg)
+		expiration := 1 * time.Minute // 短时间缓存空值
+
+		//设置用户状态
+		cache.Set(strconv.FormatInt(callbackQuery.Message.Chat.ID, 10)+"_order_no", trxDeposit.OrderNO, expiration)
+	case callbackQuery.Data == "cancel_order":
+
+		//设置用户状态
+		orderNO, _ := cache.Get(strconv.FormatInt(callbackQuery.Message.Chat.ID, 10) + "_order_no")
+		msg_order := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID,
+			"订单号：#TOPUP-"+orderNO+" 订单已取消")
+		msg_order.ParseMode = "HTML"
+		//msg.DisableWebPagePreview = true
+		bot.Send(msg_order)
+
+		inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
+			//tgbotapi.NewInlineKeyboardRow(
+			//	tgbotapi.NewInlineKeyboardButtonData("🆔我的账户", "click_my_account"),
+			//	tgbotapi.NewInlineKeyboardButtonData("💳充值", "click_my_deposit"),
+			//),
+			tgbotapi.NewInlineKeyboardRow(
+				tgbotapi.NewInlineKeyboardButtonData("💳充值", "deposit_amount"),
+				tgbotapi.NewInlineKeyboardButtonData("📄账单", "click_my_recepit"),
+				tgbotapi.NewInlineKeyboardButtonData("🛠️我的服务", "click_my_service"),
+			),
+			tgbotapi.NewInlineKeyboardRow(
+				//tgbotapi.NewInlineKeyboardButtonData("🔗绑定备用帐号", "click_backup_account"),
+				tgbotapi.NewInlineKeyboardButtonData("👥商务合作", "click_business_cooperation"),
+				tgbotapi.NewInlineKeyboardButtonData("🛎️客服", "click_callcenter"),
+				tgbotapi.NewInlineKeyboardButtonData("❓常见问题FAQ", "click_QA"),
+			),
+			//tgbotapi.NewInlineKeyboardRow(
+			//	tgbotapi.NewInlineKeyboardButtonData("👥商务合作", "click_business_cooperation"),
+			//),
+		)
+		userRepo := repositories.NewUserRepository(db)
+		user, _ := userRepo.GetByUserID(callbackQuery.Message.Chat.ID)
+
+		if IsEmpty(user.Amount) {
+			user.Amount = "0.00"
+		}
+
+		if IsEmpty(user.TronAmount) {
+			user.TronAmount = "0.00"
+		}
+
+		str := ""
+		if len(user.BackupChatID) > 0 {
+			id, _ := strconv.ParseInt(user.BackupChatID, 10, 64)
+			backup_user, _ := userRepo.GetByUserID(id)
+			str = "🔗 已绑定备用账号  " + "@" + backup_user.Username + "（权限：观察者模式）"
+		} else {
+			str = "未绑定备用帐号"
+		}
+
+		msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, "📇 我的账户\n\n🆔 用户ID："+user.Associates+"\n\n👤 用户名：@"+user.Username+"\n\n"+
+			str+"\n\n💰 "+
+			"当前余额：\n\n"+
+			"- TRX："+user.TronAmount+"\n"+
+			"- USDT："+user.Amount)
+		//msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, "📇 我的账户\n\n🆔 用户ID：123456789\n\n👤 用户名：@YourUsername\n\n🔗 已绑定备用账号/未绑定备用帐号\n\n@BackupUser01（权限：观察者模式）\n\n💰 当前余额：\n\n- TRX：73.50\n- USDT：2.00")
+		msg.ReplyMarkup = inlineKeyboard
+		msg.ParseMode = "HTML"
 		bot.Send(msg)
 
 	case callbackQuery.Data == "forward_deposit_usdt":
@@ -1597,7 +1678,7 @@ func handleCallbackQuery(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery 
 			allButtons = append(allButtons, tgbotapi.NewInlineKeyboardButtonData("🏦"+usdtRecord.Name, "deposit_usdt_"+usdtRecord.Amount))
 		}
 
-		extraButtons = append(extraButtons, tgbotapi.NewInlineKeyboardButtonData("⚖️切换到TRX充值", "forward_deposit_usdt"), tgbotapi.NewInlineKeyboardButtonData("🔙返回上一级", "back_home"))
+		extraButtons = append(extraButtons, tgbotapi.NewInlineKeyboardButtonData("⚖️切换到TRX充值", "forward_deposit_usdt"), tgbotapi.NewInlineKeyboardButtonData("🔙返回个人中心", "back_home"))
 
 		for i := 0; i < len(allButtons); i += 2 {
 			end := i + 2
