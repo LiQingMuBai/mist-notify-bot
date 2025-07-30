@@ -6,8 +6,8 @@ import (
 
 // PageInfo Paging common input parameter structure
 type PageInfo struct {
-	Page     int    `json:"page" form:"page"`         // 页码
-	PageSize int    `json:"pageSize" form:"pageSize"` // 每页大小
+	Page     int64  `json:"page" form:"page"`         // 页码
+	PageSize int64  `json:"pageSize" form:"pageSize"` // 每页大小
 	Keyword  string `json:"keyword" form:"keyword"`   // 关键字
 }
 
@@ -23,7 +23,7 @@ func (r *PageInfo) Paginate() func(db *gorm.DB) *gorm.DB {
 			r.PageSize = 10
 		}
 		offset := (r.Page - 1) * r.PageSize
-		return db.Offset(offset).Limit(r.PageSize)
+		return db.Offset(int(offset)).Limit(int(r.PageSize))
 	}
 }
 

@@ -36,7 +36,7 @@ func (r *UserTRXDepositsRepo) GetUserTrxDepositsInfoList(ctx context.Context, in
 	limit := info.PageSize
 	offset := info.PageSize * (info.Page - 1)
 	// 创建db
-	db := r.db.Model(&domain.UserTRXDeposits{}).Where("user_id = ?", _chatID).Where("status = ?", 1)
+	db := r.db.Model(&domain.UserTRXDeposits{}).Select("id,amount,order_no, DATE_FORMAT(created_at, '%m-%d') as created_date").Where("user_id = ?", _chatID).Where("status = ?", 1)
 	var userTrxDepositss []domain.UserTRXDeposits
 	// 如果有条件搜索 下方会自动创建搜索语句
 
@@ -46,7 +46,7 @@ func (r *UserTRXDepositsRepo) GetUserTrxDepositsInfoList(ctx context.Context, in
 	}
 
 	if limit != 0 {
-		db = db.Limit(limit).Offset(offset)
+		db = db.Limit(int(limit)).Offset(int(offset))
 	}
 
 	err = db.Find(&userTrxDepositss).Error

@@ -36,7 +36,7 @@ func (r *UserUSDTDepositsRepo) GetUserUsdtDepositsInfoList(ctx context.Context, 
 	limit := info.PageSize
 	offset := info.PageSize * (info.Page - 1)
 	// 创建db
-	db := r.db.Model(&domain.UserUSDTDeposits{}).Where("user_id = ?", _chatID).Where("status = ?", 1)
+	db := r.db.Model(&domain.UserUSDTDeposits{}).Select("id,amount,order_no, DATE_FORMAT(created_at, '%m-%d') as created_date").Where("user_id = ?", _chatID).Where("status = ?", 1)
 	var userUsdtDepositss []domain.UserUSDTDeposits
 	// 如果有条件搜索 下方会自动创建搜索语句
 
@@ -46,7 +46,7 @@ func (r *UserUSDTDepositsRepo) GetUserUsdtDepositsInfoList(ctx context.Context, 
 	}
 
 	if limit != 0 {
-		db = db.Limit(limit).Offset(offset)
+		db = db.Limit(int(limit)).Offset(int(offset))
 	}
 
 	err = db.Find(&userUsdtDepositss).Error
