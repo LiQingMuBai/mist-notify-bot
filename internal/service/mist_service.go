@@ -2,9 +2,11 @@ package service
 
 import (
 	"context"
+	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"gorm.io/gorm"
 	"strings"
+	"ushield_bot/internal/domain"
 	"ushield_bot/internal/handler"
 	"ushield_bot/internal/infrastructure/repositories"
 	. "ushield_bot/internal/infrastructure/tools"
@@ -26,13 +28,36 @@ func ExtractSlowMistRiskQuery(message *tgbotapi.Message, db *gorm.DB, _cookie st
 				if CompareStringsWithFloat(user.Amount, "1", 1) {
 					amount, _ := SubtractStringNumbers(user.Amount, "1", 1)
 					user.Amount = amount
-					userRepo.Update2(context.Background(), &user)
-				}
+					err := userRepo.Update2(context.Background(), &user)
+					if err != nil {
+						fmt.Println("错误： ", err)
+					}
 
-				if CompareStringsWithFloat(user.TronAmount, "4", 1) {
+					userAddressDetectionRepo := repositories.NewUserAddressDetectionRepository(db)
+
+					var record domain.UserAddressDetection
+					record.Status = 1
+					record.Amount = "4"
+					record.ChatID = message.Chat.ID
+					record.Address = message.Text
+					userAddressDetectionRepo.Create(context.Background(), &record)
+
+				} else if CompareStringsWithFloat(user.TronAmount, "4", 1) {
 					tronAmount, _ := SubtractStringNumbers(user.TronAmount, "4", 1)
 					user.TronAmount = tronAmount
-					userRepo.Update2(context.Background(), &user)
+					err := userRepo.Update2(context.Background(), &user)
+					if err != nil {
+						fmt.Println("错误： ", err)
+					}
+
+					userAddressDetectionRepo := repositories.NewUserAddressDetectionRepository(db)
+					var record domain.UserAddressDetection
+					record.Status = 1
+					record.Amount = "4"
+					record.ChatID = message.Chat.ID
+					record.Address = message.Text
+					userAddressDetectionRepo.Create(context.Background(), &record)
+
 				}
 				_text := ""
 				if strings.HasPrefix(message.Text, "0x") && len(message.Text) == 42 {
@@ -84,7 +109,12 @@ func ExtractSlowMistRiskQuery(message *tgbotapi.Message, db *gorm.DB, _cookie st
 
 				}
 				msg := tgbotapi.NewMessage(message.Chat.ID, _text)
-				//msg.ReplyMarkup = inlineKeyboard
+				inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
+					tgbotapi.NewInlineKeyboardRow(
+						tgbotapi.NewInlineKeyboardButtonData("🔙返回个人中心", "back_home"),
+					),
+				)
+				msg.ReplyMarkup = inlineKeyboard
 				msg.ParseMode = "HTML"
 				bot.Send(msg)
 				userRepo.UpdateTimesByChatID(1, message.Chat.ID)
@@ -164,7 +194,12 @@ func ExtractSlowMistRiskQuery(message *tgbotapi.Message, db *gorm.DB, _cookie st
 
 			}
 			msg := tgbotapi.NewMessage(message.Chat.ID, _text)
-			//msg.ReplyMarkup = inlineKeyboard
+			inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
+				tgbotapi.NewInlineKeyboardRow(
+					tgbotapi.NewInlineKeyboardButtonData("🔙返回个人中心", "back_home"),
+				),
+			)
+			msg.ReplyMarkup = inlineKeyboard
 			msg.ParseMode = "HTML"
 			bot.Send(msg)
 			userRepo.UpdateTimesByChatID(1, message.Chat.ID)

@@ -9,7 +9,7 @@ type UserAddressMonitorEvent struct {
 	Days        int64     `json:"days" form:"days" gorm:"column:days;"`              //   `db:"user_id"`
 	Network     string    `json:"network" form:"network" gorm:"column:network;"`     // `db:"times"`
 	Amount      string    `json:"amount" form:"amount" gorm:"column:amount;"`        // `db:"times"`
-	CreatedDate string    `gorm:"column:created_date"`
+	CreatedDate string    `json:"created_date"`
 	Address     string    `json:"address" form:"address" gorm:"column:address;"`        // `db:"times"`
 	CreatedAt   time.Time `json:"createdAt" form:"createdAt" gorm:"column:created_at;"` //createdAt字段 `db:"create_at"`
 	UpdatedAt   time.Time `json:"updatedAt" form:"updatedAt" gorm:"column:updated_at;"` //updatedAt字段`db:"update_at"`

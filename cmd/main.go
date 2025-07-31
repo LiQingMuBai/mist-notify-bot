@@ -262,6 +262,9 @@ func handleCallbackQuery(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery 
 	case callbackQuery.Data == "click_bundle_package_cost_records":
 		msg := service.ExtractBundlePackage(db, callbackQuery)
 		bot.Send(msg)
+	case callbackQuery.Data == "click_bundle_package_management":
+		msg := service.ExtractBundlePackage(db, callbackQuery)
+		bot.Send(msg)
 	case callbackQuery.Data == "click_deposit_usdt_records":
 		service.CLICK_DEPOSIT_USDT_RECORDS(db, callbackQuery, bot)
 	case callbackQuery.Data == "click_deposit_trx_records":
@@ -349,22 +352,27 @@ func handleCallbackQuery(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery 
 		addresses, _ := userAddressRepo.Query(context.Background(), callbackQuery.Message.Chat.ID)
 
 		nums := len(addresses)
+		//扣trx
+		var COST_FROM_TRX bool
+		var COST_FROM_USDT bool
+
 		if CompareStringsWithFloat(user.TronAmount, "2800", float64(nums)) || CompareStringsWithFloat(user.Amount, "800", float64(nums)) {
 			//扣减
 
-			//扣trx
 			if CompareStringsWithFloat(user.TronAmount, "2800", float64(nums)) {
 				rest, _ := SubtractStringNumbers(user.TronAmount, "2800", float64(nums))
 
 				user.TronAmount = rest
 				userRepo.Update2(context.Background(), &user)
 				fmt.Printf("rest: %s", rest)
-
+				COST_FROM_TRX = true
+				//扣usdt
 			} else if CompareStringsWithFloat(user.Amount, "800", float64(nums)) {
 				rest, _ := SubtractStringNumbers(user.Amount, "800", float64(nums))
 				fmt.Printf("rest: %s", rest)
 				user.Amount = rest
 				userRepo.Update2(context.Background(), &user)
+				COST_FROM_USDT = true
 			}
 
 			//添加记录
@@ -377,6 +385,12 @@ func handleCallbackQuery(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery 
 				event.Address = address.Address
 				event.Network = address.Network
 				event.Days = 1
+				if COST_FROM_TRX {
+					event.Amount = "2800 TRX"
+				}
+				if COST_FROM_USDT {
+					event.Amount = "800 USDT"
+				}
 				userAddressEventRepo.Create(context.Background(), &event)
 			}
 			//后台跟踪起来

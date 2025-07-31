@@ -119,7 +119,7 @@ func MenuNavigateBundlePackage(db *gorm.DB, message *tgbotapi.Message, bot *tgbo
 		allButtons = append(allButtons, tgbotapi.NewInlineKeyboardButtonData("👝"+trx.Name, "bundle_"+trx.Amount))
 	}
 
-	extraButtons = append(extraButtons, tgbotapi.NewInlineKeyboardButtonData("笔数套餐扣款记录", "click_bundle_package_cost_records"))
+	extraButtons = append(extraButtons, tgbotapi.NewInlineKeyboardButtonData("套餐管理", "click_bundle_package_management"), tgbotapi.NewInlineKeyboardButtonData("笔数套餐扣款记录", "click_bundle_package_cost_records"))
 
 	for i := 0; i < len(allButtons); i += 2 {
 		end := i + 2
