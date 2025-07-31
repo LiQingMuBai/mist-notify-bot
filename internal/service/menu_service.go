@@ -91,11 +91,8 @@ func MenuNavigateEnergyExchange(db *gorm.DB, message *tgbotapi.Message, bot *tgb
 	old_str := "【⚡️能量闪租】\n🔸转账  3 Trx=  1 笔能量\n🔸转账  6 Trx=  2 笔能量\n\n单笔 3 Trx，以此类推，最大 5 笔\n" +
 		"1.向无U地址转账，需要双倍能量。\n2.请在1小时内转账，否则过期回收。\n\n🔸闪租能量收款地址:\n"
 
-	old_str = "【⚡️能量闪租】\n\n 转账 3 TRX，系统自动按原路返还一笔能量，\n 如需向无U地址转账 ，请转账 6 TRX（返还两笔能量）\n\n"
+	//old_str = "【⚡️能量闪租】\n\n 转账 3 TRX，系统自动按原路返还一笔能量，\n 如需向无U地址转账 ，请转账 6 TRX（返还两笔能量）\n\n"
 	msg := tgbotapi.NewMessage(message.Chat.ID, old_str+
-		//"```\n"+
-		//"TQSrBJjbzgUThwE3N1ZJWoQ2mYgB581xij"+
-		//"```\n\n"+
 		"<code>"+receiveAddress+"</code>"+"\n"+
 		"➖➖➖➖➖➖➖➖➖\n以下按钮可以选择其他能量租用模式：\n温馨提醒：\n闪租地址保存地址本要打上醒目标识，以免转账转错！")
 	msg.ReplyMarkup = inlineKeyboard
@@ -158,16 +155,10 @@ func MenuNavigateBundlePackage(db *gorm.DB, message *tgbotapi.Message, bot *tgbo
 			"💵"+"<b>"+"TRX余额:  "+"</b>"+user.TronAmount+" TRX"+"\n"+
 			"💴"+"<b>"+"USDT余额:  "+"</b>"+user.Amount+" USDT"+"\n"+
 			"【✏️笔数套餐】：\n"+
-			"🔶赠送350带宽到地址，从此不在消耗0.35TRX\n"+
-			"🔶按笔数计费的能量租用方式。\n"+
-			"🔶每笔发送131K能量，对方地址无U也是扣一笔\n\n"+
-			"🔶不限时，24小时内有一笔以上转账，不额外扣费！\n"+
-			"1.24小时内未转账，会扣除一笔计数。\n"+
-			"2.长时间不转账，可以在地址列表关闭笔数套餐\n\n🔥【真】【假】笔数套餐科普：\n"+
-			"✅无论65K或者131K（对方地址是否有U），只扣一笔！\n"+
-			"✅【🌈带宽笔笔送】\n"+
-			//"🔸目前为促销ING,每笔赠送350带宽，从此不再消耗0.35 TRX，每笔节省0.35 TRX费用！\n"+
-			"👆满足以上条件，才可称之为：【✏️笔数套餐】\n"+
+			"系统将自动检测您的能量余量，如果不足一笔转账，自动为您补充能量，在购买的笔数内不再燃烧TRX购买的笔数，而是根据实际消耗能量扣费，消耗65k扣费1笔，消耗131k扣费两笔\n"+
+			"🔶说明1：如长期不转账，1天扣除2次笔数作为占用费，有转账则不收取\n"+
+			"🔶说明2：转账间隔不要太短, 能量可能还未到账，建议间隔不小于1分钟\n"+
+			"🔶说明3：如果进入空闲暂停状态，请到列表手动开启\n"+
 			"➖➖➖➖➖➖➖➖➖\n"+
 			"以下按钮可以选择不同的笔数套餐方案：")
 	msg.ReplyMarkup = inlineKeyboard
