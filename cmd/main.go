@@ -259,6 +259,9 @@ func handleCallbackQuery(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery 
 	case callbackQuery.Data == "user_detection_cost_records":
 		msg := service.ExtractAddressDetection(db, callbackQuery)
 		bot.Send(msg)
+	case callbackQuery.Data == "click_bundle_package_cost_records":
+		msg := service.ExtractBundlePackage(db, callbackQuery)
+		bot.Send(msg)
 	case callbackQuery.Data == "click_deposit_usdt_records":
 		service.CLICK_DEPOSIT_USDT_RECORDS(db, callbackQuery, bot)
 	case callbackQuery.Data == "click_deposit_trx_records":
@@ -302,6 +305,18 @@ func handleCallbackQuery(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery 
 		}
 	case callbackQuery.Data == "next_deposit_trx_page":
 		if service.ExtracNextDepositTrxPage(callbackQuery, db, bot) {
+			return
+		}
+
+	case callbackQuery.Data == "prev_bundle_package_page":
+		state, done := service.EXTRACT_PREV_BUNDLE_PACKAGE_PAGE(callbackQuery, db, bot)
+		if done {
+			return
+		}
+		fmt.Printf("state: %v\n", state)
+
+	case callbackQuery.Data == "next_bundle_package_page":
+		if service.EXTRACT_NEXT_BUNDLE_PACKAGE_PAGE(callbackQuery, db, bot) {
 			return
 		}
 
