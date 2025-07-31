@@ -3,6 +3,7 @@ package repositories
 import (
 	"context"
 	_ "github.com/go-sql-driver/mysql"
+	"ushield_bot/internal/request"
 
 	"gorm.io/gorm"
 	"ushield_bot/internal/domain"
@@ -42,4 +43,25 @@ func (r *UserAddressMonitorEventRepo) RemoveAll(ctx context.Context, _chatID int
 	//return r.db.WithContext(ctx).del(userAddress).Error
 
 	return r.db.WithContext(ctx).Delete(&domain.UserAddressMonitorEvent{}, "chat_id = ?", _chatID).Error
+}
+
+func (r *UserAddressMonitorEventRepo) GetAddressMonitorEventInfoList(ctx context.Context, info request.UserAddressDetectionSearch, _chatID int64) (list []domain.UserAddressMonitorEvent, total int64, err error) {
+	limit := info.PageSize
+	offset := info.PageSize * (info.Page - 1)
+	// 创建db
+	db := r.db.Model(&domain.UserAddressMonitorEvent{}).Select("id,amount,address, DATE_FORMAT(created_at, '%m-%d') as created_date").Where("chat_id = ?", _chatID)
+	var UserAddressMonitorEvent []domain.UserAddressMonitorEvent
+	// 如果有条件搜索 下方会自动创建搜索语句
+
+	err = db.Count(&total).Error
+	if err != nil {
+		return
+	}
+
+	if limit != 0 {
+		db = db.Limit(int(limit)).Offset(int(offset))
+	}
+
+	err = db.Find(&UserAddressMonitorEvent).Error
+	return UserAddressMonitorEvent, total, err
 }

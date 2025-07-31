@@ -253,14 +253,26 @@ func handleCallbackQuery(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery 
 		service.ClickCallCenter(callbackQuery, bot)
 	case callbackQuery.Data == "click_my_recepit":
 		service.CLICK_MY_RECEPIT(db, callbackQuery, bot)
+	case callbackQuery.Data == "address_freeze_risk_records":
+		msg := service.ExtractAddressRiskQuery(db, callbackQuery)
+		bot.Send(msg)
 	case callbackQuery.Data == "user_detection_cost_records":
 		msg := service.ExtractAddressDetection(db, callbackQuery)
 		bot.Send(msg)
-	case callbackQuery.Data == "click_cost_records":
 	case callbackQuery.Data == "click_deposit_usdt_records":
 		service.CLICK_DEPOSIT_USDT_RECORDS(db, callbackQuery, bot)
 	case callbackQuery.Data == "click_deposit_trx_records":
 		service.CLICK_DEPOSIT_TRX_RECORDS(db, callbackQuery, bot)
+	case callbackQuery.Data == "next_address_detection_page":
+		if service.EXTRACT_NEXT_ADDRESS_DETECTION_PAGE(callbackQuery, db, bot) {
+			return
+		}
+	case callbackQuery.Data == "prev_address_detection_page":
+		state, done := service.EXTRACT_PREV_ADDRESS_DETECTION_PAGE(callbackQuery, db, bot)
+		if done {
+			return
+		}
+		fmt.Printf("state: %v\n", state)
 	case callbackQuery.Data == "prev_deposit_usdt_page":
 		state, done := service.EXTRACT_PREV_DEPOSIT_USDT_PAGE(callbackQuery, db, bot)
 		if done {
@@ -273,7 +285,17 @@ func handleCallbackQuery(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery 
 			return
 		}
 		fmt.Printf("state: %v\n", state)
+	case callbackQuery.Data == "prev_address_risk_page":
+		state, done := service.EXTRACT_PREV_ADDRESS_RISK_PAGE(callbackQuery, db, bot)
+		if done {
+			return
+		}
+		fmt.Printf("state: %v\n", state)
 
+	case callbackQuery.Data == "next_address_risk_page":
+		if service.ExtraNextAddressRiskPage(callbackQuery, db, bot) {
+			return
+		}
 	case callbackQuery.Data == "next_deposit_usdt_page":
 		if service.ExtraNextDepositUSDTPage(callbackQuery, db, bot) {
 			return

@@ -11,14 +11,14 @@ import (
 	"ushield_bot/internal/request"
 )
 
-func ExtractAddressDetection(db *gorm.DB, callbackQuery *tgbotapi.CallbackQuery) tgbotapi.MessageConfig {
+func ExtractAddressRiskQuery(db *gorm.DB, callbackQuery *tgbotapi.CallbackQuery) tgbotapi.MessageConfig {
 
-	userAddressDetectionRepo := repositories.NewUserAddressDetectionRepository(db)
+	userAddressDetectionRepo := repositories.NewUserAddressMonitorEventRepo(db)
 	var info request.UserAddressDetectionSearch
 
 	info.Page = 1
 	info.PageSize = 5
-	trxlist, _, _ := userAddressDetectionRepo.GetUserAddressDetectionInfoList(context.Background(), info, callbackQuery.Message.Chat.ID)
+	trxlist, _, _ := userAddressDetectionRepo.GetAddressMonitorEventInfoList(context.Background(), info, callbackQuery.Message.Chat.ID)
 
 	var builder strings.Builder
 	//- [6.29] +3000 TRX（订单 #TOPUP-92308）
@@ -28,8 +28,7 @@ func ExtractAddressDetection(db *gorm.DB, callbackQuery *tgbotapi.CallbackQuery)
 		builder.WriteString("]")
 		builder.WriteString("-")
 		builder.WriteString(word.Amount)
-		builder.WriteString(" TRX ")
-		builder.WriteString(" （地址风险检测）")
+		builder.WriteString(" （USDT冻结预警）")
 
 		builder.WriteString("\n") // 添加分隔符
 	}
@@ -37,13 +36,13 @@ func ExtractAddressDetection(db *gorm.DB, callbackQuery *tgbotapi.CallbackQuery)
 	// 去除最后一个空格
 	result := strings.TrimSpace(builder.String())
 
-	msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, "🧾地址检测扣款记录\n\n "+
+	msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, "🧾冻结预警扣款记录\n\n "+
 		result+"\n")
 	msg.ParseMode = "HTML"
 	inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardRow(
-			tgbotapi.NewInlineKeyboardButtonData("上一页", "prev_address_detection_page"),
-			tgbotapi.NewInlineKeyboardButtonData("下一页", "next_address_detection_page"),
+			tgbotapi.NewInlineKeyboardButtonData("上一页", "prev_address_risk_page"),
+			tgbotapi.NewInlineKeyboardButtonData("下一页", "next_address_risk_page"),
 		),
 		tgbotapi.NewInlineKeyboardRow(
 			//tgbotapi.NewInlineKeyboardButtonData("解绑地址", "free_monitor_address"),
@@ -54,7 +53,7 @@ func ExtractAddressDetection(db *gorm.DB, callbackQuery *tgbotapi.CallbackQuery)
 	return msg
 }
 
-func EXTRACT_PREV_ADDRESS_DETECTION_PAGE(callbackQuery *tgbotapi.CallbackQuery, db *gorm.DB, bot *tgbotapi.BotAPI) (*DepositState, bool) {
+func EXTRACT_PREV_ADDRESS_RISK_PAGE(callbackQuery *tgbotapi.CallbackQuery, db *gorm.DB, bot *tgbotapi.BotAPI) (*DepositState, bool) {
 	state := DepositStates[callbackQuery.Message.Chat.ID]
 
 	if state != nil && state.CurrentPage == 1 {
@@ -64,11 +63,13 @@ func EXTRACT_PREV_ADDRESS_DETECTION_PAGE(callbackQuery *tgbotapi.CallbackQuery, 
 		var state DepositState
 		state.CurrentPage = 1
 		DepositStates[callbackQuery.Message.Chat.ID] = &state
-		usdtDepositRepo := repositories.NewUserAddressDetectionRepository(db)
+		userAddressDetectionRepo := repositories.NewUserAddressMonitorEventRepo(db)
 		var info request.UserAddressDetectionSearch
-		info.PageInfo.Page = 1
-		info.PageInfo.PageSize = 5
-		trxlist, _, _ := usdtDepositRepo.GetUserAddressDetectionInfoList(context.Background(), info, callbackQuery.Message.Chat.ID)
+
+		info.Page = 1
+		info.PageSize = 5
+		trxlist, _, _ := userAddressDetectionRepo.GetAddressMonitorEventInfoList(context.Background(), info, callbackQuery.Message.Chat.ID)
+
 		var builder strings.Builder
 		builder.WriteString("\n") // 添加分隔符
 		//- [6.29] +3000 TRX（订单 #TOPUP-92308）
@@ -78,21 +79,20 @@ func EXTRACT_PREV_ADDRESS_DETECTION_PAGE(callbackQuery *tgbotapi.CallbackQuery, 
 			builder.WriteString("]")
 			builder.WriteString("+")
 			builder.WriteString(word.Amount)
-			builder.WriteString(" TRX ")
-			builder.WriteString(" （地址风险检测）")
+			builder.WriteString(" （USDT冻结预警）")
 
 			builder.WriteString("\n") // 添加分隔符
 		}
 
 		// 去除最后一个空格
 		result := strings.TrimSpace(builder.String())
-		msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, "🧾充值记录\n\n "+
+		msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, "🧾冻结预警扣款记录\n\n "+
 			result+"\n")
 		msg.ParseMode = "HTML"
 		inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 			tgbotapi.NewInlineKeyboardRow(
-				tgbotapi.NewInlineKeyboardButtonData("上一页", "prev_address_detection_page"),
-				tgbotapi.NewInlineKeyboardButtonData("下一页", "next_address_detection_page"),
+				tgbotapi.NewInlineKeyboardButtonData("上一页", "prev_address_risk_page"),
+				tgbotapi.NewInlineKeyboardButtonData("下一页", "next_address_risk_page"),
 			),
 			tgbotapi.NewInlineKeyboardRow(
 				//tgbotapi.NewInlineKeyboardButtonData("解绑地址", "free_monitor_address"),
@@ -103,11 +103,11 @@ func EXTRACT_PREV_ADDRESS_DETECTION_PAGE(callbackQuery *tgbotapi.CallbackQuery, 
 		bot.Send(msg)
 	} else {
 		state.CurrentPage = state.CurrentPage - 1
-		usdtDepositRepo := repositories.NewUserAddressDetectionRepository(db)
+		userAddressDetectionRepo := repositories.NewUserAddressMonitorEventRepo(db)
 		var info request.UserAddressDetectionSearch
 		info.PageInfo.Page = state.CurrentPage
-		info.PageInfo.PageSize = 5
-		trxlist, _, _ := usdtDepositRepo.GetUserAddressDetectionInfoList(context.Background(), info, callbackQuery.Message.Chat.ID)
+		info.PageSize = 5
+		trxlist, _, _ := userAddressDetectionRepo.GetAddressMonitorEventInfoList(context.Background(), info, callbackQuery.Message.Chat.ID)
 		var builder strings.Builder
 		builder.WriteString("\n") // 添加分隔符
 		//- [6.29] +3000 TRX（订单 #TOPUP-92308）
@@ -117,21 +117,20 @@ func EXTRACT_PREV_ADDRESS_DETECTION_PAGE(callbackQuery *tgbotapi.CallbackQuery, 
 			builder.WriteString("]")
 			builder.WriteString("-")
 			builder.WriteString(word.Amount)
-			builder.WriteString(" TRX ")
-			builder.WriteString(" （地址风险检测）")
+			builder.WriteString(" （USDT冻结预警）")
 
 			builder.WriteString("\n") // 添加分隔符
 		}
 
 		// 去除最后一个空格
 		result := strings.TrimSpace(builder.String())
-		msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, "🧾充值记录\n\n "+
+		msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, "🧾冻结预警扣款记录\n\n "+
 			result+"\n")
 		msg.ParseMode = "HTML"
 		inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 			tgbotapi.NewInlineKeyboardRow(
-				tgbotapi.NewInlineKeyboardButtonData("上一页", "prev_address_detection_page"),
-				tgbotapi.NewInlineKeyboardButtonData("下一页", "next_address_detection_page"),
+				tgbotapi.NewInlineKeyboardButtonData("上一页", "prev_address_risk_page"),
+				tgbotapi.NewInlineKeyboardButtonData("下一页", "next_address_risk_page"),
 			),
 			tgbotapi.NewInlineKeyboardRow(
 				//tgbotapi.NewInlineKeyboardButtonData("解绑地址", "free_monitor_address"),
@@ -143,7 +142,8 @@ func EXTRACT_PREV_ADDRESS_DETECTION_PAGE(callbackQuery *tgbotapi.CallbackQuery, 
 	}
 	return state, false
 }
-func EXTRACT_NEXT_ADDRESS_DETECTION_PAGE(callbackQuery *tgbotapi.CallbackQuery, db *gorm.DB, bot *tgbotapi.BotAPI) bool {
+
+func ExtraNextAddressRiskPage(callbackQuery *tgbotapi.CallbackQuery, db *gorm.DB, bot *tgbotapi.BotAPI) bool {
 	state := DepositStates[callbackQuery.Message.Chat.ID]
 	if state == nil {
 		var state2 DepositState
@@ -152,11 +152,11 @@ func EXTRACT_NEXT_ADDRESS_DETECTION_PAGE(callbackQuery *tgbotapi.CallbackQuery, 
 	}
 	//if state != nil && state.CurrentPage > 1 {
 	state.CurrentPage = state.CurrentPage + 1
-	usdtDepositRepo := repositories.NewUserAddressDetectionRepository(db)
+	userAddressDetectionRepo := repositories.NewUserAddressMonitorEventRepo(db)
 	var info request.UserAddressDetectionSearch
 	info.PageInfo.Page = state.CurrentPage
 	info.PageInfo.PageSize = 5
-	trxlist, total, _ := usdtDepositRepo.GetUserAddressDetectionInfoList(context.Background(), info, callbackQuery.Message.Chat.ID)
+	trxlist, total, _ := userAddressDetectionRepo.GetAddressMonitorEventInfoList(context.Background(), info, callbackQuery.Message.Chat.ID)
 
 	fmt.Printf("currentpage : %d", state.CurrentPage)
 	fmt.Printf("total: %v\n", total)
@@ -176,21 +176,20 @@ func EXTRACT_NEXT_ADDRESS_DETECTION_PAGE(callbackQuery *tgbotapi.CallbackQuery, 
 		builder.WriteString("]")
 		builder.WriteString("-")
 		builder.WriteString(word.Amount)
-		builder.WriteString(" TRX ")
-		builder.WriteString(" （地址风险检测）")
+		builder.WriteString(" （USDT冻结预警）")
 
 		builder.WriteString("\n") // 添加分隔符
 	}
 
 	// 去除最后一个空格
 	result := strings.TrimSpace(builder.String())
-	msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, "🧾充值记录\n\n "+
+	msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, "🧾冻结预警扣款记录\n\n "+
 		result+"\n")
 	msg.ParseMode = "HTML"
 	inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardRow(
-			tgbotapi.NewInlineKeyboardButtonData("上一页", "prev_address_detection_page"),
-			tgbotapi.NewInlineKeyboardButtonData("下一页", "next_address_detection_page"),
+			tgbotapi.NewInlineKeyboardButtonData("上一页", "prev_address_risk_page"),
+			tgbotapi.NewInlineKeyboardButtonData("下一页", "next_address_risk_page"),
 		),
 		tgbotapi.NewInlineKeyboardRow(
 			//tgbotapi.NewInlineKeyboardButtonData("解绑地址", "free_monitor_address"),
