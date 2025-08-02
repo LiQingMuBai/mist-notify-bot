@@ -202,6 +202,10 @@ func CLICK_BUNDLE_PACKAGE_ADDRESS_STATS(db *gorm.DB, chatID int64) tgbotapi.Mess
 				builder.WriteString("\n") // 添加分隔符
 				builder.WriteString("手工发能：/dispatchNow")
 				builder.WriteString(strconv.FormatInt(order.Id, 10))
+				builder.WriteString("\n") // 添加分隔符
+				builder.WriteString("发能其他用户：/dispatchOthers")
+				builder.WriteString(strconv.FormatInt(order.Id, 10))
+				builder.WriteString("\n") // 添加分隔符
 			}
 			builder.WriteString("\n")
 			builder.WriteString("➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖") // 添加分隔符
@@ -299,6 +303,11 @@ func NEXT_BUNDLE_PACKAGE_ADDRESS_STATS(callbackQuery *tgbotapi.CallbackQuery, db
 				builder.WriteString("\n") // 添加分隔符
 				builder.WriteString("手工发能：/dispatchNow")
 				builder.WriteString(strconv.FormatInt(order.Id, 10))
+
+				builder.WriteString("\n") // 添加分隔符
+				builder.WriteString("发能其他用户：/dispatchOthers")
+				builder.WriteString(strconv.FormatInt(order.Id, 10))
+				builder.WriteString("\n") // 添加分隔符
 			}
 			builder.WriteString("\n")
 			builder.WriteString("➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖") // 添加分隔符
@@ -392,6 +401,10 @@ func PREV_BUNDLE_PACKAGE_ADDRESS_STATS(callbackQuery *tgbotapi.CallbackQuery, db
 					builder.WriteString("\n") // 添加分隔符
 					builder.WriteString("手工发能：/dispatchNow")
 					builder.WriteString(strconv.FormatInt(order.Id, 10))
+					builder.WriteString("\n") // 添加分隔符
+					builder.WriteString("发能其他用户：/dispatchOthers")
+					builder.WriteString(strconv.FormatInt(order.Id, 10))
+					builder.WriteString("\n") // 添加分隔符
 				}
 				builder.WriteString("\n")
 				builder.WriteString("➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖") // 添加分隔符
@@ -470,6 +483,10 @@ func PREV_BUNDLE_PACKAGE_ADDRESS_STATS(callbackQuery *tgbotapi.CallbackQuery, db
 					builder.WriteString("\n") // 添加分隔符
 					builder.WriteString("手工发能：/dispatchNow")
 					builder.WriteString(strconv.FormatInt(order.Id, 10))
+					builder.WriteString("\n") // 添加分隔符
+					builder.WriteString("发能其他用户：/dispatchOthers")
+					builder.WriteString(strconv.FormatInt(order.Id, 10))
+					builder.WriteString("\n") // 添加分隔符
 				}
 				builder.WriteString("\n")
 				builder.WriteString("➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖") // 添加分隔符

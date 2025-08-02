@@ -410,3 +410,53 @@ func APPLY_BUNDLE_PACKAGE_ADDRESS(bundle_address string, cache cache.Cache, bot 
 	//设置用户状态
 	cache.Set(strconv.FormatInt(message.Chat.ID, 10), "null_apply_bundle_package_address", expiration)
 }
+
+func DispatchOthers(bundleID string, cache cache.Cache, bot *tgbotapi.BotAPI, _chatID int64, db *gorm.DB) {
+	userOperationPackageAddressesRepo := repositories.NewUserOperationPackageAddressesRepo(db)
+
+	addresses, _ := userOperationPackageAddressesRepo.Query(context.Background(), _chatID)
+
+	msg := tgbotapi.NewMessage(_chatID, "👇请选择要派送的地址："+"\n")
+	//地址绑定
+
+	msg.ParseMode = "HTML"
+
+	var allButtons []tgbotapi.InlineKeyboardButton
+	var extraButtons []tgbotapi.InlineKeyboardButton
+	var keyboard [][]tgbotapi.InlineKeyboardButton
+	for _, item := range addresses {
+		allButtons = append(allButtons, tgbotapi.NewInlineKeyboardButtonData(item.Address, "dispatch_others_"+bundleID+"_"+item.Address))
+	}
+
+	extraButtons = append(extraButtons, tgbotapi.NewInlineKeyboardButtonData("🔙返回首页", "back_bundle_package"))
+
+	for i := 0; i < len(allButtons); i += 1 {
+		end := i + 1
+		if end > len(allButtons) {
+			end = len(allButtons)
+		}
+		row := allButtons[i:end]
+		keyboard = append(keyboard, tgbotapi.NewInlineKeyboardRow(row...))
+	}
+
+	for i := 0; i < len(extraButtons); i += 1 {
+		end := i + 1
+		if end > len(extraButtons) {
+			end = len(extraButtons)
+		}
+		row := extraButtons[i:end]
+		keyboard = append(keyboard, tgbotapi.NewInlineKeyboardRow(row...))
+	}
+
+	// 3. 创建键盘标记
+	inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(keyboard...)
+
+	msg.ReplyMarkup = inlineKeyboard
+
+	bot.Send(msg)
+
+	expiration := 1 * time.Minute // 短时间缓存空值
+
+	//设置用户状态
+	cache.Set(strconv.FormatInt(_chatID, 10), "DISPATCHOTHERS", expiration)
+}

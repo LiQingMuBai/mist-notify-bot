@@ -126,6 +126,21 @@ func main() {
 					userPackageSubscriptionsRepo.UpdateStatus(context.Background(), subscribeBundlePackageID, 2)
 					msg := service.CLICK_BUNDLE_PACKAGE_ADDRESS_STATS(db, update.Message.Chat.ID)
 					bot.Send(msg)
+
+				case strings.HasPrefix(update.Message.Command(), "dispatchOthers"):
+					subscribeBundleID := strings.ReplaceAll(update.Message.Command(), "dispatchOthers", "")
+					log.Println("subscribeBundleID :" + subscribeBundleID)
+					log.Println(subscribeBundleID + "dispatchOthers command")
+					//userPackageSubscriptionsRepo := repositories.NewUserPackageSubscriptionsRepository(db)
+
+					//subscribeBundlePackageID, _ := strconv.ParseInt(subscribeBundleID, 10, 64)
+					//userPackageSubscriptionsRepo.UpdateStatus(context.Background(), subscribeBundlePackageID, 2)
+					//msg := service.CLICK_BUNDLE_PACKAGE_ADDRESS_STATS(db, update.Message.Chat.ID)
+					//bot.Send(msg)
+					//
+
+					service.DispatchOthers(subscribeBundleID, cache, bot, update.Message.Chat.ID, db)
+
 				case update.Message.Command() == "start":
 					log.Printf("1")
 
@@ -300,6 +315,34 @@ func handleCallbackQuery(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery 
 	// 根据回调数据执行不同操作
 	var responseText string
 	switch {
+	case strings.HasPrefix(callbackQuery.Data, "dispatch_others_"):
+		bundleAddress := strings.ReplaceAll(callbackQuery.Data, "dispatch_others_", "")
+
+		bundleID := strings.Split(bundleAddress, "_")[0]
+		address := strings.Split(bundleAddress, "_")[1]
+
+		fmt.Printf("bundleID %s\n", bundleID)
+		fmt.Printf("address %s\n", address)
+
+		//手工发能
+
+		//trxfee
+		userPackageSubscriptionsRepo := repositories.NewUserPackageSubscriptionsRepository(db)
+		record, _ := userPackageSubscriptionsRepo.Query(context.Background(), bundleID)
+
+		restTimes := record.Times - 1
+		userPackageSubscriptionsRepo.UpdateTimes(context.Background(), record.Id, restTimes)
+
+		//
+		msg2 := service.CLICK_BUNDLE_PACKAGE_ADDRESS_STATS(db, callbackQuery.Message.Chat.ID)
+		bot.Send(msg2)
+
+		msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, "📢【✅ U盾成功发送一笔能量】\n\n"+
+			"接收地址："+record.Address+"\n\n"+
+			"剩余笔数："+strconv.FormatInt(restTimes, 10)+"\n\n")
+		msg.ParseMode = "HTML"
+		bot.Send(msg)
+
 	case strings.HasPrefix(callbackQuery.Data, "set_bundle_package_default_"):
 		target := strings.ReplaceAll(callbackQuery.Data, "set_bundle_package_default_", "")
 		userOperationPackageAddressesRepo := repositories.NewUserOperationPackageAddressesRepo(db)
