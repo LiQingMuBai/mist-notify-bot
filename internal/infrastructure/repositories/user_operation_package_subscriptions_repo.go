@@ -26,6 +26,16 @@ func (r *UserPackageSubscriptionsRepository) ListAll(ctx context.Context) ([]dom
 	return pkgs, err
 
 }
+func (r *UserPackageSubscriptionsRepository) Query(ctx context.Context, ID string) (domain.UserPackageSubscriptions, error) {
+	var subscriptions []domain.UserPackageSubscriptions
+	err := r.db.WithContext(ctx).
+		Model(&domain.UserPackageSubscriptions{}).
+		Select("id", "times", "bundle_name", "bundle_id", "amount", "address").
+		Where("id = ?", ID).
+		Scan(&subscriptions).Error
+	return subscriptions[0], err
+
+}
 
 // Create 创建新套餐
 func (r *UserPackageSubscriptionsRepository) Create(ctx context.Context, pkg *domain.UserPackageSubscriptions) error {
@@ -37,6 +47,20 @@ func (r *UserPackageSubscriptionsRepository) Update(ctx context.Context, pkg *do
 	return r.db.WithContext(ctx).Save(pkg).Error
 }
 
+// Update 更新套餐
+func (r *UserPackageSubscriptionsRepository) UpdateStatus(ctx context.Context, ID int64, _status int64) error {
+	return r.db.WithContext(ctx).Model(&domain.UserPackageSubscriptions{}).
+		Where("id = ?", ID).
+		Update("status", _status).Error
+}
+
+// Update 更新套餐
+func (r *UserPackageSubscriptionsRepository) UpdateTimes(ctx context.Context, ID int64, _times int64) error {
+	return r.db.WithContext(ctx).Model(&domain.UserPackageSubscriptions{}).
+		Where("id = ?", ID).
+		Update("times", _times).Error
+}
+
 // Delete 删除套餐
 func (r *UserPackageSubscriptionsRepository) Delete(ctx context.Context, id uint) error {
 	return r.db.WithContext(ctx).Delete(&domain.UserPackageSubscriptions{}, id).Error
@@ -45,7 +69,7 @@ func (r *UserPackageSubscriptionsRepository) GetUserPackageSubscriptionsInfoList
 	limit := info.PageSize
 	offset := info.PageSize * (info.Page - 1)
 	// 创建db
-	db := r.db.Model(&domain.UserPackageSubscriptions{}).Select("id,amount,address, DATE_FORMAT(created_at, '%m-%d') as created_date").Where("chat_id = ?", _chatID)
+	db := r.db.Model(&domain.UserPackageSubscriptions{}).Select("id,status,amount,times,bundle_name,bundle_id,address, DATE_FORMAT(created_at, '%m-%d') as created_date").Where("chat_id = ?", _chatID)
 	var UserPackageSubscriptions []domain.UserPackageSubscriptions
 	// 如果有条件搜索 下方会自动创建搜索语句
 

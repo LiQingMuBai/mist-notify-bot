@@ -80,21 +80,63 @@ func main() {
 	for update := range updates {
 		if update.Message != nil {
 			if update.Message.IsCommand() {
-				switch update.Message.Command() {
-				case "start":
+				switch {
+				case strings.HasPrefix(update.Message.Command(), "startAutoDispatch"):
+					subscribeBundleID := strings.ReplaceAll(update.Message.Command(), "startAutoDispatch", "")
+					log.Println("subscribeBundleID :" + subscribeBundleID)
+					log.Println(subscribeBundleID + "startAutoDispatch command")
+					userPackageSubscriptionsRepo := repositories.NewUserPackageSubscriptionsRepository(db)
+					subscribeBundlePackageID, _ := strconv.ParseInt(subscribeBundleID, 10, 64)
+
+					userPackageSubscriptionsRepo.UpdateStatus(context.Background(), subscribeBundlePackageID, 1)
+					msg := service.CLICK_BUNDLE_PACKAGE_ADDRESS_STATS(db, update.Message.Chat.ID)
+					bot.Send(msg)
+				case strings.HasPrefix(update.Message.Command(), "dispatchNow"):
+					subscribeBundleID := strings.ReplaceAll(update.Message.Command(), "dispatchNow", "")
+					log.Println("subscribeBundleID :" + subscribeBundleID)
+					log.Println(subscribeBundleID + "dispatchNow command")
+
+					//手工发能
+
+					//trxfee
+					userPackageSubscriptionsRepo := repositories.NewUserPackageSubscriptionsRepository(db)
+					record, _ := userPackageSubscriptionsRepo.Query(context.Background(), subscribeBundleID)
+
+					restTimes := record.Times - 1
+					userPackageSubscriptionsRepo.UpdateTimes(context.Background(), record.Id, restTimes)
+
+					//
+					msg2 := service.CLICK_BUNDLE_PACKAGE_ADDRESS_STATS(db, update.Message.Chat.ID)
+					bot.Send(msg2)
+
+					msg := tgbotapi.NewMessage(update.Message.Chat.ID, "📢【✅ U盾成功发送一笔能量】\n\n"+
+						"接收地址："+record.Address+"\n\n"+
+						"剩余笔数："+strconv.FormatInt(restTimes, 10)+"\n\n")
+					msg.ParseMode = "HTML"
+					bot.Send(msg)
+
+				case strings.HasPrefix(update.Message.Command(), "stopAutoDispatch"):
+					subscribeBundleID := strings.ReplaceAll(update.Message.Command(), "stopAutoDispatch", "")
+					log.Println("subscribeBundleID :" + subscribeBundleID)
+					log.Println(subscribeBundleID + "stopAutoDispatch command")
+					userPackageSubscriptionsRepo := repositories.NewUserPackageSubscriptionsRepository(db)
+
+					subscribeBundlePackageID, _ := strconv.ParseInt(subscribeBundleID, 10, 64)
+
+					userPackageSubscriptionsRepo.UpdateStatus(context.Background(), subscribeBundlePackageID, 2)
+					msg := service.CLICK_BUNDLE_PACKAGE_ADDRESS_STATS(db, update.Message.Chat.ID)
+					bot.Send(msg)
+				case update.Message.Command() == "start":
 					log.Printf("1")
 
 					//存用户
 					userRepo := repositories.NewUserRepository(db)
-
 					_, err := userRepo.GetByUserID(update.Message.Chat.ID)
 					if err != nil {
 						//增加用户
 						var user domain.User
 						user.Associates = strconv.FormatInt(update.Message.Chat.ID, 10)
 						user.Username = update.Message.Chat.UserName
-						//user.CreatedAt = time.Now()
-						//user.UpdatedAt = time.Now()
 						err := userRepo.Create2(context.Background(), &user)
 						if err != nil {
 							return
@@ -102,7 +144,7 @@ func main() {
 					}
 
 					handleStartCommand(cache, bot, update.Message)
-				case "hide":
+				case update.Message.Command() == "hide":
 					log.Printf("2")
 					handleHideCommand(cache, bot, update.Message)
 				}
@@ -165,7 +207,7 @@ func handleRegularMessage(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbo
 	case "🚨USDT冻结预警":
 		service.MenuNavigateAddressFreeze(cache, bot, message)
 	case "🖊️笔数套餐":
-		service.MenuNavigateBundlePackage(db, message, bot)
+		service.MenuNavigateBundlePackage(db, message.Chat.ID, bot, "TRX")
 	case "⚡能量闪兑":
 		service.MenuNavigateEnergyExchange(db, message, bot)
 	case "👤个人中心":
@@ -225,6 +267,21 @@ func handleRegularMessage(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbo
 
 			bot.Send(msg)
 
+		case strings.HasPrefix(status, "click_bundle_package_address_manager_remove"):
+			if service.CLICK_BUNDLE_PACKAGE_ADDRESS_MANAGER_REMOVE(cache, bot, message, db) {
+				return
+			}
+
+		case strings.HasPrefix(status, "click_bundle_package_address_manager_add"):
+			if service.CLICK_BUNDLE_PACKAGE_ADDRESS_MANAGER_ADD(cache, bot, message, db) {
+				return
+			}
+
+		case strings.HasPrefix(status, "apply_bundle_package_"):
+			if service.APPLY_BUNDLE_PACKAGE(cache, bot, message, db, status) {
+				return
+			}
+
 		case strings.HasPrefix(status, "usdt_risk_query"):
 			//fmt.Printf("bundle: %s", status)
 			service.ExtractSlowMistRiskQuery(message, db, _cookie, bot)
@@ -243,6 +300,104 @@ func handleCallbackQuery(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery 
 	// 根据回调数据执行不同操作
 	var responseText string
 	switch {
+	case strings.HasPrefix(callbackQuery.Data, "set_bundle_package_default_"):
+		target := strings.ReplaceAll(callbackQuery.Data, "set_bundle_package_default_", "")
+		userOperationPackageAddressesRepo := repositories.NewUserOperationPackageAddressesRepo(db)
+
+		errsg := userOperationPackageAddressesRepo.Update(context.Background(), callbackQuery.Message.Chat.ID, target)
+		if errsg != nil {
+			log.Printf("errsg: %s", errsg)
+			return
+		}
+		msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, "✅"+"<b>"+"设置默认地址成功 "+"</b>"+"\n")
+		msg.ParseMode = "HTML"
+		bot.Send(msg)
+		service.CLICK_BUNDLE_PACKAGE_ADDRESS_MANAGEMENT(cache, bot, callbackQuery.Message.Chat.ID, db)
+
+	case strings.HasPrefix(callbackQuery.Data, "remove_bundle_package_"):
+		target := strings.ReplaceAll(callbackQuery.Data, "remove_bundle_package_", "")
+		userOperationPackageAddressesRepo := repositories.NewUserOperationPackageAddressesRepo(db)
+
+		var record domain.UserOperationPackageAddresses
+		record.Status = 0
+		record.Address = target
+		record.ChatID = callbackQuery.Message.Chat.ID
+
+		errsg := userOperationPackageAddressesRepo.Remove(context.Background(), callbackQuery.Message.Chat.ID, target)
+		if errsg != nil {
+			log.Printf("errsg: %s", errsg)
+			return
+		}
+		msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, "✅"+"<b>"+"地址删除成功 "+"</b>"+"\n")
+		msg.ParseMode = "HTML"
+		bot.Send(msg)
+		service.CLICK_BUNDLE_PACKAGE_ADDRESS_MANAGEMENT(cache, bot, callbackQuery.Message.Chat.ID, db)
+
+	case strings.HasPrefix(callbackQuery.Data, "apply_bundle_package_"):
+
+		target := strings.ReplaceAll(callbackQuery.Data, "apply_bundle_package_", "")
+		service.APPLY_BUNDLE_PACKAGE_ADDRESS(target, cache, bot, callbackQuery.Message, db)
+
+	case strings.HasPrefix(callbackQuery.Data, "config_bundle_package_address_"):
+
+		target := strings.ReplaceAll(callbackQuery.Data, "config_bundle_package_address_", "")
+		service.CONFIG_BUNDLE_PACKAGE_ADDRESS(target, cache, bot, callbackQuery.Message, db)
+
+	case callbackQuery.Data == "click_switch_trx":
+		service.MenuNavigateBundlePackage(db, callbackQuery.Message.Chat.ID, bot, "TRX")
+	case callbackQuery.Data == "click_switch_usdt":
+		service.MenuNavigateBundlePackage(db, callbackQuery.Message.Chat.ID, bot, "USDT")
+	case callbackQuery.Data == "back_bundle_package":
+		service.MenuNavigateBundlePackage(db, callbackQuery.Message.Chat.ID, bot, "TRX")
+	case callbackQuery.Data == "click_bundle_package_address_manager_config":
+		service.CLICK_BUNDLE_PACKAGE_ADDRESS_MANAGER_CONFIG(cache, bot, callbackQuery.Message.Chat.ID, db)
+	case callbackQuery.Data == "click_bundle_package_address_manager_remove":
+		msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, "💬"+"<b>"+"请输入需要删除的地址: "+"</b>"+"\n")
+		msg.ParseMode = "HTML"
+		bot.Send(msg)
+
+		expiration := 1 * time.Minute // 短时间缓存空值
+
+		//设置用户状态
+		cache.Set(strconv.FormatInt(callbackQuery.Message.Chat.ID, 10), callbackQuery.Data, expiration)
+
+	case callbackQuery.Data == "click_bundle_package_address_manager_add":
+
+		userOperationPackageAddressesRepo := repositories.NewUserOperationPackageAddressesRepo(db)
+
+		list, _ := userOperationPackageAddressesRepo.Query(context.Background(), callbackQuery.Message.Chat.ID)
+		if len(list) >= 4 {
+			msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, "<b>"+"❌ 添加新地址失败，地址已达上限，请先删除一个旧地址 。"+"</b>"+"\n")
+			msg.ParseMode = "HTML"
+			bot.Send(msg)
+			return
+		}
+		msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, "<b>"+"为方便用户管理地址，系统默认最多添加4个地址，请输入新地址👇: "+"</b>"+"\n")
+		msg.ParseMode = "HTML"
+		bot.Send(msg)
+
+		expiration := 1 * time.Minute // 短时间缓存空值
+
+		//设置用户状态
+		cache.Set(strconv.FormatInt(callbackQuery.Message.Chat.ID, 10), callbackQuery.Data, expiration)
+		//笔数套餐地址列表
+	case callbackQuery.Data == "click_bundle_package_address_stats":
+		msg := service.CLICK_BUNDLE_PACKAGE_ADDRESS_STATS(db, callbackQuery.Message.Chat.ID)
+		bot.Send(msg)
+
+	case callbackQuery.Data == "next_bundle_package_address_stats":
+		if service.NEXT_BUNDLE_PACKAGE_ADDRESS_STATS(callbackQuery, db, bot) {
+			return
+		}
+	case callbackQuery.Data == "prev_bundle_package_address_stats":
+		state, done := service.PREV_BUNDLE_PACKAGE_ADDRESS_STATS(callbackQuery, db, bot)
+		if done {
+			return
+		}
+		fmt.Printf("state: %v\n", state)
+
+	case callbackQuery.Data == "click_bundle_package_address_management":
+		service.CLICK_BUNDLE_PACKAGE_ADDRESS_MANAGEMENT(cache, bot, callbackQuery.Message.Chat.ID, db)
 	case callbackQuery.Data == "address_list_trace":
 		service.ADDRESS_LIST_TRACE(cache, bot, callbackQuery, db)
 	case callbackQuery.Data == "back_home":
@@ -337,96 +492,7 @@ func handleCallbackQuery(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery 
 		cache.Set(strconv.FormatInt(callbackQuery.Message.Chat.ID, 10), callbackQuery.Data, expiration)
 	case callbackQuery.Data == "start_freeze_risk_1":
 		//查看余额
-		userRepo := repositories.NewUserRepository(db)
-		user, _ := userRepo.GetByUserID(callbackQuery.Message.Chat.ID)
-		if IsEmpty(user.Amount) {
-			user.Amount = "0.00"
-		}
-
-		if IsEmpty(user.TronAmount) {
-			user.TronAmount = "0.00"
-		}
-
-		userAddressRepo := repositories.NewUserAddressMonitorRepo(db)
-
-		addresses, _ := userAddressRepo.Query(context.Background(), callbackQuery.Message.Chat.ID)
-
-		nums := len(addresses)
-		//扣trx
-		var COST_FROM_TRX bool
-		var COST_FROM_USDT bool
-
-		if CompareStringsWithFloat(user.TronAmount, "2800", float64(nums)) || CompareStringsWithFloat(user.Amount, "800", float64(nums)) {
-			//扣减
-
-			if CompareStringsWithFloat(user.TronAmount, "2800", float64(nums)) {
-				rest, _ := SubtractStringNumbers(user.TronAmount, "2800", float64(nums))
-
-				user.TronAmount = rest
-				userRepo.Update2(context.Background(), &user)
-				fmt.Printf("rest: %s", rest)
-				COST_FROM_TRX = true
-				//扣usdt
-			} else if CompareStringsWithFloat(user.Amount, "800", float64(nums)) {
-				rest, _ := SubtractStringNumbers(user.Amount, "800", float64(nums))
-				fmt.Printf("rest: %s", rest)
-				user.Amount = rest
-				userRepo.Update2(context.Background(), &user)
-				COST_FROM_USDT = true
-			}
-
-			//添加记录
-			userAddressEventRepo := repositories.NewUserAddressMonitorEventRepo(db)
-
-			for _, address := range addresses {
-				var event domain.UserAddressMonitorEvent
-				event.ChatID = callbackQuery.Message.Chat.ID
-				event.Status = 1
-				event.Address = address.Address
-				event.Network = address.Network
-				event.Days = 1
-				if COST_FROM_TRX {
-					event.Amount = "2800 TRX"
-				}
-				if COST_FROM_USDT {
-					event.Amount = "800 USDT"
-				}
-				userAddressEventRepo.Create(context.Background(), &event)
-			}
-			//后台跟踪起来
-			user, _ := userRepo.GetByUserID(callbackQuery.Message.Chat.ID)
-			msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID,
-				"💬"+"<b>"+"用户姓名: "+"</b>"+user.Username+"\n"+
-					"👤"+"<b>"+"用户电报ID: "+"</b>"+user.Associates+"\n"+
-					"💵"+"<b>"+"当前TRX余额:  "+"</b>"+user.TronAmount+" TRX"+"\n"+
-					"💴"+"<b>"+"当前USDT余额:  "+"</b>"+user.Amount+" USDT")
-			msg.ParseMode = "HTML"
-			inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
-				tgbotapi.NewInlineKeyboardRow(
-					tgbotapi.NewInlineKeyboardButtonData("⬅️返回", "address_manager_return"),
-				),
-			)
-
-			msg.ReplyMarkup = inlineKeyboard
-			bot.Send(msg)
-		} else {
-
-			//余额不足，需充值
-			msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID,
-				"💬"+"<b>"+"用户姓名: "+"</b>"+user.Username+"\n"+
-					"👤"+"<b>"+"用户电报ID: "+"</b>"+user.Associates+"\n"+
-					"💵"+"<b>"+"当前TRX余额:  "+"</b>"+user.TronAmount+" TRX"+"\n"+
-					"💴"+"<b>"+"当前USDT余额:  "+"</b>"+user.Amount+" USDT")
-			msg.ParseMode = "HTML"
-			inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
-				tgbotapi.NewInlineKeyboardRow(
-					tgbotapi.NewInlineKeyboardButtonData("💵充值", "deposit_amount"),
-				),
-			)
-
-			msg.ReplyMarkup = inlineKeyboard
-			bot.Send(msg)
-		}
+		service.START_FREEZE_RISK_1(db, callbackQuery, bot)
 
 	case callbackQuery.Data == "click_my_service":
 		msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, "🛡 当前服务状态：\n\n🔋 能量闪兑\n\n- 剩余笔数：12\n- 自动补能：关闭 /开启\n\n➡️ /闪兑\n\n➡️ /笔数套餐\n\n➡️ /手动发能（1笔）\n\n➡️ /开启/关闭自动发能\n\n📍 地址风险检测\n\n- 今日免费次数：已用完\n\n➡️ /地址风险检测\n\n🚨 USDT冻结预警\n\n- 地址1：TX8kY...5a9rP（剩余12天）✅\n- 地址2：TEw9Q...iS6Ht（剩余28天）✅")
@@ -577,7 +643,6 @@ func handleCallbackQuery(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery 
 		service.DEPOSIT_AMOUNT(db, callbackQuery, bot)
 
 	case strings.HasPrefix(callbackQuery.Data, "bundle_"):
-
 		service.BUNDLE_CHECK(cache, bot, callbackQuery, db)
 		//调用trxfee接口进行笔数扣款
 	case strings.HasPrefix(callbackQuery.Data, "deposit_usdt"):

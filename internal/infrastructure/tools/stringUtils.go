@@ -31,6 +31,12 @@ func ExtractNumberBeforeBi(s string) (int, error) {
 
 	return num, nil
 }
+func CombineInt64AndString(str string, num int64) string {
+	// 将 int64 转为 string
+	numStr := strconv.FormatInt(num, 10) // 10 表示十进制
+	// 拼接字符串
+	return str + numStr
+}
 
 // IsEmpty 检查字符串是否为空
 func IsEmpty(s string) bool {
@@ -84,6 +90,15 @@ func ContainsAll(s string, subs ...string) bool {
 		}
 	}
 	return true
+}
+func ExtractLeadingInt64(s string) int64 {
+	re := regexp.MustCompile(`^\d+`) // 匹配开头的连续数字
+	match := re.FindString(s)
+	if match == "" {
+		return 0
+	}
+	num, _ := strconv.ParseInt(match, 10, 64)
+	return num
 }
 
 // EqualsIgnoreCase 忽略大小写比较字符串

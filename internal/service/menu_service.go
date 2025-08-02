@@ -88,7 +88,12 @@ func MenuNavigateEnergyExchange(db *gorm.DB, message *tgbotapi.Message, bot *tgb
 	//dictRepo := repositories.NewSysDictionariesRepo(db)
 	//receiveAddress, _ := dictRepo.GetReceiveAddress(_agent)
 
-	old_str := "【⚡️能量闪租】\n🔸转账  3 Trx=  1 笔能量\n🔸转账  6 Trx=  2 笔能量\n\n单笔 3 Trx，以此类推，最大 5 笔\n" +
+	dictDetailRepo := repositories.NewSysDictionariesRepo(db)
+
+	energy_cost, _ := dictDetailRepo.GetDictionaryDetail("energy_cost")
+
+	energy_cost_2x, _ := StringMultiply(energy_cost, 2)
+	old_str := "【⚡️能量闪租】\n🔸转账  " + energy_cost + " Trx=  1 笔能量\n🔸转账  " + energy_cost_2x + " Trx=  2 笔能量\n\n单笔 " + energy_cost + " Trx，以此类推，最大 5 笔\n" +
 		"1.向无U地址转账，需要双倍能量。\n2.请在1小时内转账，否则过期回收。\n\n🔸闪租能量收款地址:\n"
 
 	//old_str = "【⚡️能量闪租】\n\n 转账 3 TRX，系统自动按原路返还一笔能量，\n 如需向无U地址转账 ，请转账 6 TRX（返还两笔能量）\n\n"
@@ -100,10 +105,10 @@ func MenuNavigateEnergyExchange(db *gorm.DB, message *tgbotapi.Message, bot *tgb
 	//msg.DisableWebPagePreview = true
 	bot.Send(msg)
 }
-func MenuNavigateBundlePackage(db *gorm.DB, message *tgbotapi.Message, bot *tgbotapi.BotAPI) {
+func MenuNavigateBundlePackage(db *gorm.DB, _chatID int64, bot *tgbotapi.BotAPI, token string) {
 	bundlesRepo := repositories.NewUserOperationBundlesRepository(db)
 
-	trxlist, err := bundlesRepo.ListAll(context.Background())
+	trxlist, err := bundlesRepo.ListByToken(context.Background(), token)
 
 	if err != nil {
 
@@ -111,12 +116,27 @@ func MenuNavigateBundlePackage(db *gorm.DB, message *tgbotapi.Message, bot *tgbo
 
 	var allButtons []tgbotapi.InlineKeyboardButton
 	var extraButtons []tgbotapi.InlineKeyboardButton
+	var onlyButtons []tgbotapi.InlineKeyboardButton
 	var keyboard [][]tgbotapi.InlineKeyboardButton
 	for _, trx := range trxlist {
-		allButtons = append(allButtons, tgbotapi.NewInlineKeyboardButtonData("👝"+trx.Name, "bundle_"+trx.Amount))
+
+		allButtons = append(allButtons, tgbotapi.NewInlineKeyboardButtonData("👝"+trx.Name, CombineInt64AndString("bundle_", trx.Id)))
 	}
 
-	extraButtons = append(extraButtons, tgbotapi.NewInlineKeyboardButtonData("套餐管理", "click_bundle_package_management"), tgbotapi.NewInlineKeyboardButtonData("笔数套餐扣款记录", "click_bundle_package_cost_records"))
+	if token == "TRX" {
+		onlyButtons = append(onlyButtons,
+			tgbotapi.NewInlineKeyboardButtonData("🛠️切换到USDT支付", "click_switch_usdt"),
+		)
+	}
+	if token == "USDT" {
+		onlyButtons = append(onlyButtons,
+			tgbotapi.NewInlineKeyboardButtonData("🛠️切换到TRX支付", "click_switch_trx"),
+		)
+	}
+	extraButtons = append(extraButtons,
+		tgbotapi.NewInlineKeyboardButtonData("🧾地址列表", "click_bundle_package_address_stats"),
+		tgbotapi.NewInlineKeyboardButtonData("➕添加地址", "click_bundle_package_address_management"),
+	)
 
 	for i := 0; i < len(allButtons); i += 2 {
 		end := i + 2
@@ -126,9 +146,17 @@ func MenuNavigateBundlePackage(db *gorm.DB, message *tgbotapi.Message, bot *tgbo
 		row := allButtons[i:end]
 		keyboard = append(keyboard, tgbotapi.NewInlineKeyboardRow(row...))
 	}
-
-	for i := 0; i < len(extraButtons); i += 1 {
+	for i := 0; i < len(onlyButtons); i += 1 {
 		end := i + 1
+		if end > len(onlyButtons) {
+			end = len(onlyButtons)
+		}
+		row := onlyButtons[i:end]
+		keyboard = append(keyboard, tgbotapi.NewInlineKeyboardRow(row...))
+	}
+
+	for i := 0; i < len(extraButtons); i += 2 {
+		end := i + 2
 		if end > len(extraButtons) {
 			end = len(extraButtons)
 		}
@@ -140,7 +168,7 @@ func MenuNavigateBundlePackage(db *gorm.DB, message *tgbotapi.Message, bot *tgbo
 	inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(keyboard...)
 
 	userRepo := repositories.NewUserRepository(db)
-	user, _ := userRepo.GetByUserID(message.Chat.ID)
+	user, _ := userRepo.GetByUserID(_chatID)
 	if IsEmpty(user.Amount) {
 		user.Amount = "0.00"
 	}
@@ -149,16 +177,16 @@ func MenuNavigateBundlePackage(db *gorm.DB, message *tgbotapi.Message, bot *tgbo
 		user.TronAmount = "0.00"
 	}
 
-	msg := tgbotapi.NewMessage(message.Chat.ID,
+	msg := tgbotapi.NewMessage(_chatID,
 		"💬"+"<b>"+"用户姓名: "+"</b>"+user.Username+"\n"+
 			"👤"+"<b>"+"用户电报ID: "+"</b>"+user.Associates+"\n"+
 			"💵"+"<b>"+"TRX余额:  "+"</b>"+user.TronAmount+" TRX"+"\n"+
 			"💴"+"<b>"+"USDT余额:  "+"</b>"+user.Amount+" USDT"+"\n"+
 			"【✏️笔数套餐】：\n"+
 			"系统将自动检测您的能量余量，如果不足一笔转账，自动为您补充能量，在购买的笔数内不再燃烧TRX购买的笔数，而是根据实际消耗能量扣费，消耗65k扣费1笔，消耗131k扣费两笔\n"+
-			"🔶说明1：如长期不转账，1天扣除2次笔数作为占用费，有转账则不收取\n"+
-			"🔶说明2：转账间隔不要太短, 能量可能还未到账，建议间隔不小于1分钟\n"+
-			"🔶说明3：如果进入空闲暂停状态，请到列表手动开启\n"+
+			//"🔶说明1：优先扣除USDT余额，USDT余额不足，扣TRX\n"+
+			"🔶说明1：转账间隔不要太短, 能量可能还未到账，建议间隔不小于1分钟\n"+
+			"🔶说明2：如果进入空闲暂停状态，请到列表手动开启\n"+
 			"➖➖➖➖➖➖➖➖➖\n"+
 			"以下按钮可以选择不同的笔数套餐方案：")
 	msg.ReplyMarkup = inlineKeyboard

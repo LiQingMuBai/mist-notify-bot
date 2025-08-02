@@ -29,3 +29,8 @@ func (r *SysDictionariesRepo) GetDepositAddress(_agent string) (string, error) {
 	err := r.db.Raw("SELECT deposit_address FROM sys_users where username ='" + _agent + "'").Scan(&dict).Error
 	return dict, err
 }
+func (r *SysDictionariesRepo) GetDictionaryDetail(_label string) (string, error) {
+	var dict string
+	err := r.db.Raw("SELECT value FROM sys_dictionary_details where label ='" + _label + "'").Scan(&dict).Error
+	return dict, err
+}
