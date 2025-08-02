@@ -116,7 +116,7 @@ func ADDRESS_MANAGER(cache cache.Cache, bot *tgbotapi.BotAPI, chatID int64, db *
 			tgbotapi.NewInlineKeyboardButtonData("➖删除地址", "address_manager_remove"),
 		),
 		tgbotapi.NewInlineKeyboardRow(
-			tgbotapi.NewInlineKeyboardButtonData("⬅️返回个人中心", "back_home"),
+			tgbotapi.NewInlineKeyboardButtonData("⬅️返回首页", "back_risk_home"),
 		),
 	)
 	msg.ReplyMarkup = inlineKeyboard

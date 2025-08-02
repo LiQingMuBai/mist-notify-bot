@@ -30,19 +30,25 @@ func START_FREEZE_RISK_1(db *gorm.DB, callbackQuery *tgbotapi.CallbackQuery, bot
 	var COST_FROM_TRX bool
 	var COST_FROM_USDT bool
 
-	if CompareStringsWithFloat(user.TronAmount, "2800", float64(nums)) || CompareStringsWithFloat(user.Amount, "800", float64(nums)) {
+	sysDictionariesRepo := repositories.NewSysDictionariesRepo(db)
+
+	server_trx_price, _ := sysDictionariesRepo.GetDictionaryDetail("server_trx_price")
+
+	server_usdt_price, _ := sysDictionariesRepo.GetDictionaryDetail("server_usdt_price")
+
+	if CompareStringsWithFloat(user.TronAmount, server_trx_price, float64(nums)) || CompareStringsWithFloat(user.Amount, server_usdt_price, float64(nums)) {
 		//扣减
 
-		if CompareStringsWithFloat(user.TronAmount, "2800", float64(nums)) {
-			rest, _ := SubtractStringNumbers(user.TronAmount, "2800", float64(nums))
+		if CompareStringsWithFloat(user.TronAmount, server_trx_price, float64(nums)) {
+			rest, _ := SubtractStringNumbers(user.TronAmount, server_trx_price, float64(nums))
 
 			user.TronAmount = rest
 			userRepo.Update2(context.Background(), &user)
 			fmt.Printf("rest: %s", rest)
 			COST_FROM_TRX = true
 			//扣usdt
-		} else if CompareStringsWithFloat(user.Amount, "800", float64(nums)) {
-			rest, _ := SubtractStringNumbers(user.Amount, "800", float64(nums))
+		} else if CompareStringsWithFloat(user.Amount, server_usdt_price, float64(nums)) {
+			rest, _ := SubtractStringNumbers(user.Amount, server_usdt_price, float64(nums))
 			fmt.Printf("rest: %s", rest)
 			user.Amount = rest
 			userRepo.Update2(context.Background(), &user)
@@ -60,10 +66,10 @@ func START_FREEZE_RISK_1(db *gorm.DB, callbackQuery *tgbotapi.CallbackQuery, bot
 			event.Network = address.Network
 			event.Days = 1
 			if COST_FROM_TRX {
-				event.Amount = "2800 TRX"
+				event.Amount = server_trx_price + " TRX"
 			}
 			if COST_FROM_USDT {
-				event.Amount = "800 USDT"
+				event.Amount = server_usdt_price + " USDT"
 			}
 			userAddressEventRepo.Create(context.Background(), &event)
 		}

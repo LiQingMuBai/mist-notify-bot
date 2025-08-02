@@ -12,8 +12,20 @@ import (
 	. "ushield_bot/internal/infrastructure/tools"
 )
 
-func MenuNavigateAddressFreeze(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbotapi.Message) {
-	msg := tgbotapi.NewMessage(message.Chat.ID, "🛡️ U盾，做您链上资产的护盾！实时守护您的资产安全！\n\n地址一旦被链上风控冻，资产将难以追回，损失巨大！\n\n每天都有数百个 USDT 钱包地址被冻结锁定，风险就在身边！\n\nU盾将为您的地址提供 24 小时不间断监控\n\n⏰ 系统将在冻结前持续 10 分钟启动预警机制，每分钟推送提醒，通知您及时转移资产\n\n✅ 适用于经常收付款 / 高频交易 / 风险暴露地址\n\n✅ 支持在TRON网络下的USDT 钱包地址\n\n📌 服务价格（每地址）：\n\n- 2800 TRX / 30天\n- 或 800 USDT / 30天\n\n🎯 服务开启后系统将 24 小时不间断监控\n\n📩 所有预警信息将通过 Telegram 实时推送\n\n点击下方按钮开始 👇")
+func MenuNavigateAddressFreeze(cache cache.Cache, bot *tgbotapi.BotAPI, chatID int64, db *gorm.DB) {
+
+	userRepo := repositories.NewSysDictionariesRepo(db)
+
+	server_trx_price, _ := userRepo.GetDictionaryDetail("server_trx_price")
+
+	server_usdt_price, _ := userRepo.GetDictionaryDetail("server_usdt_price")
+
+	msg := tgbotapi.NewMessage(chatID, "🛡️ U盾，做您链上资产的护盾！实时守护您的资产安全！\n\n地址一旦被链上风控冻，"+
+		"资产将难以追回，损失巨大！\n\n每天都有数百个 USDT 钱包地址被冻结锁定，风险就在身边！\n\n"+
+		"U盾将为您的地址提供 24 小时不间断监控\n\n⏰ 系统将在冻结前持续 10 分钟启动预警机制，每分钟推送提醒，通知您及时转移资产\n\n"+
+		"✅ 适用于经常收付款 / 高频交易 / 风险暴露地址\n\n"+
+		"✅ 支持在TRON网络下的USDT 钱包地址\n\n📌 服务价格（每地址）：\n\n- "+server_trx_price+" TRX / 30天\n- 或 "+server_usdt_price+" USDT / 30天\n\n🎯 服务开启后系统将 24 小时不间断监控\n\n📩"+
+		" 所有预警信息将通过 Telegram 实时推送\n\n点击下方按钮开始 👇")
 	msg.ParseMode = "HTML"
 
 	inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
@@ -36,7 +48,7 @@ func MenuNavigateAddressFreeze(cache cache.Cache, bot *tgbotapi.BotAPI, message 
 	expiration := 1 * time.Minute // 短时间缓存空值
 
 	//设置用户状态
-	cache.Set(strconv.FormatInt(message.Chat.ID, 10), "usdt_risk_monitor", expiration)
+	cache.Set(strconv.FormatInt(chatID, 10), "usdt_risk_monitor", expiration)
 }
 
 func MenuNavigateAddressDetection(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbotapi.Message, db *gorm.DB) {
