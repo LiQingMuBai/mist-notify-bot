@@ -259,6 +259,8 @@ func handleRegularMessage(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbo
 		case strings.HasPrefix(status, "address_manager_add"):
 			service.ExtractAddressManager(message, db, bot)
 
+			service.ADDRESS_MANAGER(cache, bot, message.Chat.ID, db)
+
 		case strings.HasPrefix(status, "bundle_"):
 			fmt.Printf(">>>>>>>>>>>>>>>>>>>>bundle: %s", status)
 
@@ -679,7 +681,7 @@ func handleCallbackQuery(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery 
 		//设置用户状态
 		cache.Set(strconv.FormatInt(callbackQuery.Message.Chat.ID, 10), callbackQuery.Data, expiration)
 	case callbackQuery.Data == "address_manager":
-		service.ADDRESS_MANAGER(cache, bot, callbackQuery, db)
+		service.ADDRESS_MANAGER(cache, bot, callbackQuery.Message.Chat.ID, db)
 
 	case callbackQuery.Data == "deposit_amount":
 

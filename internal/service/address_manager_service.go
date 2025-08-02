@@ -30,7 +30,7 @@ func ExtractAddressManager(message *tgbotapi.Message, db *gorm.DB, bot *tgbotapi
 		if errsg != nil {
 		}
 
-		msg := tgbotapi.NewMessage(message.Chat.ID, "💬"+"<b>"+"地址添加成功 "+"</b>"+"\n")
+		msg := tgbotapi.NewMessage(message.Chat.ID, "✅"+"<b>"+"地址添加成功 "+"</b>"+"\n")
 		msg.ParseMode = "HTML"
 		bot.Send(msg)
 
@@ -95,25 +95,25 @@ func ADDRESS_LIST_TRACE(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery *
 	cache.Set(strconv.FormatInt(callbackQuery.Message.Chat.ID, 10), "address_list_trace", expiration)
 }
 
-func ADDRESS_MANAGER(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery *tgbotapi.CallbackQuery, db *gorm.DB) {
+func ADDRESS_MANAGER(cache cache.Cache, bot *tgbotapi.BotAPI, chatID int64, db *gorm.DB) {
 	userAddressRepo := repositories.NewUserAddressMonitorRepo(db)
 
-	addresses, _ := userAddressRepo.Query(context.Background(), callbackQuery.Message.Chat.ID)
+	addresses, _ := userAddressRepo.Query(context.Background(), chatID)
 
 	result := ""
 	for _, item := range addresses {
-		result += item.Address + "\n"
+		result += "<code>" + item.Address + "</code>" + "\n"
 	}
-	msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, "👇以下监控地址信息列表"+"\n"+result)
+	msg := tgbotapi.NewMessage(chatID, "👇以下监控地址信息列表"+"\n"+result)
 	//地址绑定
 
 	msg.ParseMode = "HTML"
 
 	inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardRow(
-			tgbotapi.NewInlineKeyboardButtonData("➕添加钱包", "address_manager_add"),
+			tgbotapi.NewInlineKeyboardButtonData("➕添加地址", "address_manager_add"),
 			//tgbotapi.NewInlineKeyboardButtonData("设置钱包", "address_manager"),
-			tgbotapi.NewInlineKeyboardButtonData("➖删除钱包", "address_manager_remove"),
+			tgbotapi.NewInlineKeyboardButtonData("➖删除地址", "address_manager_remove"),
 		),
 		tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData("⬅️返回个人中心", "back_home"),
@@ -126,5 +126,5 @@ func ADDRESS_MANAGER(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery *tgb
 	expiration := 1 * time.Minute // 短时间缓存空值
 
 	//设置用户状态
-	cache.Set(strconv.FormatInt(callbackQuery.Message.Chat.ID, 10), "address_manager", expiration)
+	cache.Set(strconv.FormatInt(chatID, 10), "address_manager", expiration)
 }
