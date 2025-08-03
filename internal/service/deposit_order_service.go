@@ -99,7 +99,7 @@ func DepositCancelOrder(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery *
 		tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData("💳充值", "deposit_amount"),
 			tgbotapi.NewInlineKeyboardButtonData("📄账单", "click_my_recepit"),
-			tgbotapi.NewInlineKeyboardButtonData("🛠️我的服务", "click_my_service"),
+			//	tgbotapi.NewInlineKeyboardButtonData("🛠️我的服务", "click_my_service"),
 		),
 		tgbotapi.NewInlineKeyboardRow(
 			//tgbotapi.NewInlineKeyboardButtonData("🔗绑定备用帐号", "click_backup_account"),

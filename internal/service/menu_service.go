@@ -145,9 +145,11 @@ func MenuNavigateBundlePackage(db *gorm.DB, _chatID int64, bot *tgbotapi.BotAPI,
 			tgbotapi.NewInlineKeyboardButtonData("🛠️切换到TRX支付", "click_switch_trx"),
 		)
 	}
+
 	extraButtons = append(extraButtons,
 		tgbotapi.NewInlineKeyboardButtonData("🧾地址列表", "click_bundle_package_address_stats"),
 		tgbotapi.NewInlineKeyboardButtonData("➕添加地址", "click_bundle_package_address_management"),
+		tgbotapi.NewInlineKeyboardButtonData("📜笔数套餐扣款记录", "click_bundle_package_cost_records"),
 	)
 
 	for i := 0; i < len(allButtons); i += 2 {
@@ -216,7 +218,7 @@ func MenuNavigateHome(db *gorm.DB, message *tgbotapi.Message, bot *tgbotapi.BotA
 		tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData("💳充值", "deposit_amount"),
 			tgbotapi.NewInlineKeyboardButtonData("📄账单", "click_my_recepit"),
-			tgbotapi.NewInlineKeyboardButtonData("🛠️我的服务", "click_my_service"),
+			//tgbotapi.NewInlineKeyboardButtonData("🛠️我的服务", "click_my_service"),
 		),
 		tgbotapi.NewInlineKeyboardRow(
 			//tgbotapi.NewInlineKeyboardButtonData("🔗绑定备用帐号", "click_backup_account"),

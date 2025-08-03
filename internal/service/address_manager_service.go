@@ -47,17 +47,19 @@ func ADDRESS_LIST_TRACE(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery *
 	// 初始化结果字符串
 	var result string
 
-	// 遍历数组并拼接字符串
-	for i, item := range addresses {
-		if i > 0 {
-			result += " ✅\n\n" // 添加分隔符
+	if len(addresses) > 0 {
+		// 遍历数组并拼接字符串
+		for i, item := range addresses {
+			if i > 0 {
+				result += " ✅\n\n" // 添加分隔符
+			}
+
+			restDays := fmt.Sprintf("%d", 30-item.Days)
+
+			result += "<code>" + item.Address + "</code>" + "（剩余" + restDays + "  天）"
 		}
-
-		restDays := fmt.Sprintf("%d", 30-item.Days)
-
-		result += item.Address + "（剩余" + restDays + "）"
+		result += " ✅\n\n" // 添加分隔符
 	}
-	result += " ✅\n\n" // 添加分隔符
 	//查看余额
 	userRepo := repositories.NewUserRepository(db)
 	user, _ := userRepo.GetByUserID(callbackQuery.Message.Chat.ID)
@@ -80,10 +82,11 @@ func ADDRESS_LIST_TRACE(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery *
 		tgbotapi.NewInlineKeyboardRow(
 			//tgbotapi.NewInlineKeyboardButtonData("解绑地址", "free_monitor_address"),
 			tgbotapi.NewInlineKeyboardButtonData("停止监控", "stop_freeze_risk"),
+			tgbotapi.NewInlineKeyboardButtonData("第二紧急通知", "user_backup_notify"),
 		),
 		tgbotapi.NewInlineKeyboardRow(
-			tgbotapi.NewInlineKeyboardButtonData("第二紧急通知", "user_backup_notify"),
-			//tgbotapi.NewInlineKeyboardButtonData("第二紧急通知", ""),
+
+			tgbotapi.NewInlineKeyboardButtonData("⬅️返回首页", "back_risk_home"),
 		),
 	)
 	msg.ReplyMarkup = inlineKeyboard

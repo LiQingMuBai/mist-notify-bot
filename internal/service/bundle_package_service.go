@@ -36,7 +36,7 @@ func ExtractBundlePackage(db *gorm.DB, callbackQuery *tgbotapi.CallbackQuery) tg
 			builder.WriteString("[")
 			builder.WriteString(word.CreatedDate)
 			builder.WriteString("]")
-			builder.WriteString("-")
+			builder.WriteString(" -")
 			builder.WriteString(word.Amount)
 			//builder.WriteString(" TRX ")
 			builder.WriteString(" （能量笔数套餐）")
@@ -98,7 +98,7 @@ func EXTRACT_NEXT_BUNDLE_PACKAGE_PAGE(callbackQuery *tgbotapi.CallbackQuery, db 
 		builder.WriteString("[")
 		builder.WriteString(word.CreatedDate)
 		builder.WriteString("]")
-		builder.WriteString("-")
+		builder.WriteString(" -")
 		builder.WriteString(word.Amount)
 		builder.WriteString(" （能量笔数套餐）")
 
@@ -153,7 +153,7 @@ func EXTRACT_PREV_BUNDLE_PACKAGE_PAGE(callbackQuery *tgbotapi.CallbackQuery, db 
 			builder.WriteString("[")
 			builder.WriteString(word.CreatedDate)
 			builder.WriteString("]")
-			builder.WriteString("+")
+			builder.WriteString(" -")
 			builder.WriteString(word.Amount)
 			builder.WriteString(" （能量笔数套餐）")
 
@@ -191,7 +191,7 @@ func EXTRACT_PREV_BUNDLE_PACKAGE_PAGE(callbackQuery *tgbotapi.CallbackQuery, db 
 			builder.WriteString("[")
 			builder.WriteString(word.CreatedDate)
 			builder.WriteString("]")
-			builder.WriteString("-")
+			builder.WriteString(" -")
 			builder.WriteString(word.Amount)
 			builder.WriteString(" （能量笔数套餐）")
 
