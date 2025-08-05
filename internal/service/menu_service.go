@@ -51,9 +51,9 @@ func MenuNavigateAddressFreeze(cache cache.Cache, bot *tgbotapi.BotAPI, chatID i
 	cache.Set(strconv.FormatInt(chatID, 10), "usdt_risk_monitor", expiration)
 }
 
-func MenuNavigateAddressDetection(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbotapi.Message, db *gorm.DB) {
+func MenuNavigateAddressDetection(cache cache.Cache, bot *tgbotapi.BotAPI, chatID int64, db *gorm.DB) {
 	userRepo := repositories.NewUserRepository(db)
-	user, _ := userRepo.GetByUserID(message.Chat.ID)
+	user, _ := userRepo.GetByUserID(chatID)
 
 	if IsEmpty(user.Amount) {
 		user.Amount = "0.00"
@@ -63,7 +63,7 @@ func MenuNavigateAddressDetection(cache cache.Cache, bot *tgbotapi.BotAPI, messa
 		user.TronAmount = "0.00"
 	}
 
-	msg := tgbotapi.NewMessage(message.Chat.ID, "🔍 欢迎使用 U盾地址风险检测\n\n支持 TRON 或 ETH 网络任意地址查询\n\n系统将基于链上行为、风险标签、关联实体进行评分与分析\n\n📊 风险等级说明：\n🟢 低风险（0–30）：无异常交易，未关联已知风险实体\n\n🟡 中风险（31–70）：存在少量高风险交互，对手方不明\n\n🟠 高风险（71–90）：频繁异常转账，或与恶意地址有关\n\n🔴 极高风险（91–100）：涉及诈骗、制裁、黑客、洗钱等高风险行为\n\n📌 每位用户每天可免费检测 1 次\n\n💰 超出后每次扣除 4 TRX 或 1 USDT（系统将优先扣除 TRX）\n\n💼 当前余额：\n\n"+
+	msg := tgbotapi.NewMessage(chatID, "🔍 欢迎使用 U盾地址风险检测\n\n支持 TRON 或 ETH 网络任意地址查询\n\n系统将基于链上行为、风险标签、关联实体进行评分与分析\n\n📊 风险等级说明：\n🟢 低风险（0–30）：无异常交易，未关联已知风险实体\n\n🟡 中风险（31–70）：存在少量高风险交互，对手方不明\n\n🟠 高风险（71–90）：频繁异常转账，或与恶意地址有关\n\n🔴 极高风险（91–100）：涉及诈骗、制裁、黑客、洗钱等高风险行为\n\n📌 每位用户每天可免费检测 1 次\n\n💰 超出后每次扣除 4 TRX 或 1 USDT（系统将优先扣除 TRX）\n\n💼 当前余额：\n\n"+
 		"- TRX："+user.TronAmount+"\n"+
 		"- USDT："+user.Amount+"\n"+
 		//"\n🔋 快速充值：\n➡️ 充值TRX\n➡️ 充值USDT\n\n请输入要检测的地址 👇")
@@ -83,7 +83,7 @@ func MenuNavigateAddressDetection(cache cache.Cache, bot *tgbotapi.BotAPI, messa
 	expiration := 1 * time.Minute // 短时间缓存空值
 
 	//设置用户状态
-	cache.Set(strconv.FormatInt(message.Chat.ID, 10), "usdt_risk_query", expiration)
+	cache.Set(strconv.FormatInt(chatID, 10), "usdt_risk_query", expiration)
 }
 
 func MenuNavigateEnergyExchange(db *gorm.DB, message *tgbotapi.Message, bot *tgbotapi.BotAPI) {

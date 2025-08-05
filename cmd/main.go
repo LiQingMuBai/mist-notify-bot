@@ -218,7 +218,7 @@ func handleHideCommand(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbotap
 func handleRegularMessage(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbotapi.Message, db *gorm.DB, _cookie string) {
 	switch message.Text {
 	case "🔍地址检测":
-		service.MenuNavigateAddressDetection(cache, bot, message, db)
+		service.MenuNavigateAddressDetection(cache, bot, message.Chat.ID, db)
 	case "🚨USDT冻结预警":
 		service.MenuNavigateAddressFreeze(cache, bot, message.Chat.ID, db)
 	case "🖊️笔数套餐":
@@ -320,6 +320,10 @@ func handleCallbackQuery(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery 
 	// 根据回调数据执行不同操作
 	var responseText string
 	switch {
+	case callbackQuery.Data == "back_address_detection_home":
+
+		service.MenuNavigateAddressDetection(cache, bot, callbackQuery.Message.Chat.ID, db)
+
 	case strings.HasPrefix(callbackQuery.Data, "dispatch_others_"):
 		bundleAddress := strings.ReplaceAll(callbackQuery.Data, "dispatch_others_", "")
 
@@ -606,6 +610,10 @@ func handleCallbackQuery(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery 
 			tgbotapi.NewInlineKeyboardRow(
 				tgbotapi.NewInlineKeyboardButtonData("地址监控列表", "address_list_trace"),
 			),
+			tgbotapi.NewInlineKeyboardRow(
+				tgbotapi.NewInlineKeyboardButtonData("冻结预警扣款记录", "address_freeze_risk_records"),
+				//tgbotapi.NewInlineKeyboardButtonData("第二紧急通知", ""),
+			),
 		)
 		msg.ReplyMarkup = inlineKeyboard
 
@@ -653,11 +661,11 @@ func handleCallbackQuery(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery 
 		inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 			tgbotapi.NewInlineKeyboardRow(
 				tgbotapi.NewInlineKeyboardButtonData("✅ 确认开通", "start_freeze_risk_1"),
-				tgbotapi.NewInlineKeyboardButtonData("❌ 取消操作", "start_freeze_risk_0"),
+				tgbotapi.NewInlineKeyboardButtonData("❌ 取消操作", "back_risk_home"),
 			),
-			//tgbotapi.NewInlineKeyboardRow(
-			//	tgbotapi.NewInlineKeyboardButtonData("地址", ""),
-			//),
+			tgbotapi.NewInlineKeyboardRow(
+				tgbotapi.NewInlineKeyboardButtonData("⬅️返回首页", "back_risk_home"),
+			),
 		)
 		msg.ReplyMarkup = inlineKeyboard
 
@@ -693,6 +701,10 @@ func handleCallbackQuery(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery 
 			),
 			tgbotapi.NewInlineKeyboardRow(
 				tgbotapi.NewInlineKeyboardButtonData("地址监控列表", "address_list_trace"),
+			),
+			tgbotapi.NewInlineKeyboardRow(
+				tgbotapi.NewInlineKeyboardButtonData("冻结预警扣款记录", "address_freeze_risk_records"),
+				//tgbotapi.NewInlineKeyboardButtonData("第二紧急通知", ""),
 			),
 		)
 		msg.ReplyMarkup = inlineKeyboard
@@ -751,10 +763,10 @@ func handleCallbackQuery(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery 
 		var extraButtons []tgbotapi.InlineKeyboardButton
 		var keyboard [][]tgbotapi.InlineKeyboardButton
 		for _, usdtRecord := range usdtlist {
-			allButtons = append(allButtons, tgbotapi.NewInlineKeyboardButtonData("🏦"+usdtRecord.Name, "deposit_usdt_"+usdtRecord.Amount))
+			allButtons = append(allButtons, tgbotapi.NewInlineKeyboardButtonData("💰"+usdtRecord.Name, "deposit_usdt_"+usdtRecord.Amount))
 		}
 
-		extraButtons = append(extraButtons, tgbotapi.NewInlineKeyboardButtonData("⚖️切换到TRX充值", "forward_deposit_usdt"), tgbotapi.NewInlineKeyboardButtonData("🔙返回个人中心", "back_home"))
+		extraButtons = append(extraButtons, tgbotapi.NewInlineKeyboardButtonData("🔘切换到TRX充值", "forward_deposit_usdt"), tgbotapi.NewInlineKeyboardButtonData("🔙返回个人中心", "back_home"))
 
 		for i := 0; i < len(allButtons); i += 2 {
 			end := i + 2
