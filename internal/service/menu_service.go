@@ -63,7 +63,12 @@ func MenuNavigateAddressDetection(cache cache.Cache, bot *tgbotapi.BotAPI, chatI
 		user.TronAmount = "0.00"
 	}
 
-	msg := tgbotapi.NewMessage(chatID, "🔍 欢迎使用 U盾地址风险检测\n\n支持 TRON 或 ETH 网络任意地址查询\n\n系统将基于链上行为、风险标签、关联实体进行评分与分析\n\n📊 风险等级说明：\n🟢 低风险（0–30）：无异常交易，未关联已知风险实体\n\n🟡 中风险（31–70）：存在少量高风险交互，对手方不明\n\n🟠 高风险（71–90）：频繁异常转账，或与恶意地址有关\n\n🔴 极高风险（91–100）：涉及诈骗、制裁、黑客、洗钱等高风险行为\n\n📌 每位用户每天可免费检测 1 次\n\n💰 超出后每次扣除 4 TRX 或 1 USDT（系统将优先扣除 TRX）\n\n💼 当前余额：\n\n"+
+	dictRepo := repositories.NewSysDictionariesRepo(db)
+
+	address_detection_cost, _ := dictRepo.GetDictionaryDetail("address_detection_cost")
+	address_detection_cost_usdt, _ := dictRepo.GetDictionaryDetail("address_detection_cost_usdt")
+
+	msg := tgbotapi.NewMessage(chatID, "🔍 欢迎使用 U盾地址风险检测\n\n支持 TRON 或 ETH 网络任意地址查询\n\n系统将基于链上行为、风险标签、关联实体进行评分与分析\n\n📊 风险等级说明：\n🟢 低风险（0–30）：无异常交易，未关联已知风险实体\n\n🟡 中风险（31–70）：存在少量高风险交互，对手方不明\n\n🟠 高风险（71–90）：频繁异常转账，或与恶意地址有关\n\n🔴 极高风险（91–100）：涉及诈骗、制裁、黑客、洗钱等高风险行为\n\n📌 每位用户每天可免费检测 1 次\n\n💰 超出后每次扣除 "+address_detection_cost+"TRX 或 "+address_detection_cost_usdt+"USDT（系统将优先扣除 TRX）\n\n💼 当前余额：\n\n"+
 		"- TRX："+user.TronAmount+"\n"+
 		"- USDT："+user.Amount+"\n"+
 		//"\n🔋 快速充值：\n➡️ 充值TRX\n➡️ 充值USDT\n\n请输入要检测的地址 👇")

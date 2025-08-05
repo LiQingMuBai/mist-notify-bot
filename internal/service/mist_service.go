@@ -21,12 +21,33 @@ func ExtractSlowMistRiskQuery(message *tgbotapi.Message, db *gorm.DB, _cookie st
 		//}
 
 		if user.Times == 1 {
-
+			dictRepo := repositories.NewSysDictionariesRepo(db)
+			address_detection_cost_trx, _ := dictRepo.GetDictionaryDetail("address_detection_cost")
+			address_detection_cost_usdt, _ := dictRepo.GetDictionaryDetail("address_detection_cost_usdt")
+			feedback := ""
 			//需要扣钱 4trx或者1u
-			if CompareStringsWithFloat(user.Amount, "1", 1) || CompareStringsWithFloat(user.TronAmount, "4", 1) {
+			if CompareStringsWithFloat(user.Amount, address_detection_cost_usdt, 1) || CompareStringsWithFloat(user.TronAmount, address_detection_cost_trx, 1) {
 
-				if CompareStringsWithFloat(user.Amount, "1", 1) {
-					amount, _ := SubtractStringNumbers(user.Amount, "1", 1)
+				if CompareStringsWithFloat(user.TronAmount, address_detection_cost_trx, 1) {
+					tronAmount, _ := SubtractStringNumbers(user.TronAmount, address_detection_cost_trx, 1)
+					user.TronAmount = tronAmount
+					err := userRepo.Update2(context.Background(), &user)
+					if err != nil {
+						fmt.Println("错误： ", err)
+					}
+
+					userAddressDetectionRepo := repositories.NewUserAddressDetectionRepository(db)
+					var record domain.UserAddressDetection
+					record.Status = 1
+					record.Amount = address_detection_cost_trx
+					record.ChatID = message.Chat.ID
+					record.Address = message.Text
+					userAddressDetectionRepo.Create(context.Background(), &record)
+
+					feedback = "✅" + "🧾地址检测扣款成功一笔，消耗" + address_detection_cost_trx + " TRX \n\n"
+
+				} else if CompareStringsWithFloat(user.Amount, address_detection_cost_usdt, 1) {
+					amount, _ := SubtractStringNumbers(user.Amount, address_detection_cost_usdt, 1)
 					user.Amount = amount
 					err := userRepo.Update2(context.Background(), &user)
 					if err != nil {
@@ -37,26 +58,12 @@ func ExtractSlowMistRiskQuery(message *tgbotapi.Message, db *gorm.DB, _cookie st
 
 					var record domain.UserAddressDetection
 					record.Status = 1
-					record.Amount = "4"
+					record.Amount = address_detection_cost_usdt
 					record.ChatID = message.Chat.ID
 					record.Address = message.Text
 					userAddressDetectionRepo.Create(context.Background(), &record)
 
-				} else if CompareStringsWithFloat(user.TronAmount, "4", 1) {
-					tronAmount, _ := SubtractStringNumbers(user.TronAmount, "4", 1)
-					user.TronAmount = tronAmount
-					err := userRepo.Update2(context.Background(), &user)
-					if err != nil {
-						fmt.Println("错误： ", err)
-					}
-
-					userAddressDetectionRepo := repositories.NewUserAddressDetectionRepository(db)
-					var record domain.UserAddressDetection
-					record.Status = 1
-					record.Amount = "4"
-					record.ChatID = message.Chat.ID
-					record.Address = message.Text
-					userAddressDetectionRepo.Create(context.Background(), &record)
+					feedback = "✅" + "🧾地址检测扣款成功一笔，消耗" + address_detection_cost_usdt + " USDT \n\n"
 
 				}
 				_text := ""
@@ -118,6 +125,11 @@ func ExtractSlowMistRiskQuery(message *tgbotapi.Message, db *gorm.DB, _cookie st
 				msg.ParseMode = "HTML"
 				bot.Send(msg)
 				userRepo.UpdateTimesByChatID(1, message.Chat.ID)
+
+				msg2 := tgbotapi.NewMessage(message.Chat.ID, feedback)
+				msg2.ParseMode = "HTML"
+				bot.Send(msg2)
+
 			} else {
 				//msg := tgbotapi.NewMessage(message.Chat.ID,
 				//	"🔍普通用戶每日贈送 1 次地址風險查詢\n"+
@@ -134,6 +146,9 @@ func ExtractSlowMistRiskQuery(message *tgbotapi.Message, db *gorm.DB, _cookie st
 				inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 					tgbotapi.NewInlineKeyboardRow(
 						tgbotapi.NewInlineKeyboardButtonData("💵充值", "deposit_amount"),
+					),
+					tgbotapi.NewInlineKeyboardRow(
+						tgbotapi.NewInlineKeyboardButtonData("🔙返回个人中心", "back_home"),
 					),
 				)
 
