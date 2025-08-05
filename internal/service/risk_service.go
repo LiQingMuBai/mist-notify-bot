@@ -89,6 +89,12 @@ func START_FREEZE_RISK_1(db *gorm.DB, callbackQuery *tgbotapi.CallbackQuery, bot
 
 		msg.ReplyMarkup = inlineKeyboard
 		bot.Send(msg)
+
+		feedback := "✅" + "🧾USDT地址冻结预警扣款成功\n\n"
+		msg2 := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, feedback)
+		msg2.ParseMode = "HTML"
+		bot.Send(msg2)
+		
 	} else {
 
 		//余额不足，需充值
