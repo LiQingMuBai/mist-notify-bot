@@ -61,7 +61,14 @@ func main() {
 	bot.Debug = true
 	log.Printf("Authorized on account %s", bot.Self.UserName)
 
-	_cookie := os.Getenv("COOKIE")
+	_cookie1 := os.Getenv("COOKIE1")
+	_cookie2 := os.Getenv("COOKIE2")
+	_cookie3 := os.Getenv("COOKIE3")
+
+	// 1. 创建字符串数组
+	cookies := []string{_cookie1, _cookie2, _cookie3}
+
+	_cookie := RandomCookiesString(cookies)
 
 	cache := cache.NewMemoryCache()
 	// 设置命令

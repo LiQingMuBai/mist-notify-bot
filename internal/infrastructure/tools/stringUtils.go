@@ -1,14 +1,20 @@
 package tools
 
 import (
-	"crypto/rand"
 	"fmt"
-	"math/big"
+	"math/rand"
 	"regexp"
 	"strconv"
 	"strings"
 	"unicode"
 )
+
+func RandomCookiesString(strings []string) string {
+	if len(strings) == 0 {
+		return ""
+	}
+	return strings[rand.Intn(len(strings))]
+}
 
 // 从字符串中提取"笔"前面的数值
 // 示例: ExtractNumberBeforeBi("10笔（12U）") 返回 10, nil
@@ -233,16 +239,17 @@ func DeleteWhitespace(s string) string {
 	}, s)
 }
 
-// RandomString 生成随机字符串
-func RandomString(length int) string {
-	const letters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
-	result := make([]byte, length)
-	for i := 0; i < length; i++ {
-		num, _ := rand.Int(rand.Reader, big.NewInt(int64(len(letters))))
-		result[i] = letters[num.Int64()]
-	}
-	return string(result)
-}
+//
+//// RandomString 生成随机字符串
+//func RandomString(length int) string {
+//	const letters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+//	result := make([]byte, length)
+//	for i := 0; i < length; i++ {
+//		num, _ := rand.Int(rand.Reader, big.NewInt(int64(len(letters))))
+//		result[i] = letters[num.Int64()]
+//	}
+//	return string(result)
+//}
 
 // IsEmail 检查字符串是否是有效的电子邮件地址
 func IsEmail(s string) bool {
