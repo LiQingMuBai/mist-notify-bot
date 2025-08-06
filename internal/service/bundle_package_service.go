@@ -416,7 +416,9 @@ func DispatchOthers(bundleID string, cache cache.Cache, bot *tgbotapi.BotAPI, _c
 
 	addresses, _ := userOperationPackageAddressesRepo.Query(context.Background(), _chatID)
 
-	msg := tgbotapi.NewMessage(_chatID, "👇请选择要派送的地址："+"\n")
+	msg := tgbotapi.NewMessage(_chatID, "我们设置了 "+"<b>「仅允许派送至已管理的地址」</b>"+" 的安全规则。这样可以更有效地保障您的资产安全，避免因误操作导致能量丢失。\n\n"+
+		"如果您尚未添加可用的接收地址，请前往<b>【首页】 ➝ 【添加地址】</b> 进行添加，完成后即可正常使用派送功能。\n\n📌 安全提示：建议定期检查并更新您的地址列表，确保所有地址均为您可控的合法地址。"+"\n\n"+
+		"👇请选择要派送的地址："+"\n\n")
 	//地址绑定
 
 	msg.ParseMode = "HTML"
