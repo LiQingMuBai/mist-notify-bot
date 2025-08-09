@@ -68,6 +68,8 @@ func main() {
 	// 1. 创建字符串数组
 	cookies := []string{_cookie1, _cookie2, _cookie3}
 
+	fmt.Printf("cookies: %s\n", cookies)
+
 	_cookie := RandomCookiesString(cookies)
 
 	cache := cache.NewMemoryCache()
@@ -205,9 +207,7 @@ func handleStartCommand(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbota
 	keyboard.ResizeKeyboard = true
 	keyboard.Selective = false
 
-	msg := tgbotapi.NewMessage(message.Chat.ID, "U盾，做您链上资产的护盾！\n\n我们不仅关注低价能量，更专注于交易安全！\n\n让每一笔转账都更安心，让每一次链上交互都值得信任！\n\n🤖 "+
-		"三大实用功能，助您安全、高效地管理链上资产\n\n🔋 波场能量闪兑\n\n🕵️ 地址风险检测\n\n🚨 USDT冻结预警\n\n您好："+message.Chat.UserName+" 欢迎使用U盾机器人\nU盾，做您链上资产的护盾！\n\n🔋 波场能量闪兑, 节省超过70%!\n🕵️ 地址风险检测, 让每一笔转账都更安心!\n"+
-		"🚨 USDT冻结预警,秒级响应，让您的U永不冻结！\n新用户福利：\n每日一次地址风险查询\n常用指令：\n个人中心\n能量闪兑\n地址风险检测\nUSDT冻结预警\n客服：@Ushield001")
+	msg := tgbotapi.NewMessage(message.Chat.ID, "🛡️U盾，做您链上资产的护盾！\n我们不仅关注低价能量，更专注于交易安全！\n让每一笔转账都更安心，让每一次链上交互都值得信任！\n🤖 三大实用功能，助您安全、高效地管理链上资产\n🔋 波场能量闪兑, 节省超过80%!\n🕵️ 地址风险检测, 让每一笔转账都更安心!\n🚨 USDT冻结预警,秒级响应，让您的U永不冻结！\n🎉新用户福利：每日一次免费地址风险查询")
 	msg.ReplyMarkup = keyboard
 	msg.ParseMode = "HTML"
 	bot.Send(msg)
@@ -327,6 +327,7 @@ func handleCallbackQuery(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery 
 	// 根据回调数据执行不同操作
 	var responseText string
 	switch {
+
 	case callbackQuery.Data == "back_address_detection_home":
 
 		service.MenuNavigateAddressDetection(cache, bot, callbackQuery.Message.Chat.ID, db)

@@ -95,7 +95,7 @@ func MenuNavigateEnergyExchange(db *gorm.DB, message *tgbotapi.Message, bot *tgb
 	// 当点击"按钮 1"时显示内联键盘
 	inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardRow(
-			tgbotapi.NewInlineKeyboardButtonData("💵充值", "deposit_amount"),
+			tgbotapi.NewInlineKeyboardButtonData("🖊️笔数套餐", "back_bundle_package"),
 		),
 	)
 	_agent := os.Getenv("Agent")
@@ -110,13 +110,21 @@ func MenuNavigateEnergyExchange(db *gorm.DB, message *tgbotapi.Message, bot *tgb
 	energy_cost, _ := dictDetailRepo.GetDictionaryDetail("energy_cost")
 
 	energy_cost_2x, _ := StringMultiply(energy_cost, 2)
-	old_str := "【⚡️能量闪租】\n🔸转账  " + energy_cost + " Trx=  1 笔能量\n🔸转账  " + energy_cost_2x + " Trx=  2 笔能量\n\n单笔 " + energy_cost + " Trx，以此类推，最大 5 笔\n" +
-		"1.向无U地址转账，需要双倍能量。\n2.请在1小时内转账，否则过期回收。\n\n🔸闪租能量收款地址:\n"
+	energy_cost_10x, _ := StringMultiply(energy_cost, 10)
+	//old_str := "【⚡️能量闪租】\n🔸转账  " + energy_cost + " Trx=  1 笔能量\n🔸转账  " + energy_cost_2x + " Trx=  2 笔能量\n\n单笔 " + energy_cost + " Trx，以此类推，最大10 笔\n" +
+	//"1.向无U地址转账，需要双倍能量。\n2.请在1小时内转账，否则过期回收。\n\n🔸闪租能量收款地址:\n"
 
 	//old_str = "【⚡️能量闪租】\n\n 转账 3 TRX，系统自动按原路返还一笔能量，\n 如需向无U地址转账 ，请转账 6 TRX（返还两笔能量）\n\n"
+
+	old_str := "欢迎使用U盾能量闪兑\n🔸转账  " + energy_cost + " Trx=  1 笔能量\n🔸转账  " + energy_cost_2x + " Trx=  2 笔能量\n🔸闪兑收款地址: "
 	msg := tgbotapi.NewMessage(message.Chat.ID, old_str+
 		"<code>"+receiveAddress+"</code>"+"\n"+
-		"➖➖➖➖➖➖➖➖➖\n以下按钮可以选择其他能量租用模式：\n温馨提醒：\n闪租地址保存地址本要打上醒目标识，以免转账转错！")
+		"➖➖➖➖"+"点击复制"+"➖➖➖➖\n重要提示："+"\n"+
+		"1.单笔 "+energy_cost+"Trx，以此类推，一次最大 10笔（"+energy_cost_10x+"TRX，超出不予入账）\n"+
+		"2.向无U地址转账，需要购买两笔能量\n"+
+		"3.向闪兑地址转账成功后能量将即时按充值地址原路完成闪兑\n"+
+		"4.禁止使用交易所钱包提币使用",
+	)
 	msg.ReplyMarkup = inlineKeyboard
 	msg.ParseMode = "HTML"
 	//msg.DisableWebPagePreview = true

@@ -6,6 +6,7 @@ toolchain go1.24.1
 
 require (
 	github.com/btcsuite/btcd/btcutil v1.1.6
+	github.com/bwmarrin/discordgo v0.29.0
 	github.com/ethereum/go-ethereum v1.15.11
 	github.com/fbsobreira/gotron-sdk v0.0.0-20250427130616-96b87f5d2100
 	github.com/go-playground/validator/v10 v10.22.0
@@ -17,6 +18,7 @@ require (
 	github.com/magiconair/properties v1.8.7
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/viper v1.19.0
+	golang.org/x/crypto v0.36.0
 	gorm.io/driver/mysql v1.5.7
 	gorm.io/gorm v1.26.1
 )
@@ -30,6 +32,7 @@ require (
 	github.com/gabriel-vasile/mimetype v1.4.3 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
+	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/holiman/uint256 v1.3.2 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
@@ -53,7 +56,6 @@ require (
 	github.com/tyler-smith/go-bip39 v1.1.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.27.0 // indirect
-	golang.org/x/crypto v0.36.0 // indirect
 	golang.org/x/exp v0.0.0-20230905200255-921286631fa9 // indirect
 	golang.org/x/net v0.38.0 // indirect
 	golang.org/x/sys v0.31.0 // indirect
