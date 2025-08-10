@@ -28,7 +28,11 @@ func DepositPrevUSDTOrder(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery
 	if esg != nil {
 		fmt.Printf("Failed to update user: " + esg.Error())
 		msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID,
-			"⚠请等待10分钟，充值通道暂时关闭"+"\n")
+			"由于波场(TRON)网络出现不稳定情况，可能导致交易延迟或失败。"+
+				"为保障用户资产安全，我们决定暂时关闭波场(TRON)网络的充值通道，待网络稳定后重新开放。"+
+				"\n✅ 其他功能：预警、检测、笔数套餐等业务均正常运作，不受影响。\n"+
+				"建议：\n🔹 如需充值，请等待10分钟后再尝试。\n\n"+
+				"我们正在密切关注波场(TRON)网络情况，由此带来的不便，敬请谅解！")
 
 		inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 			tgbotapi.NewInlineKeyboardRow(
@@ -44,7 +48,11 @@ func DepositPrevUSDTOrder(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery
 	}
 	if placeholder.Id == 0 {
 		msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID,
-			"⚠请等待10分钟，充值通道暂时关闭"+"\n")
+			"由于波场(TRON)网络出现不稳定情况，可能导致交易延迟或失败。"+
+				"为保障用户资产安全，我们决定暂时关闭波场(TRON)网络的充值通道，待网络稳定后重新开放。"+
+				"\n✅ 其他功能：预警、检测、笔数套餐等业务均正常运作，不受影响。\n"+
+				"建议：\n🔹 如需充值，请等待10分钟后再尝试。\n\n"+
+				"我们正在密切关注波场(TRON)网络情况，由此带来的不便，敬请谅解！")
 
 		inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 			tgbotapi.NewInlineKeyboardRow(
@@ -215,7 +223,11 @@ func DepositPrevOrder(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery *tg
 	if esg != nil {
 		fmt.Printf("Failed to update user: " + esg.Error())
 		msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID,
-			"⚠请等待10分钟，充值通道暂时关闭"+"\n")
+			"由于波场(TRON)网络出现不稳定情况，可能导致交易延迟或失败。"+
+				"为保障用户资产安全，我们决定暂时关闭波场(TRON)网络的充值通道，待网络稳定后重新开放。"+
+				"\n✅ 其他功能：预警、检测、笔数套餐等业务均正常运作，不受影响。\n"+
+				"建议：\n🔹 如需充值，请等待10分钟后再尝试。\n\n"+
+				"我们正在密切关注波场(TRON)网络情况，由此带来的不便，敬请谅解！")
 
 		inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 			tgbotapi.NewInlineKeyboardRow(
@@ -232,7 +244,11 @@ func DepositPrevOrder(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery *tg
 	}
 	if placeholder.Id == 0 {
 		msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID,
-			"⚠请等待10分钟，充值通道暂时关闭"+"\n")
+			"由于波场(TRON)网络出现不稳定情况，可能导致交易延迟或失败。"+
+				"为保障用户资产安全，我们决定暂时关闭波场(TRON)网络的充值通道，待网络稳定后重新开放。"+
+				"\n✅ 其他功能：预警、检测、笔数套餐等业务均正常运作，不受影响。\n"+
+				"建议：\n🔹 如需充值，请等待10分钟后再尝试。\n\n"+
+				"我们正在密切关注波场(TRON)网络情况，由此带来的不便，敬请谅解！")
 
 		inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 			tgbotapi.NewInlineKeyboardRow(
