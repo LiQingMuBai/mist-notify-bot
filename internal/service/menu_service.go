@@ -76,7 +76,7 @@ func MenuNavigateAddressDetection(cache cache.Cache, bot *tgbotapi.BotAPI, chatI
 		"📌 每位用户每天可免费检测 1 次\n"+
 		"📌 超出后每次扣除 "+address_detection_cost+"TRX 或 "+address_detection_cost_usdt+"USDT（系统将优先扣除 TRX）\n"+
 		"💰当前余额：\n"+
-		"- TRX："+user.TronAmount+"  - USDT："+user.Amount+"\n"+
+		"- TRX："+user.TronAmount+"\n"+"- USDT："+user.Amount+"\n"+
 		//"\n🔋 快速充值：\n➡️ 充值TRX\n➡️ 充值USDT\n\n请输入要检测的地址 👇")
 		"请输入要检测的地址 👇")
 	msg.ParseMode = "HTML"
@@ -236,6 +236,7 @@ func MenuNavigateHome(db *gorm.DB, message *tgbotapi.Message, bot *tgbotapi.BotA
 		//),
 		tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData("💳充值", "deposit_amount"),
+			tgbotapi.NewInlineKeyboardButtonData("🔗第二通知人", "click_backup_account"),
 			tgbotapi.NewInlineKeyboardButtonData("📄账单", "click_my_recepit"),
 			//tgbotapi.NewInlineKeyboardButtonData("🛠️我的服务", "click_my_service"),
 		),
@@ -261,9 +262,9 @@ func MenuNavigateHome(db *gorm.DB, message *tgbotapi.Message, bot *tgbotapi.BotA
 
 	str := ""
 	if len(user.BackupChatID) > 0 {
-		id, _ := strconv.ParseInt(user.BackupChatID, 10, 64)
-		backup_user, _ := userRepo.GetByUserID(id)
-		str = "🔗 已绑定备用账号  " + "@" + backup_user.Username + "（权限：观察者模式）"
+		//id, _ := strconv.ParseInt(user.BackupChatID, 10, 64)
+		//backup_user, _ := userRepo.GetByUserID(id)
+		str = "🔗 第二通知人：  " + "@" + user.BackupChatID
 	} else {
 		str = "未绑定备用帐号"
 	}

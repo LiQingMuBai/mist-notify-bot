@@ -3,12 +3,11 @@ package service
 import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"gorm.io/gorm"
-	"strconv"
 	"ushield_bot/internal/infrastructure/repositories"
 	. "ushield_bot/internal/infrastructure/tools"
 )
 
-func BackHOME(db *gorm.DB, callbackQuery *tgbotapi.CallbackQuery, bot *tgbotapi.BotAPI) {
+func BackHOME(db *gorm.DB, chatID int64, bot *tgbotapi.BotAPI) {
 	inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 		//tgbotapi.NewInlineKeyboardRow(
 		//	tgbotapi.NewInlineKeyboardButtonData("🆔我的账户", "click_my_account"),
@@ -16,8 +15,8 @@ func BackHOME(db *gorm.DB, callbackQuery *tgbotapi.CallbackQuery, bot *tgbotapi.
 		//),
 		tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData("💳充值", "deposit_amount"),
+			tgbotapi.NewInlineKeyboardButtonData("🔗第二通知人", "click_backup_account"),
 			tgbotapi.NewInlineKeyboardButtonData("📄账单", "click_my_recepit"),
-			//	tgbotapi.NewInlineKeyboardButtonData("🛠️我的服务", "click_my_service"),
 		),
 		tgbotapi.NewInlineKeyboardRow(
 			//tgbotapi.NewInlineKeyboardButtonData("🔗绑定备用帐号", "click_backup_account"),
@@ -30,7 +29,7 @@ func BackHOME(db *gorm.DB, callbackQuery *tgbotapi.CallbackQuery, bot *tgbotapi.
 		//),
 	)
 	userRepo := repositories.NewUserRepository(db)
-	user, _ := userRepo.GetByUserID(callbackQuery.Message.Chat.ID)
+	user, _ := userRepo.GetByUserID(chatID)
 
 	if IsEmpty(user.Amount) {
 		user.Amount = "0.00"
@@ -42,14 +41,14 @@ func BackHOME(db *gorm.DB, callbackQuery *tgbotapi.CallbackQuery, bot *tgbotapi.
 
 	str := ""
 	if len(user.BackupChatID) > 0 {
-		id, _ := strconv.ParseInt(user.BackupChatID, 10, 64)
-		backup_user, _ := userRepo.GetByUserID(id)
-		str = "🔗 已绑定备用账号  " + "@" + backup_user.Username + "（权限：观察者模式）"
+		//id, _ := strconv.ParseInt(user.BackupChatID, 10, 64)
+		//backup_user, _ := userRepo.GetByUserID(id)
+		str = "🔗 第二通知人：  " + "@" + user.BackupChatID
 	} else {
 		str = "未绑定备用帐号"
 	}
 
-	msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, "📇 我的账户\n\n🆔 用户ID："+user.Associates+"\n\n👤 用户名：@"+user.Username+"\n\n"+
+	msg := tgbotapi.NewMessage(chatID, "📇 我的账户\n\n🆔 用户ID："+user.Associates+"\n\n👤 用户名：@"+user.Username+"\n\n"+
 		str+"\n\n💰 "+
 		"当前余额：\n\n"+
 		"- TRX："+user.TronAmount+"\n"+

@@ -167,6 +167,7 @@ func DepositCancelOrder(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery *
 		//),
 		tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData("💳充值", "deposit_amount"),
+			tgbotapi.NewInlineKeyboardButtonData("🔗第二通知人", "click_backup_account"),
 			tgbotapi.NewInlineKeyboardButtonData("📄账单", "click_my_recepit"),
 			//	tgbotapi.NewInlineKeyboardButtonData("🛠️我的服务", "click_my_service"),
 		),
@@ -193,9 +194,9 @@ func DepositCancelOrder(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery *
 
 	str := ""
 	if len(user.BackupChatID) > 0 {
-		id, _ := strconv.ParseInt(user.BackupChatID, 10, 64)
-		backup_user, _ := userRepo.GetByUserID(id)
-		str = "🔗 已绑定备用账号  " + "@" + backup_user.Username + "（权限：观察者模式）"
+		//id, _ := strconv.ParseInt(user.BackupChatID, 10, 64)
+		//backup_user, _ := userRepo.GetByUserID(id)
+		str = "🔗 第二通知人：  " + "@" + user.BackupChatID
 	} else {
 		str = "未绑定备用帐号"
 	}

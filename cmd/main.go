@@ -309,6 +309,45 @@ func handleRegularMessage(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbo
 				return
 			}
 
+		case strings.HasPrefix(status, "click_backup_account"):
+
+			if !strings.Contains(message.Text, "@") {
+				msg := tgbotapi.NewMessage(message.Chat.ID, "❌ 用户名格式有误，请重新输入")
+				msg.ParseMode = "HTML"
+				bot.Send(msg)
+				return
+			}
+			userName := strings.ReplaceAll(message.Text, "@", "")
+
+			userRepo := repositories.NewUserRepository(db)
+			user, err := userRepo.GetByUsername(userName)
+
+			if err != nil {
+				msg := tgbotapi.NewMessage(message.Chat.ID, "❌ 用户名格式有误，请重新输入")
+				msg.ParseMode = "HTML"
+				bot.Send(msg)
+				return
+			}
+
+			if user.Id == 0 {
+				msg := tgbotapi.NewMessage(message.Chat.ID, "❌ 用户名格式有误，请重新输入")
+				msg.ParseMode = "HTML"
+				bot.Send(msg)
+				return
+			}
+
+			user.BackupChatID = userName
+
+			err2 := userRepo.UpdateBackupChat(context.Background(), userName, message.Chat.ID)
+			if err2 == nil {
+				msg := tgbotapi.NewMessage(message.Chat.ID, "✅ 成功绑定第二紧急联系人: "+message.Text)
+				msg.ParseMode = "HTML"
+				bot.Send(msg)
+				//return true
+			}
+
+			service.BackHOME(db, message.Chat.ID, bot)
+
 		case strings.HasPrefix(status, "usdt_risk_query"):
 			//fmt.Printf("bundle: %s", status)
 			service.ExtractSlowMistRiskQuery(message, db, _cookie, bot)
@@ -402,6 +441,28 @@ func handleCallbackQuery(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery 
 
 		target := strings.ReplaceAll(callbackQuery.Data, "config_bundle_package_address_", "")
 		service.CONFIG_BUNDLE_PACKAGE_ADDRESS(target, cache, bot, callbackQuery.Message, db)
+	case callbackQuery.Data == "click_backup_account":
+
+		msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, "👥欢迎使用第二通知人服务"+"\n"+
+			"为确保实时接收预警信息，您可绑定一个第二通知人TG帐号。"+"\n"+
+			"绑定后该账号将同步接收预警信息，请确保第二通知人已与本机器人互动。"+"\n"+
+			"第二通知人替换请直接重复绑定步骤，系统将自动替换。请输入的第二通知人TG帐号@用户名 👇")
+		msg.ParseMode = "HTML"
+
+		inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
+			tgbotapi.NewInlineKeyboardRow(
+				tgbotapi.NewInlineKeyboardButtonData("返回个人中心", "back_home"),
+				//tgbotapi.NewInlineKeyboardButtonData("第二紧急通知", ""),
+			),
+		)
+		msg.ReplyMarkup = inlineKeyboard
+
+		bot.Send(msg)
+
+		expiration := 1 * time.Minute // 短时间缓存空值
+
+		//设置用户状态
+		cache.Set(strconv.FormatInt(callbackQuery.Message.Chat.ID, 10), "click_backup_account", expiration)
 
 	case callbackQuery.Data == "back_risk_home":
 		service.MenuNavigateAddressFreeze(cache, bot, callbackQuery.Message.Chat.ID, db)
@@ -463,7 +524,7 @@ func handleCallbackQuery(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery 
 	case callbackQuery.Data == "address_list_trace":
 		service.ADDRESS_LIST_TRACE(cache, bot, callbackQuery, db)
 	case callbackQuery.Data == "back_home":
-		service.BackHOME(db, callbackQuery, bot)
+		service.BackHOME(db, callbackQuery.Message.Chat.ID, bot)
 	case callbackQuery.Data == "click_business_cooperation":
 		service.ClickBusinessCooperation(callbackQuery, bot)
 	case callbackQuery.Data == "click_callcenter":

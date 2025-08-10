@@ -20,6 +20,12 @@ func NewUserRepository(db *gorm.DB) *UserRepository {
 func (r *UserRepository) Update2(ctx context.Context, user *domain.User) error {
 	return r.db.WithContext(ctx).Save(user).Error
 }
+func (r *UserRepository) UpdateBackupChat(ctx context.Context, backup string, _associates int64) error {
+	query := "UPDATE tg_users SET backup_chat_id = ?  WHERE associates = ?"
+	tx := r.db.Exec(query, backup, _associates)
+	return tx.Error
+}
+
 func (r *UserRepository) Create2(ctx context.Context, user *domain.User) error {
 	return r.db.WithContext(ctx).Create(user).Error
 }
