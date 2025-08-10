@@ -48,3 +48,10 @@ func (r *UserTRXPlaceholdersRepository) Find(ctx context.Context) (domain.UserTR
 	return placeholders[0], err
 
 }
+func (r *UserTRXPlaceholdersRepository) Query(ctx context.Context) (domain.UserTRXPlaceholders, error) {
+	var placeholders domain.UserTRXPlaceholders
+	err := r.db.WithContext(ctx).
+		Find(&placeholders, "status = ?", 0).Error
+	return placeholders, err
+
+}

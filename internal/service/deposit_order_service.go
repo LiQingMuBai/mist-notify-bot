@@ -22,12 +22,42 @@ func DepositPrevUSDTOrder(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery
 	fmt.Printf("transferAmount: %s\n", transferAmount)
 
 	usdtPlaceholderRepo := repositories.NewUserUsdtPlaceholdersRepository(db)
-	placeholder, _ := usdtPlaceholderRepo.Find(context.Background())
+	placeholder, esg := usdtPlaceholderRepo.Query(context.Background())
 
 	//err := trxPlaceholderRepo.Update(context.Background(), placeholder.Id, 1)
-	//if err != nil {
-	//	log.Printf("Error updating trx placeholder: %v", err)
-	//}
+	if esg != nil {
+		fmt.Printf("Failed to update user: " + esg.Error())
+		msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID,
+			"⚠请等待10分钟，充值通道暂时关闭"+"\n")
+
+		inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
+			tgbotapi.NewInlineKeyboardRow(
+				tgbotapi.NewInlineKeyboardButtonData("🕣取消订单", "cancel_order"),
+				tgbotapi.NewInlineKeyboardButtonData("⬅️返回个人中心", "back_home"),
+			))
+		msg.ReplyMarkup = inlineKeyboard
+		msg.ParseMode = "HTML"
+		//msg.DisableWebPagePreview = true
+		bot.Send(msg)
+		return
+
+	}
+	if placeholder.Id == 0 {
+		msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID,
+			"⚠请等待10分钟，充值通道暂时关闭"+"\n")
+
+		inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
+			tgbotapi.NewInlineKeyboardRow(
+				tgbotapi.NewInlineKeyboardButtonData("🕣取消订单", "cancel_order"),
+				tgbotapi.NewInlineKeyboardButtonData("⬅️返回个人中心", "back_home"),
+			))
+		msg.ReplyMarkup = inlineKeyboard
+		msg.ParseMode = "HTML"
+		//msg.DisableWebPagePreview = true
+		bot.Send(msg)
+
+		return
+	}
 
 	err := usdtPlaceholderRepo.Update(context.Background(), placeholder.Id, 1)
 	if err != nil {
@@ -179,7 +209,43 @@ func DepositPrevOrder(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery *tg
 	fmt.Printf("transferAmount: %s\n", transferAmount)
 
 	trxPlaceholderRepo := repositories.NewUserTRXPlaceholdersRepository(db)
-	placeholder, _ := trxPlaceholderRepo.Find(context.Background())
+	placeholder, esg := trxPlaceholderRepo.Query(context.Background())
+
+	//err := trxPlaceholderRepo.Update(context.Background(), placeholder.Id, 1)
+	if esg != nil {
+		fmt.Printf("Failed to update user: " + esg.Error())
+		msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID,
+			"⚠请等待10分钟，充值通道暂时关闭"+"\n")
+
+		inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
+			tgbotapi.NewInlineKeyboardRow(
+				tgbotapi.NewInlineKeyboardButtonData("🕣取消订单", "cancel_order"),
+				tgbotapi.NewInlineKeyboardButtonData("⬅️返回个人中心", "back_home"),
+			))
+		msg.ReplyMarkup = inlineKeyboard
+		msg.ParseMode = "HTML"
+		//msg.DisableWebPagePreview = true
+		bot.Send(msg)
+
+		return
+
+	}
+	if placeholder.Id == 0 {
+		msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID,
+			"⚠请等待10分钟，充值通道暂时关闭"+"\n")
+
+		inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
+			tgbotapi.NewInlineKeyboardRow(
+				tgbotapi.NewInlineKeyboardButtonData("🕣取消订单", "cancel_order"),
+				tgbotapi.NewInlineKeyboardButtonData("⬅️返回个人中心", "back_home"),
+			))
+		msg.ReplyMarkup = inlineKeyboard
+		msg.ParseMode = "HTML"
+		//msg.DisableWebPagePreview = true
+		bot.Send(msg)
+
+		return
+	}
 
 	err := trxPlaceholderRepo.Update(context.Background(), placeholder.Id, 1)
 	if err != nil {
