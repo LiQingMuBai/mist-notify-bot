@@ -70,7 +70,7 @@ func CLICK_DEPOSIT_USDT_RECORDS(db *gorm.DB, callbackQuery *tgbotapi.CallbackQue
 }
 
 func ClickBusinessCooperation(callbackQuery *tgbotapi.CallbackQuery, bot *tgbotapi.BotAPI) {
-	msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, "👥加入商务合作VIP群：https://t.me/+OCevU0Q12V8wZGY1\n")
+	msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, "👥加入商务合作VIP群：https://t.me/ushield1\n")
 	msg.ParseMode = "HTML"
 	inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardRow(
