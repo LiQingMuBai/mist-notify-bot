@@ -150,10 +150,10 @@ func DepositPrevOrder(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery *tg
 	trxPlaceholderRepo := repositories.NewUserTRXPlaceholdersRepository(db)
 	placeholder, _ := trxPlaceholderRepo.Find(context.Background())
 
-	//err := trxPlaceholderRepo.Update(context.Background(), placeholder.Id, 1)
-	//if err != nil {
-	//	log.Printf("Error updating trx placeholder: %v", err)
-	//}
+	err := trxPlaceholderRepo.Update(context.Background(), placeholder.Id, 1)
+	if err != nil {
+		log.Printf("Error updating trx placeholder: %v", err)
+	}
 	realTransferAmount := AddStringsAsFloats(placeholder.Placeholder, transferAmount)
 
 	fmt.Printf("realTransferAmount: %s\n", realTransferAmount)
