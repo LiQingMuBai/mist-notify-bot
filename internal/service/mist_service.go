@@ -73,17 +73,35 @@ func ExtractSlowMistRiskQuery(message *tgbotapi.Message, db *gorm.DB, _cookie st
 					_text = handler.GetText(_addressInfo)
 
 					addressProfile := handler.GetAddressProfile(_symbol, message.Text, _cookie)
-					_text7 := "余額：" + addressProfile.BalanceUsd + "\n"
-					_text8 := "累計收入：" + addressProfile.TotalReceivedUsd + "\n"
+					_text7 := "余额：" + addressProfile.BalanceUsd + "\n"
+					_text8 := "累计收入：" + addressProfile.TotalReceivedUsd + "\n"
 					_text9 := "累计支出：" + addressProfile.TotalSpentUsd + "\n"
-					_text10 := "首次活躍時間：" + addressProfile.FirstTxTime + "\n"
-					_text11 := "最後活躍時間：" + addressProfile.LastTxTime + "\n"
-					_text12 := "交易次數：" + addressProfile.TxCount + "筆" + "\n"
+					_text10 := "首次活跃时间：" + addressProfile.FirstTxTime + "\n"
+					_text11 := "最后活跃时间：" + addressProfile.LastTxTime + "\n"
+					_text12 := "交易次数：" + addressProfile.TxCount + "笔" + "\n"
 					_text99 := "主要交易对手分析：" + "\n"
-					_text5 := "📢更多查询請聯繫客服 @Ushield001\n"
-					_text16 := "🛡️ U盾在手，链上无忧！" + "\n"
+					//_text5 := "📢更多查询请联系客服 @Ushield001\n"
+					_text16 := "🛡️U盾，做您链上资产的护盾！" + "\n"
+					_text100 := ""
+					lableAddresList := handler.GetNotSafeAddress("ETH", message.Text, _cookie)
+					if len(lableAddresList.GraphDic.NodeList) > 0 {
+						for _, data := range lableAddresList.GraphDic.NodeList {
+							if strings.Contains(data.Label, "huione") {
+								_text100 = _text100 + data.Title[0:5] + "..." + data.Title[29:34] + " 汇旺" + "\n"
+							}
+							if strings.Contains(data.Label, "Theft") {
+								_text100 = _text100 + data.Title[0:5] + "..." + data.Title[29:34] + " 盗窃" + "\n"
+							}
+							if strings.Contains(data.Label, "Drainer") {
+								_text100 = _text100 + data.Title[0:5] + "..." + data.Title[29:34] + " 诈骗" + "\n"
+							}
+							if strings.Contains(data.Label, "Banned") {
+								_text100 = _text100 + data.Title[0:5] + "..." + data.Title[29:34] + " 制裁" + "\n"
+							}
+						}
+					}
 
-					_text = _text + _text7 + _text8 + _text9 + _text10 + _text11 + _text12 + _text99 + _text5 + _text16
+					_text = _text + _text7 + _text8 + _text9 + _text10 + _text11 + _text12 + _text99 + _text100 + _text16
 
 				}
 				if strings.HasPrefix(message.Text, "T") && len(message.Text) == 34 {
@@ -92,12 +110,12 @@ func ExtractSlowMistRiskQuery(message *tgbotapi.Message, db *gorm.DB, _cookie st
 					_text = handler.GetText(_addressInfo)
 
 					addressProfile := handler.GetAddressProfile(_symbol, message.Text, _cookie)
-					_text7 := "余額：" + addressProfile.BalanceUsd + "\n"
-					_text8 := "累計收入：" + addressProfile.TotalReceivedUsd + "\n"
+					_text7 := "余额：" + addressProfile.BalanceUsd + "\n"
+					_text8 := "累计收入：" + addressProfile.TotalReceivedUsd + "\n"
 					_text9 := "累计支出：" + addressProfile.TotalSpentUsd + "\n"
-					_text10 := "首次活躍時間：" + addressProfile.FirstTxTime + "\n"
-					_text11 := "最後活躍時間：" + addressProfile.LastTxTime + "\n"
-					_text12 := "交易次數：" + addressProfile.TxCount + "筆" + "\n"
+					_text10 := "首次活跃时间：" + addressProfile.FirstTxTime + "\n"
+					_text11 := "最后活跃时间：" + addressProfile.LastTxTime + "\n"
+					_text12 := "交易次数：" + addressProfile.TxCount + "笔" + "\n"
 					_text99 := "危险交易对手分析：" + "\n"
 					lableAddresList := handler.GetNotSafeAddress(_symbol, message.Text, _cookie)
 
@@ -105,20 +123,29 @@ func ExtractSlowMistRiskQuery(message *tgbotapi.Message, db *gorm.DB, _cookie st
 					if len(lableAddresList.GraphDic.NodeList) > 0 {
 						for _, data := range lableAddresList.GraphDic.NodeList {
 							if strings.Contains(data.Label, "huione") {
-								_text100 = _text100 + data.Title[0:5] + "..." + data.Title[29:34] + "\n"
+								_text100 = _text100 + data.Title[0:5] + "..." + data.Title[29:34] + " 汇旺" + "\n"
+							}
+							if strings.Contains(data.Label, "Theft") {
+								_text100 = _text100 + data.Title[0:5] + "..." + data.Title[29:34] + " 盗窃" + "\n"
+							}
+							if strings.Contains(data.Label, "Drainer") {
+								_text100 = _text100 + data.Title[0:5] + "..." + data.Title[29:34] + " 诈骗" + "\n"
+							}
+							if strings.Contains(data.Label, "Banned") {
+								_text100 = _text100 + data.Title[0:5] + "..." + data.Title[29:34] + " 制裁" + "\n"
 							}
 						}
 					}
-					_text5 := "📢更多查询請聯繫客服 @Ushield001\n"
-					_text16 := "🛡️ U盾在手，链上无忧！" + "\n"
+					//_text5 := "📢更多查询请联系客服 @Ushield001\n"
+					_text16 := "🛡️ U盾，做您链上资产的护盾！" + "\n"
 
-					_text = _text + _text7 + _text8 + _text9 + _text10 + _text11 + _text12 + _text99 + _text100 + _text5 + _text16
+					_text = _text + _text7 + _text8 + _text9 + _text10 + _text11 + _text12 + _text99 + _text100 + _text16
 
 				}
 				msg := tgbotapi.NewMessage(message.Chat.ID, _text)
 				inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 					tgbotapi.NewInlineKeyboardRow(
-						tgbotapi.NewInlineKeyboardButtonData("🔙返回个人中心", "back_home"),
+						tgbotapi.NewInlineKeyboardButtonData("🔙返回首页", "back_address_detection_home"),
 					),
 				)
 				msg.ReplyMarkup = inlineKeyboard
@@ -132,12 +159,12 @@ func ExtractSlowMistRiskQuery(message *tgbotapi.Message, db *gorm.DB, _cookie st
 
 			} else {
 				//msg := tgbotapi.NewMessage(message.Chat.ID,
-				//	"🔍普通用戶每日贈送 1 次地址風險查詢\n"+
+				//	"🔍普通用戶每日赠送 1 次地址风险查询\n"+
 				//		"📞聯繫客服 @Ushield001\n")
 				//msg.ReplyMarkup = inlineKeyboard
 
 				msg := tgbotapi.NewMessage(message.Chat.ID,
-					"💬"+"<b>"+"🔍普通用戶每日贈送 1 次地址風險查詢 "+"</b>"+user.Username+"\n"+
+					"💬"+"<b>"+"🔍普通用戶每日赠送 1 次地址风险查询 "+"</b>"+user.Username+"\n"+
 						"💬"+"<b>"+"用户姓名: "+"</b>"+user.Username+"\n"+
 						"👤"+"<b>"+"用户电报ID: "+"</b>"+user.Associates+"\n"+
 						"💵"+"<b>"+"当前TRX余额:  "+"</b>"+user.TronAmount+" TRX"+"\n"+
@@ -166,17 +193,34 @@ func ExtractSlowMistRiskQuery(message *tgbotapi.Message, db *gorm.DB, _cookie st
 				_text = handler.GetText(_addressInfo)
 
 				addressProfile := handler.GetAddressProfile(_symbol, message.Text, _cookie)
-				_text7 := "余額：" + addressProfile.BalanceUsd + "\n"
-				_text8 := "累計收入：" + addressProfile.TotalReceivedUsd + "\n"
+				_text7 := "余额：" + addressProfile.BalanceUsd + "\n"
+				_text8 := "累计收入：" + addressProfile.TotalReceivedUsd + "\n"
 				_text9 := "累计支出：" + addressProfile.TotalSpentUsd + "\n"
-				_text10 := "首次活躍時間：" + addressProfile.FirstTxTime + "\n"
-				_text11 := "最後活躍時間：" + addressProfile.LastTxTime + "\n"
-				_text12 := "交易次數：" + addressProfile.TxCount + "筆" + "\n"
+				_text10 := "首次活跃时间：" + addressProfile.FirstTxTime + "\n"
+				_text11 := "最后活跃时间：" + addressProfile.LastTxTime + "\n"
+				_text12 := "交易次数：" + addressProfile.TxCount + "笔" + "\n"
 				_text99 := "主要交易对手分析：" + "\n"
-				_text5 := "📢更多查询請聯繫客服 @Ushield001\n"
-				_text16 := "🛡️ U盾在手，链上无忧！" + "\n"
-
-				_text = _text + _text7 + _text8 + _text9 + _text10 + _text11 + _text12 + _text99 + _text5 + _text16
+				//_text5 := "📢更多查询请联系客服 @Ushield001\n"
+				_text16 := "🛡️ U盾，做您链上资产的护盾！" + "\n"
+				_text100 := ""
+				lableAddresList := handler.GetNotSafeAddress("ETH", message.Text, _cookie)
+				if len(lableAddresList.GraphDic.NodeList) > 0 {
+					for _, data := range lableAddresList.GraphDic.NodeList {
+						if strings.Contains(data.Label, "huione") {
+							_text100 = _text100 + data.Title[0:5] + "..." + data.Title[29:34] + " 汇旺" + "\n"
+						}
+						if strings.Contains(data.Label, "Theft") {
+							_text100 = _text100 + data.Title[0:5] + "..." + data.Title[29:34] + " 盗窃" + "\n"
+						}
+						if strings.Contains(data.Label, "Drainer") {
+							_text100 = _text100 + data.Title[0:5] + "..." + data.Title[29:34] + " 诈骗" + "\n"
+						}
+						if strings.Contains(data.Label, "Banned") {
+							_text100 = _text100 + data.Title[0:5] + "..." + data.Title[29:34] + " 制裁" + "\n"
+						}
+					}
+				}
+				_text = _text + _text7 + _text8 + _text9 + _text10 + _text11 + _text12 + _text99 + _text100 + _text16
 
 			}
 			if strings.HasPrefix(message.Text, "T") && len(message.Text) == 34 {
@@ -185,12 +229,12 @@ func ExtractSlowMistRiskQuery(message *tgbotapi.Message, db *gorm.DB, _cookie st
 				_text = handler.GetText(_addressInfo)
 
 				addressProfile := handler.GetAddressProfile(_symbol, message.Text, _cookie)
-				_text7 := "余額：" + addressProfile.BalanceUsd + "\n"
-				_text8 := "累計收入：" + addressProfile.TotalReceivedUsd + "\n"
+				_text7 := "余额：" + addressProfile.BalanceUsd + "\n"
+				_text8 := "累计收入：" + addressProfile.TotalReceivedUsd + "\n"
 				_text9 := "累计支出：" + addressProfile.TotalSpentUsd + "\n"
-				_text10 := "首次活躍時間：" + addressProfile.FirstTxTime + "\n"
-				_text11 := "最後活躍時間：" + addressProfile.LastTxTime + "\n"
-				_text12 := "交易次數：" + addressProfile.TxCount + "筆" + "\n"
+				_text10 := "首次活跃时间：" + addressProfile.FirstTxTime + "\n"
+				_text11 := "最后活跃时间：" + addressProfile.LastTxTime + "\n"
+				_text12 := "交易次数：" + addressProfile.TxCount + "笔" + "\n"
 				_text99 := "危险交易对手分析：" + "\n"
 				lableAddresList := handler.GetNotSafeAddress(_symbol, message.Text, _cookie)
 
@@ -198,20 +242,29 @@ func ExtractSlowMistRiskQuery(message *tgbotapi.Message, db *gorm.DB, _cookie st
 				if len(lableAddresList.GraphDic.NodeList) > 0 {
 					for _, data := range lableAddresList.GraphDic.NodeList {
 						if strings.Contains(data.Label, "huione") {
-							_text100 = _text100 + data.Title[0:5] + "..." + data.Title[29:34] + "\n"
+							_text100 = _text100 + data.Title[0:5] + "..." + data.Title[29:34] + " 汇旺" + "\n"
+						}
+						if strings.Contains(data.Label, "Theft") {
+							_text100 = _text100 + data.Title[0:5] + "..." + data.Title[29:34] + " 盗窃" + "\n"
+						}
+						if strings.Contains(data.Label, "Drainer") {
+							_text100 = _text100 + data.Title[0:5] + "..." + data.Title[29:34] + " 诈骗" + "\n"
+						}
+						if strings.Contains(data.Label, "Banned") {
+							_text100 = _text100 + data.Title[0:5] + "..." + data.Title[29:34] + " 制裁" + "\n"
 						}
 					}
 				}
-				_text5 := "📢更多查询請聯繫客服 @Ushield001\n"
-				_text16 := "🛡️ U盾在手，链上无忧！" + "\n"
+				//_text5 := "📢更多查询请联系客服 @Ushield001\n"
+				_text16 := "🛡️U盾，做您链上资产的护盾！" + "\n"
 
-				_text = _text + _text7 + _text8 + _text9 + _text10 + _text11 + _text12 + _text99 + _text100 + _text5 + _text16
+				_text = _text + _text7 + _text8 + _text9 + _text10 + _text11 + _text12 + _text99 + _text100 + _text16
 
 			}
 			msg := tgbotapi.NewMessage(message.Chat.ID, _text)
 			inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 				tgbotapi.NewInlineKeyboardRow(
-					tgbotapi.NewInlineKeyboardButtonData("🔙返回个人中心", "back_home"),
+					tgbotapi.NewInlineKeyboardButtonData("🔙返回首页", "back_address_detection_home"),
 				),
 			)
 			msg.ReplyMarkup = inlineKeyboard

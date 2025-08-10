@@ -69,12 +69,31 @@ func (h *MisttrackHandler) Handle(b bot.IBot, message *tgbotapi.Message) error {
 
 			_text99 := "主要交易对手分析：" + "\n"
 
+			_text100 := ""
+			lableAddresList := getNotSafeAddress(_symbol, _message, b.GetCookie())
+			if len(lableAddresList.GraphDic.NodeList) > 0 {
+				for _, data := range lableAddresList.GraphDic.NodeList {
+					if strings.Contains(data.Label, "huione") {
+						_text100 = _text100 + data.Title[0:5] + "..." + data.Title[29:34] + " 汇旺" + "\n"
+					}
+					if strings.Contains(data.Label, "Theft") {
+						_text100 = _text100 + data.Title[0:5] + "..." + data.Title[29:34] + " 盗窃" + "\n"
+					}
+					if strings.Contains(data.Label, "Drainer") {
+						_text100 = _text100 + data.Title[0:5] + "..." + data.Title[29:34] + " 诈骗" + "\n"
+					}
+					if strings.Contains(data.Label, "Banned") {
+						_text100 = _text100 + data.Title[0:5] + "..." + data.Title[29:34] + " 制裁" + "\n"
+					}
+				}
+			}
+
 			//_text14 := "每日免费查询剩余：0 次" + "\n"
 			_text5 := "📢更多查询請聯繫客服 @Ushield001\n"
 			//_text15 := "超额查询 ➜ 10 TRX / 次" + "\n"
 			_text16 := "🛡️ U盾在手，链上无忧！" + "\n"
 
-			_text = _text + _text7 + _text8 + _text9 + _text10 + _text11 + _text12 + _text99 + _text5 + _text16
+			_text = _text + _text7 + _text8 + _text9 + _text10 + _text11 + _text12 + _text99 + _text100 + _text5 + _text16
 
 		}
 		if strings.HasPrefix(_message, "T") && len(_message) == 34 {
@@ -106,7 +125,16 @@ func (h *MisttrackHandler) Handle(b bot.IBot, message *tgbotapi.Message) error {
 			if len(lableAddresList.GraphDic.NodeList) > 0 {
 				for _, data := range lableAddresList.GraphDic.NodeList {
 					if strings.Contains(data.Label, "huione") {
-						_text100 = _text100 + data.Title[0:5] + "..." + data.Title[29:34] + "\n"
+						_text100 = _text100 + data.Title[0:5] + "..." + data.Title[29:34] + " 汇旺" + "\n"
+					}
+					if strings.Contains(data.Label, "Theft") {
+						_text100 = _text100 + data.Title[0:5] + "..." + data.Title[29:34] + " 盗窃" + "\n"
+					}
+					if strings.Contains(data.Label, "Drainer") {
+						_text100 = _text100 + data.Title[0:5] + "..." + data.Title[29:34] + " 诈骗" + "\n"
+					}
+					if strings.Contains(data.Label, "Banned") {
+						_text100 = _text100 + data.Title[0:5] + "..." + data.Title[29:34] + " 制裁" + "\n"
 					}
 				}
 			}
@@ -248,7 +276,7 @@ func getText(addressInfo SlowMistAddressInfo) string {
 	_item1 := addressInfo.RiskDic.TriangleLevel[1]
 	_item2 := addressInfo.RiskDic.TriangleLevel[2]
 
-	_text0 := "🔍風險評分:" + strconv.Itoa(addressInfo.RiskDic.Score)
+	_text0 := "🔍风险评分:" + strconv.Itoa(addressInfo.RiskDic.Score)
 
 	if addressInfo.RiskDic.Score <= 3 {
 		_text0 += " 🟢" + "\n"
@@ -268,8 +296,8 @@ func getText(addressInfo SlowMistAddressInfo) string {
 		_text1 = "⚠️有與疑似惡意地址交互\n"
 	}
 	if _item1 > 1 {
-		//log.Println("⚠️️有與惡意地址交互")
-		_text2 = "⚠️️有與惡意地址交互\n"
+		//log.Println("⚠️️有与恶意地址交互")
+		_text2 = "⚠️️有与恶意地址交互\n"
 	}
 	if _item2 > 1 {
 		//log.Println("⚠️️有與高風險標籤地址交互")
@@ -279,16 +307,16 @@ func getText(addressInfo SlowMistAddressInfo) string {
 	_banned_item := addressInfo.RiskDic.HackingEvent
 
 	if _banned_item != "" {
-		//log.Println("⚠️️受制裁實體")
-		_text4 = "⚠️️受制裁實體\n"
+		//log.Println("⚠️️受制裁实体")
+		_text4 = "⚠️️受制裁实体\n"
 	}
 	//msg = domain.MessageToSend{
 	//	ChatId: message.Chat.ID,
-	//	Text: "🔍風險評分:87\n" +
+	//	Text: "🔍风险评分:87\n" +
 	//		"⚠️有與疑似惡意地址交互\n" +
-	//		"⚠️️有與惡意地址交互\n" +
+	//		"⚠️️有与恶意地址交互\n" +
 	//		"⚠️️有與高風險標籤地址交互\n" +
-	//		"⚠️️受制裁實體\n" +
+	//		"⚠️️受制裁实体\n" +
 	//		"📢📢📢更詳細報告請聯繫客服@ushield001\n",
 	//}
 	//log.Println(events)

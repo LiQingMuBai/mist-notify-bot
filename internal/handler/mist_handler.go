@@ -10,9 +10,13 @@ import (
 )
 
 func GetNotSafeAddress(_coin string, _address, _cookie string) LableAddresList {
+	//_cookie = "_bl_uid=1wmz8eCq1445tmhU8hktzps2hC51; detect_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyYW5kb21fc3RyIjoiODY3NzM5In0.DaCjSesFMsjGWQkB7iHA1EI5Lp2s3-DTPmxB7nNIPKI; csrftoken=u5xzDP2pcMqbACyYHyVUlJNtmNlr4pIn5i6ullnZNtNunsFbIHvHZk9rteAcyq2l; sessionid=uqs748r6gmq6cjjrqig5461rw8nc3gq9"
+	//_coin = "ETH"
+	//
+	//_address = "0xf510e53ef8da4e45ffa59eb554511a7410e5efd3"
 	url := "https://dashboard.misttrack.io/api/v1/address_graph_analysis?coin=" + _coin + "&address=" + _address + "&time_filter="
 	req, _ := http.NewRequest("GET", url, nil)
-
+	//https://dashboard.misttrack.io/api/v1/address_graph_analysis?coin=ETH&address=0xf510e53ef8da4e45ffa59eb554511a7410e5efd3&time_filter=
 	req.Header.Add("accept", "application/json, text/plain, */*")
 
 	//req.Header.Add("cookie", "_ga=GA1.1.23337514.1742894564; _bl_uid=O8m7m8ksonwa0Ifjgw0erRqd9147; _ga_SGF4VCWFZY=GS1.1.1743393981.8.0.1743393981.0.0.0; detect_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyYW5kb21fc3RyIjoiMzI0Njk1In0.t5lYLE_oSwyNIJUSWAwxL7YrzXN5Di38sh4Vh9gjyJE; csrftoken=AOzVpYUl0Wdyk2gtoIzUQ5uOUEOxRBSMsqlINKjOh30dCmHX2ajNk8EcwFxrWy6g; sessionid=rn1a71d9nkn3coczdn08ahc00u5mw46i; _ga_40VGDGQFCB=GS1.1.1743393983.12.1.1743394123.0.0.0; _ga_5X5Z4KZ7PC=GS1.1.1743393983.12.1.1743394123.0.0.0")
@@ -40,13 +44,13 @@ type LableAddresList struct {
 	Msg      string `json:"msg"`
 	GraphDic struct {
 		NodeList []struct {
-			ID        string `json:"id"`
-			Label     string `json:"label"`
-			Title     string `json:"title"`
-			Layer     int    `json:"layer"`
-			Addr      string `json:"addr"`
-			Track     string `json:"track"`
-			Pid       int    `json:"pid"`
+			ID    string `json:"id"`
+			Label string `json:"label"`
+			Title string `json:"title"`
+			Layer int    `json:"layer"`
+			Addr  string `json:"addr"`
+			Track string `json:"track"`
+			//Pid       string `json:"pid"`
 			Color     string `json:"color,omitempty"`
 			Shape     string `json:"shape,omitempty"`
 			Expanded  bool   `json:"expanded"`
@@ -119,7 +123,7 @@ func GetText(addressInfo SlowMistAddressInfo) string {
 	_item1 := addressInfo.RiskDic.TriangleLevel[1]
 	_item2 := addressInfo.RiskDic.TriangleLevel[2]
 
-	_text0 := "🔍風險評分:" + strconv.Itoa(addressInfo.RiskDic.Score)
+	_text0 := "🔍风险评分:" + strconv.Itoa(addressInfo.RiskDic.Score)
 
 	if addressInfo.RiskDic.Score <= 3 {
 		_text0 += " 🟢" + "\n"
@@ -139,8 +143,8 @@ func GetText(addressInfo SlowMistAddressInfo) string {
 		_text1 = "⚠️有與疑似惡意地址交互\n"
 	}
 	if _item1 > 1 {
-		//log.Println("⚠️️有與惡意地址交互")
-		_text2 = "⚠️️有與惡意地址交互\n"
+		//log.Println("⚠️️有与恶意地址交互")
+		_text2 = "⚠️️有与恶意地址交互\n"
 	}
 	if _item2 > 1 {
 		//log.Println("⚠️️有與高風險標籤地址交互")
@@ -150,16 +154,16 @@ func GetText(addressInfo SlowMistAddressInfo) string {
 	_banned_item := addressInfo.RiskDic.HackingEvent
 
 	if _banned_item != "" {
-		//log.Println("⚠️️受制裁實體")
-		_text4 = "⚠️️受制裁實體\n"
+		//log.Println("⚠️️受制裁实体")
+		_text4 = "⚠️️受制裁实体\n"
 	}
 	//msg = domain.MessageToSend{
 	//	ChatId: message.Chat.ID,
-	//	Text: "🔍風險評分:87\n" +
+	//	Text: "🔍风险评分:87\n" +
 	//		"⚠️有與疑似惡意地址交互\n" +
-	//		"⚠️️有與惡意地址交互\n" +
+	//		"⚠️️有与恶意地址交互\n" +
 	//		"⚠️️有與高風險標籤地址交互\n" +
-	//		"⚠️️受制裁實體\n" +
+	//		"⚠️️受制裁实体\n" +
 	//		"📢📢📢更詳細報告請聯繫客服@ushield001\n",
 	//}
 	//log.Println(events)

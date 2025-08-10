@@ -156,7 +156,7 @@ package handler
 //	_symbol := "USDT-TRC20"
 //	_address := "TKKkmmC1evWhPYmxt1HjZot6eEDhkvydBh"
 //	addressInfo := getAddressInfo(_symbol, _address)
-//	//log.Println("🔍風險評分:" + strconv.Itoa(addressInfo.RiskDic.Score))
+//	//log.Println("🔍风险评分:" + strconv.Itoa(addressInfo.RiskDic.Score))
 //
 //	text := getText(addressInfo)
 //
