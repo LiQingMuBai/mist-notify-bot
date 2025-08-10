@@ -23,7 +23,12 @@ func DepositPrevUSDTOrder(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery
 	usdtPlaceholderRepo := repositories.NewUserUsdtPlaceholdersRepository(db)
 	placeholder, _ := usdtPlaceholderRepo.Find(context.Background())
 
-	err := usdtPlaceholderRepo.Update(context.Background(), placeholder.Id, 0)
+	//err := trxPlaceholderRepo.Update(context.Background(), placeholder.Id, 1)
+	//if err != nil {
+	//	log.Printf("Error updating trx placeholder: %v", err)
+	//}
+
+	err := usdtPlaceholderRepo.Update(context.Background(), placeholder.Id, 1)
 	if err != nil {
 		log.Printf("Error updating usdt placeholder: %v", err)
 	}
@@ -48,7 +53,7 @@ func DepositPrevUSDTOrder(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery
 	sysUserRepo := repositories.NewSysUsersRepository(db)
 	_, depositAddress, _ := sysUserRepo.Find(context.Background(), _agent)
 	usdtDeposit.Address = depositAddress
-	usdtDeposit.Amount = realTransferAmount
+	usdtDeposit.Amount = transferAmount
 	usdtDeposit.CreatedAt = time.Now()
 
 	errsg := usdtDepositRepo.Create(context.Background(), &usdtDeposit)
