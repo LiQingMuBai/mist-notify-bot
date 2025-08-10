@@ -20,26 +20,32 @@ func MenuNavigateAddressFreeze(cache cache.Cache, bot *tgbotapi.BotAPI, chatID i
 
 	server_usdt_price, _ := userRepo.GetDictionaryDetail("server_usdt_price")
 
-	msg := tgbotapi.NewMessage(chatID, "🛡️ U盾，做您链上资产的护盾！实时守护您的资产安全！\n\n地址一旦被链上风控冻，"+
-		"资产将难以追回，损失巨大！\n\n每天都有数百个 USDT 钱包地址被冻结锁定，风险就在身边！\n\n"+
-		"U盾将为您的地址提供 24 小时不间断监控\n\n⏰ 系统将在冻结前持续 10 分钟启动预警机制，每分钟推送提醒，通知您及时转移资产\n\n"+
-		"✅ 适用于经常收付款 / 高频交易 / 风险暴露地址\n\n"+
-		"✅ 支持在TRON网络下的USDT 钱包地址\n\n📌 服务价格（每地址）：\n\n- "+server_trx_price+" TRX / 30天\n- 或 "+server_usdt_price+" USDT / 30天\n\n🎯 服务开启后系统将 24 小时不间断监控\n\n📩"+
-		" 所有预警信息将通过 Telegram 实时推送\n\n点击下方按钮开始 👇")
+	msg := tgbotapi.NewMessage(chatID, "欢迎使用U盾 USDT冻结预警服务\n"+
+		"🛡️ U盾，做您链上资产的护盾！\n"+
+		"地址一旦被链上风控冻，资产将难以追回，损失巨大！\n"+
+		"每天都有数百个 USDT 钱包地址被冻结锁定，风险就在身边！\n"+
+		"✅ 适用于经常收付款 / 被制裁地址感染/与诈骗地址交互\n"+
+		"✅ 支持TRON/ETH网络的USDT 钱包地址\n"+
+		"📌 服务价格（每地址）：\n • "+server_trx_price+" TRX / 30天\n • "+
+		" 或 "+server_usdt_price+" USDT / 30天\n"+
+		"🎯 服务开启后U盾将24 小时不间断保护您的资产安全。\n"+
+		"⏰ 系统将在冻结前启动预警机制，持续 10 分钟每分钟推送提醒，通知您及时转移资产。\n"+
+		"📩 所有预警信息将通过 Telegram 实时推送")
 	msg.ParseMode = "HTML"
 
 	inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData("开启冻结预警", "start_freeze_risk"),
-			tgbotapi.NewInlineKeyboardButtonData("地址管理", "address_manager"),
+			//tgbotapi.NewInlineKeyboardButtonData("地址管理", "address_manager"),
 		),
 		tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData("地址监控列表", "address_list_trace"),
-		),
-		tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData("冻结预警扣款记录", "address_freeze_risk_records"),
-			//tgbotapi.NewInlineKeyboardButtonData("第二紧急通知", ""),
 		),
+		//tgbotapi.NewInlineKeyboardRow(
+		//	tgbotapi.NewInlineKeyboardButtonData("冻结预警扣款记录", "address_freeze_risk_records"),
+		//	//tgbotapi.NewInlineKeyboardButtonData("第二紧急通知", ""),
+		//),
 	)
 	msg.ReplyMarkup = inlineKeyboard
 

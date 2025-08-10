@@ -82,12 +82,13 @@ func ADDRESS_LIST_TRACE(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery *
 		tgbotapi.NewInlineKeyboardRow(
 			//tgbotapi.NewInlineKeyboardButtonData("解绑地址", "free_monitor_address"),
 			tgbotapi.NewInlineKeyboardButtonData("停止监控", "stop_freeze_risk"),
-			tgbotapi.NewInlineKeyboardButtonData("第二紧急通知", "user_backup_notify"),
+			tgbotapi.NewInlineKeyboardButtonData("🔙️返回首页", "back_risk_home"),
+			//tgbotapi.NewInlineKeyboardButtonData("第二紧急通知", "user_backup_notify"),
 		),
-		tgbotapi.NewInlineKeyboardRow(
-
-			tgbotapi.NewInlineKeyboardButtonData("⬅️返回首页", "back_risk_home"),
-		),
+		//tgbotapi.NewInlineKeyboardRow(
+		//
+		//	tgbotapi.NewInlineKeyboardButtonData("🔙️返回首页", "back_risk_home"),
+		//),
 	)
 	msg.ReplyMarkup = inlineKeyboard
 
@@ -107,7 +108,7 @@ func ADDRESS_MANAGER(cache cache.Cache, bot *tgbotapi.BotAPI, chatID int64, db *
 	for _, item := range addresses {
 		result += "<code>" + item.Address + "</code>" + "\n"
 	}
-	msg := tgbotapi.NewMessage(chatID, "👇以下监控地址信息列表"+"\n"+result)
+	msg := tgbotapi.NewMessage(chatID, "预警地址列表"+"\n"+result)
 	//地址绑定
 
 	msg.ParseMode = "HTML"
@@ -119,7 +120,7 @@ func ADDRESS_MANAGER(cache cache.Cache, bot *tgbotapi.BotAPI, chatID int64, db *
 			tgbotapi.NewInlineKeyboardButtonData("➖删除地址", "address_manager_remove"),
 		),
 		tgbotapi.NewInlineKeyboardRow(
-			tgbotapi.NewInlineKeyboardButtonData("⬅️返回首页", "back_risk_home"),
+			tgbotapi.NewInlineKeyboardButtonData("🔙️返回首页", "back_risk_home"),
 		),
 	)
 	msg.ReplyMarkup = inlineKeyboard

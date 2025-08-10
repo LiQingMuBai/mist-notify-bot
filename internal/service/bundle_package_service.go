@@ -251,7 +251,7 @@ func CLICK_BUNDLE_PACKAGE_ADDRESS_MANAGEMENT(cache cache.Cache, bot *tgbotapi.Bo
 			tgbotapi.NewInlineKeyboardButtonData("➖删除地址", "click_bundle_package_address_manager_remove"),
 		),
 		tgbotapi.NewInlineKeyboardRow(
-			tgbotapi.NewInlineKeyboardButtonData("⬅️返回首页", "back_bundle_package"),
+			tgbotapi.NewInlineKeyboardButtonData("🔙️返回首页", "back_bundle_package"),
 		),
 	)
 	msg.ReplyMarkup = inlineKeyboard

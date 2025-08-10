@@ -45,7 +45,7 @@ func ExtractAddressRiskQuery(db *gorm.DB, callbackQuery *tgbotapi.CallbackQuery)
 			tgbotapi.NewInlineKeyboardButtonData("下一页", "next_address_risk_page"),
 		),
 		tgbotapi.NewInlineKeyboardRow(
-			tgbotapi.NewInlineKeyboardButtonData("⬅️返回首页", "back_risk_home"),
+			tgbotapi.NewInlineKeyboardButtonData("🔙️返回首页", "back_risk_home"),
 		),
 	)
 	msg.ReplyMarkup = inlineKeyboard
@@ -94,7 +94,7 @@ func EXTRACT_PREV_ADDRESS_RISK_PAGE(callbackQuery *tgbotapi.CallbackQuery, db *g
 				tgbotapi.NewInlineKeyboardButtonData("下一页", "next_address_risk_page"),
 			),
 			tgbotapi.NewInlineKeyboardRow(
-				tgbotapi.NewInlineKeyboardButtonData("⬅️返回首页", "back_risk_home"),
+				tgbotapi.NewInlineKeyboardButtonData("🔙️返回首页", "back_risk_home"),
 			),
 		)
 		msg.ReplyMarkup = inlineKeyboard
@@ -131,7 +131,7 @@ func EXTRACT_PREV_ADDRESS_RISK_PAGE(callbackQuery *tgbotapi.CallbackQuery, db *g
 				tgbotapi.NewInlineKeyboardButtonData("下一页", "next_address_risk_page"),
 			),
 			tgbotapi.NewInlineKeyboardRow(
-				tgbotapi.NewInlineKeyboardButtonData("⬅️返回首页", "back_risk_home"),
+				tgbotapi.NewInlineKeyboardButtonData("🔙️返回首页", "back_risk_home"),
 			),
 		)
 		msg.ReplyMarkup = inlineKeyboard
@@ -189,7 +189,7 @@ func ExtraNextAddressRiskPage(callbackQuery *tgbotapi.CallbackQuery, db *gorm.DB
 			tgbotapi.NewInlineKeyboardButtonData("下一页", "next_address_risk_page"),
 		),
 		tgbotapi.NewInlineKeyboardRow(
-			tgbotapi.NewInlineKeyboardButtonData("⬅️返回首页", "back_risk_home"),
+			tgbotapi.NewInlineKeyboardButtonData("🔙️返回首页", "back_risk_home"),
 		),
 	)
 	msg.ReplyMarkup = inlineKeyboard
