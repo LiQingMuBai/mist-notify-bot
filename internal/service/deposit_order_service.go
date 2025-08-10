@@ -37,7 +37,7 @@ func DepositPrevUSDTOrder(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery
 		inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 			tgbotapi.NewInlineKeyboardRow(
 				tgbotapi.NewInlineKeyboardButtonData("🕣取消订单", "cancel_order"),
-				tgbotapi.NewInlineKeyboardButtonData("⬅️返回个人中心", "back_home"),
+				tgbotapi.NewInlineKeyboardButtonData("🔙返回个人中心", "back_home"),
 			))
 		msg.ReplyMarkup = inlineKeyboard
 		msg.ParseMode = "HTML"
@@ -57,7 +57,7 @@ func DepositPrevUSDTOrder(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery
 		inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 			tgbotapi.NewInlineKeyboardRow(
 				tgbotapi.NewInlineKeyboardButtonData("🕣取消订单", "cancel_order"),
-				tgbotapi.NewInlineKeyboardButtonData("⬅️返回个人中心", "back_home"),
+				tgbotapi.NewInlineKeyboardButtonData("🔙返回个人中心", "back_home"),
 			))
 		msg.ReplyMarkup = inlineKeyboard
 		msg.ParseMode = "HTML"
@@ -101,19 +101,22 @@ func DepositPrevUSDTOrder(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery
 	}
 
 	msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID,
-		"<b>"+"订单号：#TOPUP-"+"</b>"+usdtDeposit.OrderNO+"\n"+
-			"<b>"+"转账金额："+"</b>"+"<code>"+realTransferAmount+"</code>"+" usdt （点击即可复制）"+"\n"+
-			"<b>"+"转账地址："+"</b>"+"<code>"+usdtDeposit.Address+"</code>"+"（点击即可复制）"+"\n"+
-			"<b>"+"充值时间："+"</b>"+Format4Chinesese(usdtDeposit.CreatedAt)+"\n"+
-			"<b>"+"⚠️注意："+"</b>"+"\n"+
-			"▫️注意小数点 "+realTransferAmount+" usdt 转错金额不能到账"+"\n"+
-			"<b>"+"▫️请在10分钟完成付款，转错金额不能到账。"+"</b>"+"\n"+
-			"转账10分钟后没到账及时联系"+"\n")
+
+		"支付金额："+"<code>"+realTransferAmount+"</code>"+" usdt （点击复制）"+"\n"+
+			"收款地址："+"<code>"+usdtDeposit.Address+"</code>"+"（点击复制）"+"\n"+
+			"订单号：#TOPUP-"+usdtDeposit.OrderNO+"\n"+
+			"有效期：10 分钟"+"\n"+
+			"充值时间："+Format4Chinesese(usdtDeposit.CreatedAt)+"\n"+
+			"⚠️ 系统会自动为订单金额添加识别尾数，请务必输入完整金额，否则无法入账！"+"\n")
+	//"⚠️注意："+"\n"+
+	//"▫️注意小数点 "+realTransferAmount+" usdt 转错金额不能到账"+"\n"+
+	//"▫️请在10分钟完成付款，转错金额不能到账。"+"\n"+
+	//"转账10分钟后没到账及时联系"+"\n")
 
 	inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData("🕣取消订单", "cancel_order"),
-			tgbotapi.NewInlineKeyboardButtonData("⬅️返回个人中心", "back_home"),
+			tgbotapi.NewInlineKeyboardButtonData("🔙返回个人中心", "back_home"),
 		))
 	msg.ReplyMarkup = inlineKeyboard
 	msg.ParseMode = "HTML"
@@ -139,7 +142,7 @@ func DepositCancelOrder(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery *
 
 		_orderNO := strings.ReplaceAll(orderNO, "TRX_", "")
 		userTRXDepositsRepo := repositories.NewUserTRXDepositsRepository(db)
-		record, _ := userTRXDepositsRepo.Find(context.Background(), _orderNO)
+		record, _ := userTRXDepositsRepo.Query(context.Background(), _orderNO)
 
 		//update
 		fmt.Printf("record: %v\n", record)
@@ -168,7 +171,7 @@ func DepositCancelOrder(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery *
 		tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData("💳充值", "deposit_amount"),
 			tgbotapi.NewInlineKeyboardButtonData("🔗第二通知人", "click_backup_account"),
-			tgbotapi.NewInlineKeyboardButtonData("📄账单", "click_my_recepit"),
+			tgbotapi.NewInlineKeyboardButtonData("📄充值账单", "click_my_recepit"),
 			//	tgbotapi.NewInlineKeyboardButtonData("🛠️我的服务", "click_my_service"),
 		),
 		tgbotapi.NewInlineKeyboardRow(
@@ -233,7 +236,7 @@ func DepositPrevOrder(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery *tg
 		inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 			tgbotapi.NewInlineKeyboardRow(
 				tgbotapi.NewInlineKeyboardButtonData("🕣取消订单", "cancel_order"),
-				tgbotapi.NewInlineKeyboardButtonData("⬅️返回个人中心", "back_home"),
+				tgbotapi.NewInlineKeyboardButtonData("🔙返回个人中心", "back_home"),
 			))
 		msg.ReplyMarkup = inlineKeyboard
 		msg.ParseMode = "HTML"
@@ -254,7 +257,7 @@ func DepositPrevOrder(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery *tg
 		inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 			tgbotapi.NewInlineKeyboardRow(
 				tgbotapi.NewInlineKeyboardButtonData("🕣取消订单", "cancel_order"),
-				tgbotapi.NewInlineKeyboardButtonData("⬅️返回个人中心", "back_home"),
+				tgbotapi.NewInlineKeyboardButtonData("🔙返回个人中心", "back_home"),
 			))
 		msg.ReplyMarkup = inlineKeyboard
 		msg.ParseMode = "HTML"
@@ -296,20 +299,32 @@ func DepositPrevOrder(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery *tg
 		log.Printf("Error creating trxDeposit: %v", errsg)
 	}
 
-	msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID,
-		"<b>"+"订单号：#TOPUP-"+"</b>"+trxDeposit.OrderNO+"\n"+
-			"<b>"+"转账金额："+"</b>"+"<code>"+realTransferAmount+"</code>"+" TRX （点击即可复制）"+"\n"+
-			"<b>"+"转账地址："+"</b>"+"<code>"+trxDeposit.Address+"</code>"+"（点击即可复制）"+"\n"+
-			"<b>"+"充值时间："+"</b>"+Format4Chinesese(trxDeposit.CreatedAt)+"\n"+
-			"<b>"+"⚠️注意："+"</b>"+"\n"+
-			"▫️注意小数点 "+realTransferAmount+" TRX 转错金额不能到账"+"\n"+
-			"<b>"+"▫️请在10分钟完成付款，转错金额不能到账。"+"</b>"+"\n"+
-			"转账10分钟后没到账及时联系"+"\n")
+	//msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID,
+	//	"订单号：#TOPUP-"+trxDeposit.OrderNO+"\n"+
+	//		"转账金额："+"<code>"+realTransferAmount+"</code>"+" TRX （点击即可复制）"+"\n"+
+	//		"转账地址："+"<code>"+trxDeposit.Address+"</code>"+"（点击即可复制）"+"\n"+
+	//		"充值时间："+Format4Chinesese(trxDeposit.CreatedAt)+"\n"+
+	//		"⚠️注意："+"\n"+
+	//		"▫️注意小数点 "+realTransferAmount+" TRX 转错金额不能到账"+"\n"+
+	//		"▫️请在10分钟完成付款，转错金额不能到账。"+"\n"+
+	//		"转账10分钟后没到账及时联系"+"\n")
 
+	msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID,
+
+		"支付金额："+"<code>"+realTransferAmount+"</code>"+" usdt （点击复制）"+"\n"+
+			"收款地址："+"<code>"+trxDeposit.Address+"</code>"+"（点击复制）"+"\n"+
+			"订单号：#TOPUP-"+trxDeposit.OrderNO+"\n"+
+			"有效期：10 分钟"+"\n"+
+			"充值时间："+Format4Chinesese(trxDeposit.CreatedAt)+"\n"+
+			"⚠️ 系统会自动为订单金额添加识别尾数，请务必输入完整金额，否则无法入账！"+"\n")
+	//"⚠️注意："+"\n"+
+	//"▫️注意小数点 "+realTransferAmount+" usdt 转错金额不能到账"+"\n"+
+	//"▫️请在10分钟完成付款，转错金额不能到账。"+"\n"+
+	//"转账10分钟后没到账及时联系"+"\n")
 	inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData("🕣取消订单", "cancel_order"),
-			tgbotapi.NewInlineKeyboardButtonData("⬅️返回个人中心", "back_home"),
+			tgbotapi.NewInlineKeyboardButtonData("🔙返回个人中心", "back_home"),
 		))
 	msg.ReplyMarkup = inlineKeyboard
 	msg.ParseMode = "HTML"

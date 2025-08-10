@@ -246,7 +246,7 @@ func NEXT_BUNDLE_PACKAGE_ADDRESS_STATS(callbackQuery *tgbotapi.CallbackQuery, db
 	userAddressDetectionRepo := repositories.NewUserPackageSubscriptionsRepository(db)
 	var info request.UserAddressDetectionSearch
 	info.PageInfo.Page = state.CurrentPage
-	info.PageInfo.PageSize = 5
+	info.PageInfo.PageSize = 10
 	orderlist, total, _ := userAddressDetectionRepo.GetUserPackageSubscriptionsInfoList(context.Background(), info, callbackQuery.Message.Chat.ID)
 
 	fmt.Printf("currentpage : %d", state.CurrentPage)
@@ -354,7 +354,7 @@ func PREV_BUNDLE_PACKAGE_ADDRESS_STATS(callbackQuery *tgbotapi.CallbackQuery, db
 		userAddressDetectionRepo := repositories.NewUserPackageSubscriptionsRepository(db)
 		var info request.UserAddressDetectionSearch
 		info.PageInfo.Page = 1
-		info.PageInfo.PageSize = 5
+		info.PageInfo.PageSize = 10
 		orderlist, total, _ := userAddressDetectionRepo.GetUserPackageSubscriptionsInfoList(context.Background(), info, callbackQuery.Message.Chat.ID)
 		var builder strings.Builder
 		if total > 0 {
@@ -436,7 +436,7 @@ func PREV_BUNDLE_PACKAGE_ADDRESS_STATS(callbackQuery *tgbotapi.CallbackQuery, db
 		userAddressDetectionRepo := repositories.NewUserPackageSubscriptionsRepository(db)
 		var info request.UserAddressDetectionSearch
 		info.PageInfo.Page = state.CurrentPage
-		info.PageInfo.PageSize = 5
+		info.PageInfo.PageSize = 10
 		orderlist, total, _ := userAddressDetectionRepo.GetUserPackageSubscriptionsInfoList(context.Background(), info, callbackQuery.Message.Chat.ID)
 		var builder strings.Builder
 		if total > 0 {

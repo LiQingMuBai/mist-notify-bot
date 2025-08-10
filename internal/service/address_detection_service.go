@@ -67,7 +67,7 @@ func EXTRACT_PREV_ADDRESS_DETECTION_PAGE(callbackQuery *tgbotapi.CallbackQuery, 
 		usdtDepositRepo := repositories.NewUserAddressDetectionRepository(db)
 		var info request.UserAddressDetectionSearch
 		info.PageInfo.Page = 1
-		info.PageInfo.PageSize = 5
+		info.PageInfo.PageSize = 10
 		trxlist, _, _ := usdtDepositRepo.GetUserAddressDetectionInfoList(context.Background(), info, callbackQuery.Message.Chat.ID)
 		var builder strings.Builder
 		builder.WriteString("\n") // 添加分隔符
@@ -106,7 +106,7 @@ func EXTRACT_PREV_ADDRESS_DETECTION_PAGE(callbackQuery *tgbotapi.CallbackQuery, 
 		usdtDepositRepo := repositories.NewUserAddressDetectionRepository(db)
 		var info request.UserAddressDetectionSearch
 		info.PageInfo.Page = state.CurrentPage
-		info.PageInfo.PageSize = 5
+		info.PageInfo.PageSize = 10
 		trxlist, _, _ := usdtDepositRepo.GetUserAddressDetectionInfoList(context.Background(), info, callbackQuery.Message.Chat.ID)
 		var builder strings.Builder
 		builder.WriteString("\n") // 添加分隔符
@@ -155,7 +155,7 @@ func EXTRACT_NEXT_ADDRESS_DETECTION_PAGE(callbackQuery *tgbotapi.CallbackQuery, 
 	usdtDepositRepo := repositories.NewUserAddressDetectionRepository(db)
 	var info request.UserAddressDetectionSearch
 	info.PageInfo.Page = state.CurrentPage
-	info.PageInfo.PageSize = 5
+	info.PageInfo.PageSize = 10
 	trxlist, total, _ := usdtDepositRepo.GetUserAddressDetectionInfoList(context.Background(), info, callbackQuery.Message.Chat.ID)
 
 	fmt.Printf("currentpage : %d", state.CurrentPage)

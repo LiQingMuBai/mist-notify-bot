@@ -237,7 +237,7 @@ func MenuNavigateHome(db *gorm.DB, message *tgbotapi.Message, bot *tgbotapi.BotA
 		tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData("💳充值", "deposit_amount"),
 			tgbotapi.NewInlineKeyboardButtonData("🔗第二通知人", "click_backup_account"),
-			tgbotapi.NewInlineKeyboardButtonData("📄账单", "click_my_recepit"),
+			tgbotapi.NewInlineKeyboardButtonData("📄充值账单", "click_my_recepit"),
 			//tgbotapi.NewInlineKeyboardButtonData("🛠️我的服务", "click_my_service"),
 		),
 		tgbotapi.NewInlineKeyboardRow(

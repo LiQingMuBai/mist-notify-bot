@@ -24,7 +24,7 @@ func EXTRACT_PREV_DEPOSIT_TRX_PAGE(callbackQuery *tgbotapi.CallbackQuery, db *go
 		trxDepositRepo := repositories.NewUserTRXDepositsRepository(db)
 		var info request.UserTrxDepositsSearch
 		info.PageInfo.Page = 1
-		info.PageInfo.PageSize = 5
+		info.PageInfo.PageSize = 10
 		trxlist, _, _ := trxDepositRepo.GetUserTrxDepositsInfoList(context.Background(), info, callbackQuery.Message.Chat.ID)
 		var builder strings.Builder
 		builder.WriteString("\n") // 添加分隔符
@@ -65,7 +65,7 @@ func EXTRACT_PREV_DEPOSIT_TRX_PAGE(callbackQuery *tgbotapi.CallbackQuery, db *go
 		trxDepositRepo := repositories.NewUserTRXDepositsRepository(db)
 		var info request.UserTrxDepositsSearch
 		info.PageInfo.Page = state.CurrentPage
-		info.PageInfo.PageSize = 5
+		info.PageInfo.PageSize = 10
 		trxlist, _, _ := trxDepositRepo.GetUserTrxDepositsInfoList(context.Background(), info, callbackQuery.Message.Chat.ID)
 		var builder strings.Builder
 		builder.WriteString("\n") // 添加分隔符
@@ -117,7 +117,7 @@ func ExtracNextDepositTrxPage(callbackQuery *tgbotapi.CallbackQuery, db *gorm.DB
 	trxDepositRepo := repositories.NewUserTRXDepositsRepository(db)
 	var info request.UserTrxDepositsSearch
 	info.PageInfo.Page = state.CurrentPage
-	info.PageInfo.PageSize = 5
+	info.PageInfo.PageSize = 10
 	trxlist, total, _ := trxDepositRepo.GetUserTrxDepositsInfoList(context.Background(), info, callbackQuery.Message.Chat.ID)
 
 	fmt.Printf("currentpage : %d", state.CurrentPage)

@@ -16,7 +16,7 @@ func BackHOME(db *gorm.DB, chatID int64, bot *tgbotapi.BotAPI) {
 		tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData("💳充值", "deposit_amount"),
 			tgbotapi.NewInlineKeyboardButtonData("🔗第二通知人", "click_backup_account"),
-			tgbotapi.NewInlineKeyboardButtonData("📄账单", "click_my_recepit"),
+			tgbotapi.NewInlineKeyboardButtonData("📄充值账单", "click_my_recepit"),
 		),
 		tgbotapi.NewInlineKeyboardRow(
 			//tgbotapi.NewInlineKeyboardButtonData("🔗绑定备用帐号", "click_backup_account"),

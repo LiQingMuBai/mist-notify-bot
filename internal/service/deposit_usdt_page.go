@@ -24,7 +24,7 @@ func EXTRACT_PREV_DEPOSIT_USDT_PAGE(callbackQuery *tgbotapi.CallbackQuery, db *g
 		usdtDepositRepo := repositories.NewUserUSDTDepositsRepository(db)
 		var info request.UserUsdtDepositsSearch
 		info.PageInfo.Page = 1
-		info.PageInfo.PageSize = 5
+		info.PageInfo.PageSize = 10
 		trxlist, _, _ := usdtDepositRepo.GetUserUsdtDepositsInfoList(context.Background(), info, callbackQuery.Message.Chat.ID)
 		var builder strings.Builder
 		builder.WriteString("\n") // 添加分隔符
@@ -65,7 +65,7 @@ func EXTRACT_PREV_DEPOSIT_USDT_PAGE(callbackQuery *tgbotapi.CallbackQuery, db *g
 		usdtDepositRepo := repositories.NewUserUSDTDepositsRepository(db)
 		var info request.UserUsdtDepositsSearch
 		info.PageInfo.Page = state.CurrentPage
-		info.PageInfo.PageSize = 5
+		info.PageInfo.PageSize = 10
 		trxlist, _, _ := usdtDepositRepo.GetUserUsdtDepositsInfoList(context.Background(), info, callbackQuery.Message.Chat.ID)
 		var builder strings.Builder
 		builder.WriteString("\n") // 添加分隔符
@@ -117,7 +117,7 @@ func ExtraNextDepositUSDTPage(callbackQuery *tgbotapi.CallbackQuery, db *gorm.DB
 	usdtDepositRepo := repositories.NewUserUSDTDepositsRepository(db)
 	var info request.UserUsdtDepositsSearch
 	info.PageInfo.Page = state.CurrentPage
-	info.PageInfo.PageSize = 5
+	info.PageInfo.PageSize = 10
 	trxlist, total, _ := usdtDepositRepo.GetUserUsdtDepositsInfoList(context.Background(), info, callbackQuery.Message.Chat.ID)
 
 	fmt.Printf("currentpage : %d", state.CurrentPage)

@@ -26,7 +26,7 @@ func CLICK_DEPOSIT_USDT_RECORDS(db *gorm.DB, callbackQuery *tgbotapi.CallbackQue
 	//trxDepositRepo := repositories.NewUserTRXDepositsRepository(db)
 	var info request.UserUsdtDepositsSearch
 	info.PageInfo.Page = 1
-	info.PageInfo.PageSize = 5
+	info.PageInfo.PageSize = 10
 	//trxlist, _, _ := trxDepositRepo.GetUserTrxDepositsInfoList(context.Background(), info, callbackQuery.Message.Chat.ID)
 	usdtlist, _, _ := usdtDepositRepo.GetUserUsdtDepositsInfoList(context.Background(), info, callbackQuery.Message.Chat.ID)
 
@@ -75,7 +75,7 @@ func ClickBusinessCooperation(callbackQuery *tgbotapi.CallbackQuery, bot *tgbota
 	inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardRow(
 			//tgbotapi.NewInlineKeyboardButtonData("解绑地址", "free_monitor_address"),
-			tgbotapi.NewInlineKeyboardButtonData("返回个人中心", "back_home"),
+			tgbotapi.NewInlineKeyboardButtonData("🔙返回个人中心", "back_home"),
 		),
 	)
 	msg.ReplyMarkup = inlineKeyboard
@@ -87,7 +87,7 @@ func ClickCallCenter(callbackQuery *tgbotapi.CallbackQuery, bot *tgbotapi.BotAPI
 	inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardRow(
 			//tgbotapi.NewInlineKeyboardButtonData("解绑地址", "free_monitor_address"),
-			tgbotapi.NewInlineKeyboardButtonData("返回个人中心", "back_home"),
+			tgbotapi.NewInlineKeyboardButtonData("🔙返回个人中心", "back_home"),
 		),
 	)
 	msg.ReplyMarkup = inlineKeyboard
@@ -111,7 +111,7 @@ func CLICK_DEPOSIT_TRX_RECORDS(db *gorm.DB, callbackQuery *tgbotapi.CallbackQuer
 	trxDepositRepo := repositories.NewUserTRXDepositsRepository(db)
 	var info request.UserTrxDepositsSearch
 	info.PageInfo.Page = 1
-	info.PageInfo.PageSize = 5
+	info.PageInfo.PageSize = 10
 	trxlist, _, _ := trxDepositRepo.GetUserTrxDepositsInfoList(context.Background(), info, callbackQuery.Message.Chat.ID)
 
 	var builder strings.Builder

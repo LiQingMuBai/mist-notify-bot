@@ -152,7 +152,7 @@ func ExtraNextAddressRiskPage(callbackQuery *tgbotapi.CallbackQuery, db *gorm.DB
 	userAddressDetectionRepo := repositories.NewUserAddressMonitorEventRepo(db)
 	var info request.UserAddressDetectionSearch
 	info.PageInfo.Page = state.CurrentPage
-	info.PageInfo.PageSize = 5
+	info.PageInfo.PageSize = 10
 	trxlist, total, _ := userAddressDetectionRepo.GetAddressMonitorEventInfoList(context.Background(), info, callbackQuery.Message.Chat.ID)
 
 	fmt.Printf("currentpage : %d", state.CurrentPage)
