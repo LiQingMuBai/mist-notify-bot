@@ -25,6 +25,13 @@ func (r *UserUsdtPlaceholdersRepository) ListAll(ctx context.Context) ([]domain.
 	return placeholders, err
 
 }
+
+func (r *UserUsdtPlaceholdersRepository) UpdateByPlaceholder(ctx context.Context, _placeholder string, _status int64) error {
+	return r.db.WithContext(ctx).Model(&domain.UserUsdtPlaceholders{}).
+		Where("placeholder = ?", _placeholder).
+		Update("status", _status).Error
+}
+
 func (r *UserUsdtPlaceholdersRepository) Update(ctx context.Context, ID int64, _status int64) error {
 	return r.db.WithContext(ctx).Model(&domain.UserUsdtPlaceholders{}).
 		Where("id = ?", ID).

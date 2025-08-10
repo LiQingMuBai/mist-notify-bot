@@ -52,3 +52,13 @@ func (r *UserUSDTDepositsRepo) GetUserUsdtDepositsInfoList(ctx context.Context, 
 	err = db.Find(&userUsdtDepositss).Error
 	return userUsdtDepositss, total, err
 }
+func (r *UserUSDTDepositsRepo) Find(ctx context.Context, orderNo string) (domain.UserUSDTDeposits, error) {
+	var depositRecords []domain.UserUSDTDeposits
+	err := r.db.WithContext(ctx).
+		Model(&domain.UserUSDTDeposits{}).
+		Select("id", "placeholder").
+		Where("order_no = ?", orderNo).
+		Scan(&depositRecords).Error
+	return depositRecords[0], err
+
+}

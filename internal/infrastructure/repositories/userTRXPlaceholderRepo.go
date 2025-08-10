@@ -31,6 +31,13 @@ func (r *UserTRXPlaceholdersRepository) Update(ctx context.Context, ID int64, _s
 		Where("id = ?", ID).
 		Update("status", _status).Error
 }
+
+func (r *UserTRXPlaceholdersRepository) UpdateByPlaceholder(ctx context.Context, _placeholder string, _status int64) error {
+	return r.db.WithContext(ctx).Model(&domain.UserTRXPlaceholders{}).
+		Where("placeholder = ?", _placeholder).
+		Update("status", _status).Error
+}
+
 func (r *UserTRXPlaceholdersRepository) Find(ctx context.Context) (domain.UserTRXPlaceholders, error) {
 	var placeholders []domain.UserTRXPlaceholders
 	err := r.db.WithContext(ctx).

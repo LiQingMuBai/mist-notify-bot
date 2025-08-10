@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 	"ushield_bot/internal/cache"
 	"ushield_bot/internal/domain"
@@ -84,7 +85,7 @@ func DepositPrevUSDTOrder(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery
 	expiration := 1 * time.Minute // 短时间缓存空值
 
 	//设置用户状态
-	cache.Set(strconv.FormatInt(callbackQuery.Message.Chat.ID, 10)+"_order_no", usdtDeposit.OrderNO, expiration)
+	cache.Set(strconv.FormatInt(callbackQuery.Message.Chat.ID, 10)+"_order_no", "USDT_"+usdtDeposit.OrderNO, expiration)
 }
 
 func DepositCancelOrder(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery *tgbotapi.CallbackQuery, db *gorm.DB) {
@@ -95,6 +96,31 @@ func DepositCancelOrder(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery *
 	msg_order.ParseMode = "HTML"
 	//msg.DisableWebPagePreview = true
 	bot.Send(msg_order)
+
+	if strings.Contains(orderNO, "TRX_") {
+
+		_orderNO := strings.ReplaceAll(orderNO, "TRX_", "")
+		userTRXDepositsRepo := repositories.NewUserTRXDepositsRepository(db)
+		record, _ := userTRXDepositsRepo.Find(context.Background(), _orderNO)
+
+		//update
+		fmt.Printf("record: %v\n", record)
+
+		userTRXPlaceholdersRepo := repositories.NewUserTRXPlaceholdersRepository(db)
+		userTRXPlaceholdersRepo.UpdateByPlaceholder(context.Background(), record.Placeholder, 0)
+		fmt.Printf("placeholder重置 %s\n", record.Placeholder)
+	}
+
+	if strings.Contains(orderNO, "USDT_") {
+		_orderNO := strings.ReplaceAll(orderNO, "USDT_", "")
+		userUSDTDepositsRepo := repositories.NewUserUSDTDepositsRepository(db)
+		record, _ := userUSDTDepositsRepo.Find(context.Background(), _orderNO)
+		//update
+		fmt.Printf("record: %v\n", record)
+		userUSDTPlaceholdersRepo := repositories.NewUserUsdtPlaceholdersRepository(db)
+		userUSDTPlaceholdersRepo.UpdateByPlaceholder(context.Background(), record.Placeholder, 0)
+		fmt.Printf("placeholder重置 %s\n", record.Placeholder)
+	}
 
 	inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 		//tgbotapi.NewInlineKeyboardRow(
@@ -209,5 +235,5 @@ func DepositPrevOrder(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery *tg
 	expiration := 1 * time.Minute // 短时间缓存空值
 
 	//设置用户状态
-	cache.Set(strconv.FormatInt(callbackQuery.Message.Chat.ID, 10)+"_order_no", trxDeposit.OrderNO, expiration)
+	cache.Set(strconv.FormatInt(callbackQuery.Message.Chat.ID, 10)+"_order_no", "TRX_"+trxDeposit.OrderNO, expiration)
 }
