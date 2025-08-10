@@ -174,7 +174,7 @@ func DepositPrevOrder(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery *tg
 	sysUserRepo := repositories.NewSysUsersRepository(db)
 	_, depositAddress, _ := sysUserRepo.Find(context.Background(), _agent)
 	trxDeposit.Address = depositAddress
-	trxDeposit.Amount = realTransferAmount
+	trxDeposit.Amount = transferAmount
 	trxDeposit.CreatedAt = time.Now()
 
 	errsg := trxDepositRepo.Create(context.Background(), &trxDeposit)
