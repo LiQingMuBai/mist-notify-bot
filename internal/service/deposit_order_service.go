@@ -63,11 +63,11 @@ func DepositPrevUSDTOrder(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery
 
 	msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID,
 		"<b>"+"订单号：#TOPUP-"+"</b>"+usdtDeposit.OrderNO+"\n"+
-			"<b>"+"转账金额："+"</b>"+"<code>"+usdtDeposit.Amount+"</code>"+" usdt （点击即可复制）"+"\n"+
+			"<b>"+"转账金额："+"</b>"+"<code>"+realTransferAmount+"</code>"+" usdt （点击即可复制）"+"\n"+
 			"<b>"+"转账地址："+"</b>"+"<code>"+usdtDeposit.Address+"</code>"+"（点击即可复制）"+"\n"+
 			"<b>"+"充值时间："+"</b>"+Format4Chinesese(usdtDeposit.CreatedAt)+"\n"+
 			"<b>"+"⚠️注意："+"</b>"+"\n"+
-			"▫️注意小数点 "+usdtDeposit.Amount+" usdt 转错金额不能到账"+"\n"+
+			"▫️注意小数点 "+realTransferAmount+" usdt 转错金额不能到账"+"\n"+
 			"<b>"+"▫️请在10分钟完成付款，转错金额不能到账。"+"</b>"+"\n"+
 			"转账10分钟后没到账及时联系"+"\n")
 
@@ -189,11 +189,11 @@ func DepositPrevOrder(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery *tg
 
 	msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID,
 		"<b>"+"订单号：#TOPUP-"+"</b>"+trxDeposit.OrderNO+"\n"+
-			"<b>"+"转账金额："+"</b>"+"<code>"+trxDeposit.Amount+"</code>"+" TRX （点击即可复制）"+"\n"+
+			"<b>"+"转账金额："+"</b>"+"<code>"+realTransferAmount+"</code>"+" TRX （点击即可复制）"+"\n"+
 			"<b>"+"转账地址："+"</b>"+"<code>"+trxDeposit.Address+"</code>"+"（点击即可复制）"+"\n"+
 			"<b>"+"充值时间："+"</b>"+Format4Chinesese(trxDeposit.CreatedAt)+"\n"+
 			"<b>"+"⚠️注意："+"</b>"+"\n"+
-			"▫️注意小数点 "+trxDeposit.Amount+" TRX 转错金额不能到账"+"\n"+
+			"▫️注意小数点 "+realTransferAmount+" TRX 转错金额不能到账"+"\n"+
 			"<b>"+"▫️请在10分钟完成付款，转错金额不能到账。"+"</b>"+"\n"+
 			"转账10分钟后没到账及时联系"+"\n")
 
