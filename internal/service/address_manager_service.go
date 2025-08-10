@@ -73,7 +73,7 @@ func ADDRESS_LIST_TRACE(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery *
 
 	msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, "有服务进行中\n\n📊 当前正在监控的地址：\n\n"+
 		result+
-		"💼 当前余额："+"\n- "+user.TronAmount+" TRX \n - "+user.Amount+" USDT \n"+
+		"💰 当前余额："+"\n- "+user.TronAmount+" TRX \n - "+user.Amount+" USDT \n"+
 		"📌请保持余额充足，到期将自动续费\n"+
 		"如需中止服务，可随时")
 	msg.ParseMode = "HTML"
