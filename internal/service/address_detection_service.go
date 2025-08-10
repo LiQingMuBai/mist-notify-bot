@@ -47,7 +47,7 @@ func ExtractAddressDetection(db *gorm.DB, callbackQuery *tgbotapi.CallbackQuery)
 		),
 		tgbotapi.NewInlineKeyboardRow(
 			//tgbotapi.NewInlineKeyboardButtonData("解绑地址", "free_monitor_address"),
-			tgbotapi.NewInlineKeyboardButtonData("🔙返回首页", "back_address_detection_home"),
+			tgbotapi.NewInlineKeyboardButtonData("🔍再次检测", "back_address_detection_home"),
 		),
 	)
 	msg.ReplyMarkup = inlineKeyboard

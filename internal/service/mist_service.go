@@ -145,7 +145,7 @@ func ExtractSlowMistRiskQuery(message *tgbotapi.Message, db *gorm.DB, _cookie st
 				msg := tgbotapi.NewMessage(message.Chat.ID, _text)
 				inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 					tgbotapi.NewInlineKeyboardRow(
-						tgbotapi.NewInlineKeyboardButtonData("🔙返回首页", "back_address_detection_home"),
+						tgbotapi.NewInlineKeyboardButtonData("🔍再次检测", "back_address_detection_home"),
 					),
 				)
 				msg.ReplyMarkup = inlineKeyboard
@@ -164,19 +164,20 @@ func ExtractSlowMistRiskQuery(message *tgbotapi.Message, db *gorm.DB, _cookie st
 				//msg.ReplyMarkup = inlineKeyboard
 
 				msg := tgbotapi.NewMessage(message.Chat.ID,
-					"💬"+"<b>"+"🔍普通用戶每日赠送 1 次地址风险查询 "+"</b>"+user.Username+"\n"+
-						"💬"+"<b>"+"用户姓名: "+"</b>"+user.Username+"\n"+
-						"👤"+"<b>"+"用户电报ID: "+"</b>"+user.Associates+"\n"+
-						"💵"+"<b>"+"当前TRX余额:  "+"</b>"+user.TronAmount+" TRX"+"\n"+
-						"💴"+"<b>"+"当前USDT余额:  "+"</b>"+user.Amount+" USDT")
+					"<b>"+"🔍每日免费次数已用完，请充值后再次使用 "+"</b>"+"\n"+
+						"🆔 用户ID: "+user.Associates+"\n"+
+						"👤 用户名: @"+user.Username+"\n"+
+						"💰 当前余额: "+"\n"+
+						"- TRX：   "+user.TronAmount+"\n"+
+						"-  USDT："+user.Amount)
 				msg.ParseMode = "HTML"
 				inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 					tgbotapi.NewInlineKeyboardRow(
 						tgbotapi.NewInlineKeyboardButtonData("💵充值", "deposit_amount"),
 					),
-					tgbotapi.NewInlineKeyboardRow(
-						tgbotapi.NewInlineKeyboardButtonData("🔙返回个人中心", "back_home"),
-					),
+					//tgbotapi.NewInlineKeyboardRow(
+					//	tgbotapi.NewInlineKeyboardButtonData("🔙返回个人中心", "back_home"),
+					//),
 				)
 
 				msg.ReplyMarkup = inlineKeyboard
@@ -264,7 +265,7 @@ func ExtractSlowMistRiskQuery(message *tgbotapi.Message, db *gorm.DB, _cookie st
 			msg := tgbotapi.NewMessage(message.Chat.ID, _text)
 			inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 				tgbotapi.NewInlineKeyboardRow(
-					tgbotapi.NewInlineKeyboardButtonData("🔙返回首页", "back_address_detection_home"),
+					tgbotapi.NewInlineKeyboardButtonData("🔍再次检测", "back_address_detection_home"),
 				),
 			)
 			msg.ReplyMarkup = inlineKeyboard
