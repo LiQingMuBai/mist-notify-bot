@@ -55,10 +55,12 @@ func DEPOSIT_AMOUNT(db *gorm.DB, callbackQuery *tgbotapi.CallbackQuery, bot *tgb
 	}
 
 	msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID,
-		"💬"+"<b>"+"用户姓名: "+"</b>"+user.Username+"\n"+
-			"👤"+"<b>"+"用户电报ID: "+"</b>"+user.Associates+"\n"+
-			"💵"+"<b>"+"TRX余额:  "+"</b>"+user.TronAmount+" TRX"+"\n"+
-			"💴"+"<b>"+"USDT余额:  "+"</b>"+user.Amount+" USDT")
+		"🆔 用户ID: "+user.Associates+"\n"+
+			"👤 用户名: @"+user.Username+"\n"+
+			"💰 当前余额: "+"\n"+
+			"- TRX：   "+user.TronAmount+"\n"+
+			"-  USDT："+user.Amount)
+
 	msg.ReplyMarkup = inlineKeyboard
 	msg.ParseMode = "HTML"
 

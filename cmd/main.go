@@ -445,8 +445,7 @@ func handleCallbackQuery(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery 
 
 		msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, "👥欢迎使用第二通知人服务"+"\n"+
 			"为确保实时接收预警信息，您可绑定一个第二通知人TG帐号。"+"\n"+
-			"绑定后该账号将同步接收预警信息，请确保第二通知人已与本机器人互动。"+"\n"+
-			"第二通知人替换请直接重复绑定步骤，系统将自动替换。请输入的第二通知人TG帐号@用户名 👇")
+			"绑定前请确保第二通知人已与本机器人互动，绑定后该账号将同步接收预警信息，第二通知人替换请重复绑定步骤，系统将自动替换。请输入的第二通知人TG帐号@用户名 👇")
 		msg.ParseMode = "HTML"
 
 		inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
@@ -835,7 +834,7 @@ func handleCallbackQuery(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery 
 			allButtons = append(allButtons, tgbotapi.NewInlineKeyboardButtonData("💰"+usdtRecord.Name, "deposit_usdt_"+usdtRecord.Amount))
 		}
 
-		extraButtons = append(extraButtons, tgbotapi.NewInlineKeyboardButtonData("🔘切换到TRX充值", "forward_deposit_usdt"), tgbotapi.NewInlineKeyboardButtonData("🔙返回个人中心", "back_home"))
+		extraButtons = append(extraButtons, tgbotapi.NewInlineKeyboardButtonData("🔘切换到TRX充值", "deposit_amount"), tgbotapi.NewInlineKeyboardButtonData("🔙返回个人中心", "back_home"))
 
 		for i := 0; i < len(allButtons); i += 2 {
 			end := i + 2
@@ -870,10 +869,11 @@ func handleCallbackQuery(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery 
 		}
 
 		msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID,
-			"💬"+"<b>"+"用户姓名: "+"</b>"+user.Username+"\n"+
-				"👤"+"<b>"+"用户电报ID: "+"</b>"+user.Associates+"\n"+
-				"💵"+"<b>"+"TRX余额:  "+"</b>"+user.TronAmount+" TRX"+"\n"+
-				"💴"+"<b>"+"USDT余额:  "+"</b>"+user.Amount+" USDT")
+			"🆔 用户ID: "+user.Associates+"\n"+
+				"👤 用户名: @"+user.Username+"\n"+
+				"💰 当前余额: "+"\n"+
+				"- TRX：   "+user.TronAmount+"\n"+
+				"-  USDT："+user.Amount)
 
 		msg.ReplyMarkup = inlineKeyboard
 		msg.ParseMode = "HTML"
