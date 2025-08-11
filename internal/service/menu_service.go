@@ -39,7 +39,7 @@ func MenuNavigateAddressFreeze(cache cache.Cache, bot *tgbotapi.BotAPI, chatID i
 			//tgbotapi.NewInlineKeyboardButtonData("地址管理", "address_manager"),
 		),
 		tgbotapi.NewInlineKeyboardRow(
-			tgbotapi.NewInlineKeyboardButtonData("地址监控列表", "address_list_trace"),
+			tgbotapi.NewInlineKeyboardButtonData("预警监控列表", "address_list_trace"),
 			tgbotapi.NewInlineKeyboardButtonData("冻结预警扣款记录", "address_freeze_risk_records"),
 		),
 		//tgbotapi.NewInlineKeyboardRow(

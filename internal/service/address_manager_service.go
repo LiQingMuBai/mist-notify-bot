@@ -51,12 +51,12 @@ func ADDRESS_LIST_TRACE(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery *
 		// 遍历数组并拼接字符串
 		for i, item := range addresses {
 			if i > 0 {
-				result += " ✅\n\n" // 添加分隔符
+				result += " ✅\n" // 添加分隔符
 			}
 
 			restDays := fmt.Sprintf("%d", 30-item.Days)
 
-			result += "<code>" + item.Address + "</code>" + "（剩余" + restDays + "  天）"
+			result += "<code>" + item.Address + "</code>" + "（剩余" + restDays + "天）"
 		}
 		result += " ✅\n\n" // 添加分隔符
 	}
@@ -71,24 +71,26 @@ func ADDRESS_LIST_TRACE(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery *
 		user.TronAmount = "0.00"
 	}
 
-	msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, "有服务进行中\n\n📊 当前正在监控的地址：\n\n"+
+	msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, "有服务进行中\n📊 当前正在监控的地址：\n"+
 		result+
-		"💰 当前余额："+"\n- "+user.TronAmount+" TRX \n - "+user.Amount+" USDT \n"+
-		"📌请保持余额充足，到期将自动续费\n"+
-		"如需中止服务，可随时")
+		//"💰 当前余额："+"\n- "+user.TronAmount+" TRX \n - "+user.Amount+" USDT \n"+
+		"💰 当前余额: "+"\n"+
+		"- TRX：   "+user.TronAmount+"\n"+
+		"-  USDT："+user.Amount+"\n"+
+		"📌请保持余额充足，到期将自动续费，如需中止服务，可随时")
 	msg.ParseMode = "HTML"
 
 	inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardRow(
 			//tgbotapi.NewInlineKeyboardButtonData("解绑地址", "free_monitor_address"),
-			tgbotapi.NewInlineKeyboardButtonData("停止监控", "stop_freeze_risk"),
-			tgbotapi.NewInlineKeyboardButtonData("🔙️返回首页", "back_risk_home"),
-			//tgbotapi.NewInlineKeyboardButtonData("第二紧急通知", "user_backup_notify"),
+			tgbotapi.NewInlineKeyboardButtonData("🛑停止监控", "stop_freeze_risk"),
+			//tgbotapi.NewInlineKeyboardButtonData("🔙️返回首页", "back_risk_home"),
+			//tgbotapi.NewInlineKeyboardButtonData("地址管理", "user_backup_notify"),
 		),
-		//tgbotapi.NewInlineKeyboardRow(
-		//
-		//	tgbotapi.NewInlineKeyboardButtonData("🔙️返回首页", "back_risk_home"),
-		//),
+		tgbotapi.NewInlineKeyboardRow(
+
+			tgbotapi.NewInlineKeyboardButtonData("🔙️返回首页", "back_risk_home"),
+		),
 	)
 	msg.ReplyMarkup = inlineKeyboard
 
