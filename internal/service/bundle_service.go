@@ -59,11 +59,17 @@ func BUNDLE_CHECK(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery *tgbota
 
 	if lessBalance {
 		msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID,
-			"💬"+"<b>"+"用户姓名: "+"</b>"+user.Username+"\n"+
-				"👤"+"<b>"+"用户电报ID: "+"</b>"+user.Associates+"\n"+
-				"💵"+"<b>"+"余额不足 "+"</b>"+"\n"+
-				"💴"+"<b>"+"当前TRX余额:  "+"</b>"+user.TronAmount+" TRX"+"\n"+
-				"💴"+"<b>"+"当前USDT余额:  "+"</b>"+user.Amount+" USDT")
+			//"💬"+"<b>"+"用户姓名: "+"</b>"+user.Username+"\n"+
+			//	"👤"+"<b>"+"用户电报ID: "+"</b>"+user.Associates+"\n"+
+			//	"💵"+"<b>"+"余额不足 "+"</b>"+"\n"+
+			//	"💴"+"<b>"+"当前TRX余额:  "+"</b>"+user.TronAmount+" TRX"+"\n"+
+			//	"💴"+"<b>"+"当前USDT余额:  "+"</b>"+user.Amount+" USDT")
+
+			"🆔 用户ID: "+user.Associates+"\n"+
+				"👤 用户名: @"+user.Username+"\n"+
+				"💰 当前余额: "+"\n"+
+				"- TRX：   "+user.TronAmount+"\n"+
+				"-  USDT："+user.Amount)
 
 		msg.ParseMode = "HTML"
 
@@ -149,11 +155,16 @@ func ExtractBundleService(message *tgbotapi.Message, bot *tgbotapi.BotAPI, db *g
 	if CompareStringsWithFloat(fee, user.Amount, 1) {
 		//余额不足，需充值
 		msg := tgbotapi.NewMessage(message.Chat.ID,
-			"💬"+"<b>"+"余额不足: "+"</b>"+"\n"+
-				"💬"+"<b>"+"用户姓名: "+"</b>"+user.Username+"\n"+
-				"👤"+"<b>"+"用户电报ID: "+"</b>"+user.Associates+"\n"+
-				"💵"+"<b>"+"当前TRX余额:  "+"</b>"+user.TronAmount+" TRX"+"\n"+
-				"💴"+"<b>"+"当前USDT余额:  "+"</b>"+user.Amount+" USDT")
+			//"💬"+"<b>"+"余额不足: "+"</b>"+"\n"+
+			//	"💬"+"<b>"+"用户姓名: "+"</b>"+user.Username+"\n"+
+			//	"👤"+"<b>"+"用户电报ID: "+"</b>"+user.Associates+"\n"+
+			//	"💵"+"<b>"+"当前TRX余额:  "+"</b>"+user.TronAmount+" TRX"+"\n"+
+			//	"💴"+"<b>"+"当前USDT余额:  "+"</b>"+user.Amount+" USDT")
+			"🆔 用户ID: "+user.Associates+"\n"+
+				"👤 用户名: @"+user.Username+"\n"+
+				"💰 当前余额: "+"\n"+
+				"- TRX：   "+user.TronAmount+"\n"+
+				"-  USDT："+user.Amount)
 		msg.ParseMode = "HTML"
 		inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 			tgbotapi.NewInlineKeyboardRow(
@@ -185,10 +196,15 @@ func ExtractBundleService(message *tgbotapi.Message, bot *tgbotapi.BotAPI, db *g
 
 		msg := tgbotapi.NewMessage(message.Chat.ID,
 			"<b>"+"✅笔数套餐订阅成功"+"</b>"+"\n"+
-				"💬"+"<b>"+"用户姓名: "+"</b>"+user.Username+"\n"+
-				"👤"+"<b>"+"用户电报ID: "+"</b>"+user.Associates+"\n"+
-				"💵"+"<b>"+"当前TRX余额:  "+"</b>"+user.TronAmount+" TRX"+"\n"+
-				"💴"+"<b>"+"当前USDT余额:  "+"</b>"+user.Amount+" USDT")
+				//"💬"+"<b>"+"用户姓名: "+"</b>"+user.Username+"\n"+
+				//"👤"+"<b>"+"用户电报ID: "+"</b>"+user.Associates+"\n"+
+				//"💵"+"<b>"+"当前TRX余额:  "+"</b>"+user.TronAmount+" TRX"+"\n"+
+				//"💴"+"<b>"+"当前USDT余额:  "+"</b>"+user.Amount+" USDT")
+				"🆔 用户ID: "+user.Associates+"\n"+
+				"👤 用户名: @"+user.Username+"\n"+
+				"💰 当前余额: "+"\n"+
+				"- TRX：   "+user.TronAmount+"\n"+
+				"-  USDT："+user.Amount)
 		msg.ParseMode = "HTML"
 		inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 			tgbotapi.NewInlineKeyboardRow(
