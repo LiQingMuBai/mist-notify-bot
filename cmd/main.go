@@ -507,6 +507,7 @@ func handleCallbackQuery(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery 
 			msg.ParseMode = "HTML"
 			inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 				tgbotapi.NewInlineKeyboardRow(
+					tgbotapi.NewInlineKeyboardButtonData("预警监控列表", "address_list_trace"),
 					tgbotapi.NewInlineKeyboardButtonData("🔙️返回首页", "back_risk_home"),
 				),
 			)
@@ -602,6 +603,7 @@ func handleCallbackQuery(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery 
 			// 当点击"按钮 1"时显示内联键盘
 			inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 				tgbotapi.NewInlineKeyboardRow(
+					tgbotapi.NewInlineKeyboardButtonData("预警监控列表", "address_list_trace"),
 					tgbotapi.NewInlineKeyboardButtonData("🔙️返回首页", "back_risk_home"),
 				),
 			)

@@ -59,6 +59,8 @@ func ADDRESS_LIST_TRACE(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery *
 			result += "<code>" + item.Address + "</code>" + "（剩余" + restDays + "天）"
 		}
 		result += " ✅\n\n" // 添加分隔符
+	} else {
+		result += "\n当前没有地址在进行预警监控服务\n\n"
 	}
 	//查看余额
 	userRepo := repositories.NewUserRepository(db)
@@ -71,7 +73,7 @@ func ADDRESS_LIST_TRACE(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery *
 		user.TronAmount = "0.00"
 	}
 
-	msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, "有服务进行中\n📊 当前正在监控的地址：\n"+
+	msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, "📊 当前正在监控的地址：\n"+
 		result+
 		//"💰 当前余额："+"\n- "+user.TronAmount+" TRX \n - "+user.Amount+" USDT \n"+
 		"💰 当前余额: "+"\n"+
