@@ -272,7 +272,7 @@ func MenuNavigateHome(db *gorm.DB, message *tgbotapi.Message, bot *tgbotapi.BotA
 		//backup_user, _ := userRepo.GetByUserID(id)
 		str = "🔗 第二通知人：  " + "@" + user.BackupChatID
 	} else {
-		str = "未绑定备用帐号"
+		str = "第二通知人：（无）"
 	}
 
 	msg := tgbotapi.NewMessage(message.Chat.ID, "📇 我的账户\n\n🆔 用户ID："+user.Associates+"\n\n👤 用户名：@"+user.Username+"\n\n"+
