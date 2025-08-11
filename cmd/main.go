@@ -886,7 +886,7 @@ func handleCallbackQuery(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery 
 			allButtons = append(allButtons, tgbotapi.NewInlineKeyboardButtonData(item.Address, "close_freeze_risk_"+fmt.Sprintf("%d", item.Id)))
 		}
 
-		extraButtons = append(extraButtons, tgbotapi.NewInlineKeyboardButtonData("🔙返回首页", "back_bundle_package"))
+		extraButtons = append(extraButtons, tgbotapi.NewInlineKeyboardButtonData("🔙返回首页", "back_risk_home"))
 
 		for i := 0; i < len(allButtons); i += 1 {
 			end := i + 1
