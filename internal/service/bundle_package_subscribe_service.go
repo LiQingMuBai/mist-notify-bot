@@ -113,7 +113,7 @@ func APPLY_BUNDLE_PACKAGE(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbo
 	bundle, _ := strconv.ParseInt(bundleID, 10, 64)
 
 	record.BundleID = bundle
-	record.Status = 1
+	record.Status = 2
 	record.Amount = bundlePackage.Amount
 	record.Times = ExtractLeadingInt64(bundlePackage.Name)
 	record.BundleName = bundlePackage.Name

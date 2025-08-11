@@ -381,7 +381,7 @@ func APPLY_BUNDLE_PACKAGE_ADDRESS(bundle_address string, cache cache.Cache, bot 
 	bundle, _ := strconv.ParseInt(bundleID, 10, 64)
 
 	record.BundleID = bundle
-	record.Status = 1
+	record.Status = 2
 	record.Amount = bundlePackage.Amount
 	record.Times = tools.ExtractLeadingInt64(bundlePackage.Name)
 	record.BundleName = bundlePackage.Name
