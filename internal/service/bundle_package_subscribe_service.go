@@ -131,6 +131,7 @@ func APPLY_BUNDLE_PACKAGE(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbo
 	// 当点击"按钮 1"时显示内联键盘
 	inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardRow(
+			tgbotapi.NewInlineKeyboardButtonData("🧾地址列表", "click_bundle_package_address_stats"),
 			tgbotapi.NewInlineKeyboardButtonData("🔙️返回首页", "back_bundle_package"),
 		),
 	)
