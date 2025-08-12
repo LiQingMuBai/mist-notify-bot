@@ -9,6 +9,19 @@ import (
 	"unicode"
 )
 
+func TruncateString(s string) string {
+	// 转换为rune数组以正确处理多字节字符
+	runes := []rune(s)
+	totalRunes := len(runes)
+
+	// 字符数≤16时直接返回原字符串
+	if totalRunes <= 16 {
+		return s
+	}
+
+	// 取前8个字符 + "..." + 后8个字符
+	return string(runes[:8]) + "..." + string(runes[totalRunes-8:])
+}
 func RandomCookiesString(strings []string) string {
 	if len(strings) == 0 {
 		return ""

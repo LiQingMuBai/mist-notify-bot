@@ -99,7 +99,7 @@ func BUNDLE_CHECK(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery *tgbota
 	var extraButtons []tgbotapi.InlineKeyboardButton
 	var keyboard [][]tgbotapi.InlineKeyboardButton
 	for _, item := range addresses {
-		allButtons = append(allButtons, tgbotapi.NewInlineKeyboardButtonData(item.Address, "apply_bundle_package_"+bundleID+"_"+item.Address))
+		allButtons = append(allButtons, tgbotapi.NewInlineKeyboardButtonData(TruncateString(item.Address), "apply_bundle_package_"+bundleID+"_"+item.Address))
 	}
 
 	extraButtons = append(extraButtons, tgbotapi.NewInlineKeyboardButtonData("🔙返回首页", "back_bundle_package"))

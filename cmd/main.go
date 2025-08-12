@@ -885,7 +885,7 @@ func handleCallbackQuery(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery 
 		var extraButtons []tgbotapi.InlineKeyboardButton
 		var keyboard [][]tgbotapi.InlineKeyboardButton
 		for _, item := range addresses {
-			allButtons = append(allButtons, tgbotapi.NewInlineKeyboardButtonData(item.Address, "close_freeze_risk_"+fmt.Sprintf("%d", item.Id)))
+			allButtons = append(allButtons, tgbotapi.NewInlineKeyboardButtonData(TruncateString(item.Address), "close_freeze_risk_"+fmt.Sprintf("%d", item.Id)))
 		}
 
 		extraButtons = append(extraButtons, tgbotapi.NewInlineKeyboardButtonData("🔙返回首页", "back_risk_home"))

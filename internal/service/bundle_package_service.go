@@ -13,6 +13,7 @@ import (
 	. "ushield_bot/internal/global"
 	"ushield_bot/internal/infrastructure/repositories"
 	"ushield_bot/internal/infrastructure/tools"
+	. "ushield_bot/internal/infrastructure/tools"
 	"ushield_bot/internal/request"
 )
 
@@ -278,7 +279,7 @@ func CLICK_BUNDLE_PACKAGE_ADDRESS_MANAGER_CONFIG(cache cache.Cache, bot *tgbotap
 	var extraButtons []tgbotapi.InlineKeyboardButton
 	var keyboard [][]tgbotapi.InlineKeyboardButton
 	for _, item := range addresses {
-		allButtons = append(allButtons, tgbotapi.NewInlineKeyboardButtonData(item.Address, "config_bundle_package_address_"+item.Address))
+		allButtons = append(allButtons, tgbotapi.NewInlineKeyboardButtonData(TruncateString(item.Address), "config_bundle_package_address_"+item.Address))
 	}
 
 	extraButtons = append(extraButtons, tgbotapi.NewInlineKeyboardButtonData("🔙返回首页", "back_bundle_package"))
@@ -427,7 +428,7 @@ func DispatchOthers(bundleID string, cache cache.Cache, bot *tgbotapi.BotAPI, _c
 	var extraButtons []tgbotapi.InlineKeyboardButton
 	var keyboard [][]tgbotapi.InlineKeyboardButton
 	for _, item := range addresses {
-		allButtons = append(allButtons, tgbotapi.NewInlineKeyboardButtonData(item.Address, "dispatch_others_"+bundleID+"_"+item.Address))
+		allButtons = append(allButtons, tgbotapi.NewInlineKeyboardButtonData(TruncateString(item.Address), "dispatch_others_"+bundleID+"_"+item.Address))
 	}
 
 	extraButtons = append(extraButtons, tgbotapi.NewInlineKeyboardButtonData("🔙返回首页", "back_bundle_package"))
