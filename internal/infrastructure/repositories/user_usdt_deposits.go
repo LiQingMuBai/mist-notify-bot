@@ -46,7 +46,7 @@ func (r *UserUSDTDepositsRepo) GetUserUsdtDepositsInfoList(ctx context.Context, 
 	}
 
 	if limit != 0 {
-		db = db.Limit(int(limit)).Offset(int(offset))
+		db = db.Limit(int(limit)).Offset(int(offset)).Order("id DESC")
 	}
 
 	err = db.Find(&userUsdtDepositss).Error
