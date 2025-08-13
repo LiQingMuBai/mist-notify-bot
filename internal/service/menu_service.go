@@ -227,7 +227,7 @@ func MenuNavigateBundlePackage(db *gorm.DB, _chatID int64, bot *tgbotapi.BotAPI,
 			"⏳ 能量有效期 1 小时，过期将自动回收并扣除笔数。\n"+
 			"🆔 用户ID: "+user.Associates+"\n"+
 			"👤 用户名: @"+user.Username+"\n"+
-			"💰 当前余额: "+"\n"+"- TRX：   "+user.TronAmount+"-  USDT："+user.Amount)
+			"💰 当前余额: "+"\n"+"- TRX：   "+user.TronAmount+"     - USDT："+user.Amount)
 	msg.ReplyMarkup = inlineKeyboard
 	msg.ParseMode = "HTML"
 
