@@ -162,7 +162,7 @@ func CLICK_BUNDLE_PACKAGE_ADDRESS_STATS(db *gorm.DB, chatID int64) tgbotapi.Mess
 	if total > 0 {
 		//- [6.29] +3000 TRX（订单 #TOPUP-92308）
 		for _, order := range orderlist {
-			builder.WriteString("地址：")
+			//builder.WriteString("地址：")
 			builder.WriteString("<code>" + order.Address + "</code>")
 			builder.WriteString("\n")
 			builder.WriteString("状态：")
@@ -190,7 +190,7 @@ func CLICK_BUNDLE_PACKAGE_ADDRESS_STATS(db *gorm.DB, chatID int64) tgbotapi.Mess
 
 			//builder.WriteString(" （能量笔数套餐）")
 
-			builder.WriteString("\n\n") // 添加分隔符
+			builder.WriteString("\n") // 添加分隔符
 			if order.Times > 0 {
 				if order.Status == 2 {
 					builder.WriteString("开启自动发能： /startAutoDispatch")
@@ -208,9 +208,9 @@ func CLICK_BUNDLE_PACKAGE_ADDRESS_STATS(db *gorm.DB, chatID int64) tgbotapi.Mess
 				builder.WriteString(strconv.FormatInt(order.Id, 10))
 				builder.WriteString("\n") // 添加分隔符
 			}
-			builder.WriteString("\n")
-			builder.WriteString("➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖") // 添加分隔符
-			builder.WriteString("\n")              // 添加分隔符
+			//builder.WriteString("\n")
+			builder.WriteString("➖➖➖➖➖➖➖➖➖➖➖➖➖") // 添加分隔符
+			//builder.WriteString("\n")            // 添加分隔符
 		}
 	} else {
 		builder.WriteString("\n\n") // 添加分隔符
@@ -219,7 +219,7 @@ func CLICK_BUNDLE_PACKAGE_ADDRESS_STATS(db *gorm.DB, chatID int64) tgbotapi.Mess
 	// 去除最后一个空格
 	result := strings.TrimSpace(builder.String())
 
-	msg := tgbotapi.NewMessage(chatID, "🧾<b>转账笔数 地址列表：</b>\n\n "+
+	msg := tgbotapi.NewMessage(chatID, "🧾笔数套餐地址列表\n\n "+
 		result+"\n")
 	msg.ParseMode = "HTML"
 	inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
@@ -263,7 +263,7 @@ func NEXT_BUNDLE_PACKAGE_ADDRESS_STATS(callbackQuery *tgbotapi.CallbackQuery, db
 	if total > 0 {
 		//- [6.29] +3000 TRX（订单 #TOPUP-92308）
 		for _, order := range orderlist {
-			builder.WriteString("地址：")
+			//builder.WriteString("地址：")
 			builder.WriteString("<code>" + order.Address + "</code>")
 			builder.WriteString("\n")
 			builder.WriteString("状态：")
@@ -291,7 +291,7 @@ func NEXT_BUNDLE_PACKAGE_ADDRESS_STATS(callbackQuery *tgbotapi.CallbackQuery, db
 
 			//builder.WriteString(" （能量笔数套餐）")
 
-			builder.WriteString("\n\n") // 添加分隔符
+			builder.WriteString("\n") // 添加分隔符
 			if order.Times > 0 {
 				if order.Status == 2 {
 					builder.WriteString("开启自动发能： /startAutoDispatch")
@@ -310,9 +310,9 @@ func NEXT_BUNDLE_PACKAGE_ADDRESS_STATS(callbackQuery *tgbotapi.CallbackQuery, db
 				builder.WriteString(strconv.FormatInt(order.Id, 10))
 				builder.WriteString("\n") // 添加分隔符
 			}
-			builder.WriteString("\n")
-			builder.WriteString("➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖") // 添加分隔符
-			builder.WriteString("\n")              // 添加分隔符
+			//builder.WriteString("\n")
+			builder.WriteString("➖➖➖➖➖➖➖➖➖➖➖➖➖") // 添加分隔符
+			//builder.WriteString("\n")            // 添加分隔符
 		}
 	} else {
 		builder.WriteString("\n\n") // 添加分隔符
@@ -320,7 +320,7 @@ func NEXT_BUNDLE_PACKAGE_ADDRESS_STATS(callbackQuery *tgbotapi.CallbackQuery, db
 
 	// 去除最后一个空格
 	result := strings.TrimSpace(builder.String())
-	msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, "🧾<b>转账笔数 地址列表：</b>\n\n "+
+	msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, "🧾笔数套餐地址列表：</b>\n\n "+
 		result+"\n")
 	msg.ParseMode = "HTML"
 	inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
@@ -361,7 +361,7 @@ func PREV_BUNDLE_PACKAGE_ADDRESS_STATS(callbackQuery *tgbotapi.CallbackQuery, db
 		if total > 0 {
 			//- [6.29] +3000 TRX（订单 #TOPUP-92308）
 			for _, order := range orderlist {
-				builder.WriteString("地址：")
+				//builder.WriteString("地址：")
 				builder.WriteString("<code>" + order.Address + "</code>")
 				builder.WriteString("\n")
 				builder.WriteString("状态：")
@@ -389,7 +389,7 @@ func PREV_BUNDLE_PACKAGE_ADDRESS_STATS(callbackQuery *tgbotapi.CallbackQuery, db
 
 				//builder.WriteString(" （能量笔数套餐）")
 
-				builder.WriteString("\n\n") // 添加分隔符
+				builder.WriteString("\n") // 添加分隔符
 				if order.Times > 0 {
 					if order.Status == 2 {
 						builder.WriteString("开启自动发能： /startAutoDispatch")
@@ -407,9 +407,9 @@ func PREV_BUNDLE_PACKAGE_ADDRESS_STATS(callbackQuery *tgbotapi.CallbackQuery, db
 					builder.WriteString(strconv.FormatInt(order.Id, 10))
 					builder.WriteString("\n") // 添加分隔符
 				}
-				builder.WriteString("\n")
-				builder.WriteString("➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖") // 添加分隔符
-				builder.WriteString("\n")              // 添加分隔符
+				//builder.WriteString("\n")
+				builder.WriteString("➖➖➖➖➖➖➖➖➖➖➖➖➖") // 添加分隔符
+				//builder.WriteString("\n")            // 添加分隔符
 			}
 		} else {
 			builder.WriteString("\n\n") // 添加分隔符
@@ -417,7 +417,7 @@ func PREV_BUNDLE_PACKAGE_ADDRESS_STATS(callbackQuery *tgbotapi.CallbackQuery, db
 
 		// 去除最后一个空格
 		result := strings.TrimSpace(builder.String())
-		msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, "🧾<b>转账笔数 地址列表：</b>\n\n "+
+		msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, "🧾笔数套餐地址列表：</b>\n\n "+
 			result+"\n")
 		msg.ParseMode = "HTML"
 		inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(
@@ -443,7 +443,7 @@ func PREV_BUNDLE_PACKAGE_ADDRESS_STATS(callbackQuery *tgbotapi.CallbackQuery, db
 		if total > 0 {
 			//- [6.29] +3000 TRX（订单 #TOPUP-92308）
 			for _, order := range orderlist {
-				builder.WriteString("地址：")
+				//builder.WriteString("地址：")
 				builder.WriteString("<code>" + order.Address + "</code>")
 				builder.WriteString("\n")
 				builder.WriteString("状态：")
@@ -471,7 +471,7 @@ func PREV_BUNDLE_PACKAGE_ADDRESS_STATS(callbackQuery *tgbotapi.CallbackQuery, db
 
 				//builder.WriteString(" （能量笔数套餐）")
 
-				builder.WriteString("\n\n") // 添加分隔符
+				builder.WriteString("\n") // 添加分隔符
 				if order.Times > 0 {
 					if order.Status == 2 {
 						builder.WriteString("开启自动发能： /startAutoDispatch")
@@ -489,9 +489,9 @@ func PREV_BUNDLE_PACKAGE_ADDRESS_STATS(callbackQuery *tgbotapi.CallbackQuery, db
 					builder.WriteString(strconv.FormatInt(order.Id, 10))
 					builder.WriteString("\n") // 添加分隔符
 				}
-				builder.WriteString("\n")
-				builder.WriteString("➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖") // 添加分隔符
-				builder.WriteString("\n")              // 添加分隔符
+				//builder.WriteString("\n")
+				builder.WriteString("➖➖➖➖➖➖➖➖➖➖➖➖➖") // 添加分隔符
+				//builder.WriteString("\n")            // 添加分隔符
 			}
 		} else {
 			builder.WriteString("\n\n") // 添加分隔符
@@ -499,7 +499,7 @@ func PREV_BUNDLE_PACKAGE_ADDRESS_STATS(callbackQuery *tgbotapi.CallbackQuery, db
 
 		// 去除最后一个空格
 		result := strings.TrimSpace(builder.String())
-		msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, "🧾<b>转账笔数 地址列表：</b>\n\n "+
+		msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, "🧾笔数套餐地址列表：</b>\n\n "+
 			result+"\n")
 		msg.ParseMode = "HTML"
 		inlineKeyboard := tgbotapi.NewInlineKeyboardMarkup(

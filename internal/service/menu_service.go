@@ -217,19 +217,17 @@ func MenuNavigateBundlePackage(db *gorm.DB, _chatID int64, bot *tgbotapi.BotAPI,
 	}
 
 	msg := tgbotapi.NewMessage(_chatID,
-		"🆔 用户ID: "+user.Associates+"\n"+
-			"👤 用户名: @"+user.Username+"\n"+
-			"💰 当前余额: "+"\n"+
-			"- TRX：   "+user.TronAmount+"\n"+
-			"-  USDT："+user.Amount+"\n"+
-			"欢迎使用 U盾能量笔数套餐\n"+
+		"欢迎使用 U盾能量笔数套餐\n"+
 			"一次购买 · 多地址使用 · 一键发能 · 快捷高效！\n"+
 			"⚙️ 功能介绍\n    📍 地址列表\n •最多可同时管理 4 个接收地址\n "+
 			"•可随时设置、修改默认地址\n"+
 			"⚡️ 发能管理\n "+
 			"•自动发能开启后系统会自动检测地址能量余量，不足时自动补充（每次消耗 1 笔），默认关闭，可在“地址列表”中开启/关闭。\n "+
 			"•一键发能：可向地址列表中任意地址或自定义地址快速发放 1 笔能量\n"+
-			"⏳ 能量有效期 1 小时，过期将自动回收并扣除笔数。")
+			"⏳ 能量有效期 1 小时，过期将自动回收并扣除笔数。\n"+
+			"🆔 用户ID: "+user.Associates+"\n"+
+			"👤 用户名: @"+user.Username+"\n"+
+			"💰 当前余额: "+"\n"+"- TRX：   "+user.TronAmount+"-  USDT："+user.Amount)
 	msg.ReplyMarkup = inlineKeyboard
 	msg.ParseMode = "HTML"
 
