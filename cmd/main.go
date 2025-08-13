@@ -299,6 +299,31 @@ func handleRegularMessage(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbo
 				bot.Send(msg)
 			}
 
+		case strings.HasPrefix(status, "DISPATCHOTHERS_"):
+			if IsValidAddress(message.Text) {
+				subscribeBundleID := strings.ReplaceAll(status, "DISPATCHOTHERS_", "")
+				//trxfee
+				userPackageSubscriptionsRepo := repositories.NewUserPackageSubscriptionsRepository(db)
+				record, _ := userPackageSubscriptionsRepo.Query(context.Background(), subscribeBundleID)
+
+				restTimes := record.Times - 1
+				userPackageSubscriptionsRepo.UpdateTimes(context.Background(), record.Id, restTimes)
+
+				//
+				msg2 := service.CLICK_BUNDLE_PACKAGE_ADDRESS_STATS(db, message.Chat.ID)
+				bot.Send(msg2)
+
+				msg := tgbotapi.NewMessage(message.Chat.ID, "📢【✅ U盾成功发送一笔能量】\n\n"+
+					"接收地址："+record.Address+"\n\n"+
+					"剩余笔数："+strconv.FormatInt(restTimes, 10)+"\n\n")
+				msg.ParseMode = "HTML"
+				bot.Send(msg)
+
+			} else {
+				msg := tgbotapi.NewMessage(message.Chat.ID, "💬"+"<b>"+"地址有误，请重新输入需派送的地址: "+"</b>"+"\n")
+				msg.ParseMode = "HTML"
+				bot.Send(msg)
+			}
 		case strings.HasPrefix(status, "address_manager_add"):
 			service.ExtractAddressManager(message, db, bot)
 

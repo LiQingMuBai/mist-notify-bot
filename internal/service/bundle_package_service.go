@@ -462,5 +462,5 @@ func DispatchOthers(bundleID string, cache cache.Cache, bot *tgbotapi.BotAPI, _c
 	expiration := 1 * time.Minute // 短时间缓存空值
 
 	//设置用户状态
-	cache.Set(strconv.FormatInt(_chatID, 10), "DISPATCHOTHERS", expiration)
+	cache.Set(strconv.FormatInt(_chatID, 10), "DISPATCHOTHERS_"+bundleID, expiration)
 }
