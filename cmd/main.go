@@ -161,6 +161,7 @@ func main() {
 						var user domain.User
 						user.Associates = strconv.FormatInt(update.Message.Chat.ID, 10)
 						user.Username = update.Message.Chat.UserName
+						user.CreatedAt = time.Now()
 						err := userRepo.Create2(context.Background(), &user)
 						if err != nil {
 							return
@@ -390,10 +391,10 @@ func handleRegularMessage(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbo
 // 处理内联键盘回调
 func handleCallbackQuery(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery *tgbotapi.CallbackQuery, db *gorm.DB) {
 	// 先应答回调
-	callback := tgbotapi.NewCallback(callbackQuery.ID, "已选择: "+callbackQuery.Data)
-	if _, err := bot.Request(callback); err != nil {
-		log.Printf("Error answering callback: %v", err)
-	}
+	//callback := tgbotapi.NewCallback(callbackQuery.ID, "已选择: "+callbackQuery.Data)
+	//if _, err := bot.Request(callback); err != nil {
+	//	log.Printf("Error answering callback: %v", err)
+	//}
 
 	// 根据回调数据执行不同操作
 	var responseText string
