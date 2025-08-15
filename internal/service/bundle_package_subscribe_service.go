@@ -163,6 +163,7 @@ func CLICK_BUNDLE_PACKAGE_ADDRESS_STATS(db *gorm.DB, chatID int64) tgbotapi.Mess
 		//- [6.29] +3000 TRX（订单 #TOPUP-92308）
 		for _, order := range orderlist {
 			//builder.WriteString("地址：")
+			builder.WriteString("\n")
 			builder.WriteString("<code>" + order.Address + "</code>")
 			builder.WriteString("\n")
 			builder.WriteString("状态：")
@@ -193,18 +194,18 @@ func CLICK_BUNDLE_PACKAGE_ADDRESS_STATS(db *gorm.DB, chatID int64) tgbotapi.Mess
 			builder.WriteString("\n") // 添加分隔符
 			if order.Times > 0 {
 				if order.Status == 2 {
-					builder.WriteString("开启自动发能： /startAutoDispatch")
+					builder.WriteString("开启自动发能:/startDispatch")
 					builder.WriteString(strconv.FormatInt(order.Id, 10))
 				}
 				if order.Status == 1 {
-					builder.WriteString("关闭自动发能： /stopAutoDispatch")
+					builder.WriteString("关闭自动发能:/stopDispatch")
 					builder.WriteString(strconv.FormatInt(order.Id, 10))
 				}
 				builder.WriteString("\n") // 添加分隔符
-				builder.WriteString("手工发能：/dispatchNow")
+				builder.WriteString("手动发能:/dispatchNow")
 				builder.WriteString(strconv.FormatInt(order.Id, 10))
 				builder.WriteString("\n") // 添加分隔符
-				builder.WriteString("发能其他用户：/dispatchOthers")
+				builder.WriteString("其他地址:/dispatchOthers")
 				builder.WriteString(strconv.FormatInt(order.Id, 10))
 				builder.WriteString("\n") // 添加分隔符
 			}
@@ -264,6 +265,7 @@ func NEXT_BUNDLE_PACKAGE_ADDRESS_STATS(callbackQuery *tgbotapi.CallbackQuery, db
 		//- [6.29] +3000 TRX（订单 #TOPUP-92308）
 		for _, order := range orderlist {
 			//builder.WriteString("地址：")
+			builder.WriteString("\n")
 			builder.WriteString("<code>" + order.Address + "</code>")
 			builder.WriteString("\n")
 			builder.WriteString("状态：")
@@ -294,19 +296,19 @@ func NEXT_BUNDLE_PACKAGE_ADDRESS_STATS(callbackQuery *tgbotapi.CallbackQuery, db
 			builder.WriteString("\n") // 添加分隔符
 			if order.Times > 0 {
 				if order.Status == 2 {
-					builder.WriteString("开启自动发能： /startAutoDispatch")
+					builder.WriteString("开启自动发能:/startDispatch")
 					builder.WriteString(strconv.FormatInt(order.Id, 10))
 				}
 				if order.Status == 1 {
-					builder.WriteString("关闭自动发能： /stopAutoDispatch")
+					builder.WriteString("关闭自动发能:/stopDispatch")
 					builder.WriteString(strconv.FormatInt(order.Id, 10))
 				}
 				builder.WriteString("\n") // 添加分隔符
-				builder.WriteString("手工发能：/dispatchNow")
+				builder.WriteString("手动发能:/dispatchNow")
 				builder.WriteString(strconv.FormatInt(order.Id, 10))
 
 				builder.WriteString("\n") // 添加分隔符
-				builder.WriteString("发能其他用户：/dispatchOthers")
+				builder.WriteString("其他地址:/dispatchOthers")
 				builder.WriteString(strconv.FormatInt(order.Id, 10))
 				builder.WriteString("\n") // 添加分隔符
 			}
@@ -361,6 +363,7 @@ func PREV_BUNDLE_PACKAGE_ADDRESS_STATS(callbackQuery *tgbotapi.CallbackQuery, db
 		if total > 0 {
 			//- [6.29] +3000 TRX（订单 #TOPUP-92308）
 			for _, order := range orderlist {
+				builder.WriteString("\n")
 				//builder.WriteString("地址：")
 				builder.WriteString("<code>" + order.Address + "</code>")
 				builder.WriteString("\n")
@@ -392,18 +395,18 @@ func PREV_BUNDLE_PACKAGE_ADDRESS_STATS(callbackQuery *tgbotapi.CallbackQuery, db
 				builder.WriteString("\n") // 添加分隔符
 				if order.Times > 0 {
 					if order.Status == 2 {
-						builder.WriteString("开启自动发能： /startAutoDispatch")
+						builder.WriteString("开启自动发能:/startDispatch")
 						builder.WriteString(strconv.FormatInt(order.Id, 10))
 					}
 					if order.Status == 1 {
-						builder.WriteString("关闭自动发能： /stopAutoDispatch")
+						builder.WriteString("关闭自动发能:/stopDispatch")
 						builder.WriteString(strconv.FormatInt(order.Id, 10))
 					}
 					builder.WriteString("\n") // 添加分隔符
-					builder.WriteString("手工发能：/dispatchNow")
+					builder.WriteString("手动发能:/dispatchNow")
 					builder.WriteString(strconv.FormatInt(order.Id, 10))
 					builder.WriteString("\n") // 添加分隔符
-					builder.WriteString("发能其他用户：/dispatchOthers")
+					builder.WriteString("其他地址:/dispatchOthers")
 					builder.WriteString(strconv.FormatInt(order.Id, 10))
 					builder.WriteString("\n") // 添加分隔符
 				}
@@ -444,6 +447,7 @@ func PREV_BUNDLE_PACKAGE_ADDRESS_STATS(callbackQuery *tgbotapi.CallbackQuery, db
 			//- [6.29] +3000 TRX（订单 #TOPUP-92308）
 			for _, order := range orderlist {
 				//builder.WriteString("地址：")
+				builder.WriteString("\n")
 				builder.WriteString("<code>" + order.Address + "</code>")
 				builder.WriteString("\n")
 				builder.WriteString("状态：")
@@ -474,18 +478,18 @@ func PREV_BUNDLE_PACKAGE_ADDRESS_STATS(callbackQuery *tgbotapi.CallbackQuery, db
 				builder.WriteString("\n") // 添加分隔符
 				if order.Times > 0 {
 					if order.Status == 2 {
-						builder.WriteString("开启自动发能： /startAutoDispatch")
+						builder.WriteString("开启自动发能:/startDispatch")
 						builder.WriteString(strconv.FormatInt(order.Id, 10))
 					}
 					if order.Status == 1 {
-						builder.WriteString("关闭自动发能： /stopAutoDispatch")
+						builder.WriteString("关闭自动发能:/stopDispatch")
 						builder.WriteString(strconv.FormatInt(order.Id, 10))
 					}
 					builder.WriteString("\n") // 添加分隔符
-					builder.WriteString("手工发能：/dispatchNow")
+					builder.WriteString("手动发能:/dispatchNow")
 					builder.WriteString(strconv.FormatInt(order.Id, 10))
 					builder.WriteString("\n") // 添加分隔符
-					builder.WriteString("发能其他用户：/dispatchOthers")
+					builder.WriteString("其他地址:/dispatchOthers")
 					builder.WriteString(strconv.FormatInt(order.Id, 10))
 					builder.WriteString("\n") // 添加分隔符
 				}

@@ -90,10 +90,10 @@ func main() {
 		if update.Message != nil {
 			if update.Message.IsCommand() {
 				switch {
-				case strings.HasPrefix(update.Message.Command(), "startAutoDispatch"):
-					subscribeBundleID := strings.ReplaceAll(update.Message.Command(), "startAutoDispatch", "")
+				case strings.HasPrefix(update.Message.Command(), "startDispatch"):
+					subscribeBundleID := strings.ReplaceAll(update.Message.Command(), "startDispatch", "")
 					log.Println("subscribeBundleID :" + subscribeBundleID)
-					log.Println(subscribeBundleID + "startAutoDispatch command")
+					log.Println(subscribeBundleID + "startDispatch command")
 					userPackageSubscriptionsRepo := repositories.NewUserPackageSubscriptionsRepository(db)
 					subscribeBundlePackageID, _ := strconv.ParseInt(subscribeBundleID, 10, 64)
 
@@ -105,7 +105,7 @@ func main() {
 					log.Println("subscribeBundleID :" + subscribeBundleID)
 					log.Println(subscribeBundleID + "dispatchNow command")
 
-					//手工发能
+					//手动发能
 
 					//trxfee
 					userPackageSubscriptionsRepo := repositories.NewUserPackageSubscriptionsRepository(db)
@@ -124,10 +124,10 @@ func main() {
 					msg.ParseMode = "HTML"
 					bot.Send(msg)
 
-				case strings.HasPrefix(update.Message.Command(), "stopAutoDispatch"):
-					subscribeBundleID := strings.ReplaceAll(update.Message.Command(), "stopAutoDispatch", "")
+				case strings.HasPrefix(update.Message.Command(), "stopDispatch"):
+					subscribeBundleID := strings.ReplaceAll(update.Message.Command(), "stopDispatch", "")
 					log.Println("subscribeBundleID :" + subscribeBundleID)
-					log.Println(subscribeBundleID + "stopAutoDispatch command")
+					log.Println(subscribeBundleID + "stopDispatch command")
 					userPackageSubscriptionsRepo := repositories.NewUserPackageSubscriptionsRepository(db)
 
 					subscribeBundlePackageID, _ := strconv.ParseInt(subscribeBundleID, 10, 64)
@@ -438,7 +438,7 @@ func handleCallbackQuery(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery 
 		fmt.Printf("bundleID %s\n", bundleID)
 		fmt.Printf("address %s\n", address)
 
-		//手工发能
+		//手动发能
 
 		//trxfee
 		userPackageSubscriptionsRepo := repositories.NewUserPackageSubscriptionsRepository(db)
