@@ -91,15 +91,21 @@ func main() {
 			if update.Message.IsCommand() {
 				switch {
 				case strings.HasPrefix(update.Message.Command(), "startDispatch"):
-					subscribeBundleID := strings.ReplaceAll(update.Message.Command(), "startDispatch", "")
-					log.Println("subscribeBundleID :" + subscribeBundleID)
-					log.Println(subscribeBundleID + "startDispatch command")
-					userPackageSubscriptionsRepo := repositories.NewUserPackageSubscriptionsRepository(db)
-					subscribeBundlePackageID, _ := strconv.ParseInt(subscribeBundleID, 10, 64)
-
-					userPackageSubscriptionsRepo.UpdateStatus(context.Background(), subscribeBundlePackageID, 1)
-					msg := service.CLICK_BUNDLE_PACKAGE_ADDRESS_STATS(db, update.Message.Chat.ID)
+					msg := tgbotapi.NewMessage(update.Message.Chat.ID, "📢 功能开发中！想第一时间知道它上线吗？记得关注我们的官方频道：@ushield1 🔔\n\n")
+					msg.ParseMode = "HTML"
 					bot.Send(msg)
+
+					//return
+
+					//subscribeBundleID := strings.ReplaceAll(update.Message.Command(), "startDispatch", "")
+					//log.Println("subscribeBundleID :" + subscribeBundleID)
+					//log.Println(subscribeBundleID + "startDispatch command")
+					//userPackageSubscriptionsRepo := repositories.NewUserPackageSubscriptionsRepository(db)
+					//subscribeBundlePackageID, _ := strconv.ParseInt(subscribeBundleID, 10, 64)
+					//
+					//userPackageSubscriptionsRepo.UpdateStatus(context.Background(), subscribeBundlePackageID, 1)
+					//msg := service.CLICK_BUNDLE_PACKAGE_ADDRESS_STATS(db, update.Message.Chat.ID)
+					//bot.Send(msg)
 				case strings.HasPrefix(update.Message.Command(), "dispatchNow"):
 					subscribeBundleID := strings.ReplaceAll(update.Message.Command(), "dispatchNow", "")
 					log.Println("subscribeBundleID :" + subscribeBundleID)
@@ -125,16 +131,23 @@ func main() {
 					bot.Send(msg)
 
 				case strings.HasPrefix(update.Message.Command(), "stopDispatch"):
-					subscribeBundleID := strings.ReplaceAll(update.Message.Command(), "stopDispatch", "")
-					log.Println("subscribeBundleID :" + subscribeBundleID)
-					log.Println(subscribeBundleID + "stopDispatch command")
-					userPackageSubscriptionsRepo := repositories.NewUserPackageSubscriptionsRepository(db)
 
-					subscribeBundlePackageID, _ := strconv.ParseInt(subscribeBundleID, 10, 64)
-
-					userPackageSubscriptionsRepo.UpdateStatus(context.Background(), subscribeBundlePackageID, 2)
-					msg := service.CLICK_BUNDLE_PACKAGE_ADDRESS_STATS(db, update.Message.Chat.ID)
+					msg := tgbotapi.NewMessage(update.Message.Chat.ID, "📢 功能开发中！想第一时间知道它上线吗？记得关注我们的官方频道：@ushield1 🔔\n\n")
+					msg.ParseMode = "HTML"
 					bot.Send(msg)
+
+					//return
+
+					//subscribeBundleID := strings.ReplaceAll(update.Message.Command(), "stopDispatch", "")
+					//log.Println("subscribeBundleID :" + subscribeBundleID)
+					//log.Println(subscribeBundleID + "stopDispatch command")
+					//userPackageSubscriptionsRepo := repositories.NewUserPackageSubscriptionsRepository(db)
+					//
+					//subscribeBundlePackageID, _ := strconv.ParseInt(subscribeBundleID, 10, 64)
+					//
+					//userPackageSubscriptionsRepo.UpdateStatus(context.Background(), subscribeBundlePackageID, 2)
+					//msg := service.CLICK_BUNDLE_PACKAGE_ADDRESS_STATS(db, update.Message.Chat.ID)
+					//bot.Send(msg)
 
 				case strings.HasPrefix(update.Message.Command(), "dispatchOthers"):
 					subscribeBundleID := strings.ReplaceAll(update.Message.Command(), "dispatchOthers", "")
