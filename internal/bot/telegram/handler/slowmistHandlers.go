@@ -292,16 +292,16 @@ func getText(addressInfo SlowMistAddressInfo) string {
 	_text3 := ""
 	_text4 := ""
 	if _item0 > 1 {
-		//log.Println("⚠️有與疑似惡意地址交互")
-		_text1 = "⚠️有與疑似惡意地址交互\n"
+		//log.Println("⚠️有与疑似恶意地址交互")
+		_text1 = "⚠️有与疑似恶意地址交互\n"
 	}
 	if _item1 > 1 {
 		//log.Println("⚠️️有与恶意地址交互")
 		_text2 = "⚠️️有与恶意地址交互\n"
 	}
 	if _item2 > 1 {
-		//log.Println("⚠️️有與高風險標籤地址交互")
-		_text3 = "⚠️️有與高風險標籤地址交互\n"
+		//log.Println("⚠️️️有与高风险标签地址交互")
+		_text3 = "⚠️️️有与高风险标签地址交互\n"
 	}
 
 	_banned_item := addressInfo.RiskDic.HackingEvent
@@ -313,9 +313,9 @@ func getText(addressInfo SlowMistAddressInfo) string {
 	//msg = domain.MessageToSend{
 	//	ChatId: message.Chat.ID,
 	//	Text: "🔍风险评分:87\n" +
-	//		"⚠️有與疑似惡意地址交互\n" +
+	//		"⚠️有与疑似恶意地址交互\n" +
 	//		"⚠️️有与恶意地址交互\n" +
-	//		"⚠️️有與高風險標籤地址交互\n" +
+	//		"⚠️️️有与高风险标签地址交互\n" +
 	//		"⚠️️受制裁实体\n" +
 	//		"📢📢📢更詳細報告請聯繫客服@ushield001\n",
 	//}
