@@ -6,9 +6,28 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 	"unicode"
 )
 
+// GenerateTronOrderID 生成波场订单号（年月日时分 + 波场地址后4位）
+func GenerateOrderID(tronAddress string, suffix int) (string, error) {
+	// 1. 校验波场地址格式
+	tronAddress = strings.TrimSpace(tronAddress)
+	//if len(tronAddress) != 34 || !strings.HasPrefix(tronAddress, "T") {
+	//	return "", fmt.Errorf("无效的波场地址（必须34位且以T开头）")
+	//}
+
+	// 2. 获取当前时间的 "年月日时分"（格式：200601021504）
+	timestamp := time.Now().Format("20060102150405")
+
+	// 3. 截取波场地址后4位
+	addressSuffix := tronAddress[len(tronAddress)-suffix:]
+
+	// 4. 拼接时间 + 地址后4位
+	orderID := timestamp + addressSuffix
+	return orderID, nil
+}
 func TruncateString(s string) string {
 	// 转换为rune数组以正确处理多字节字符
 	runes := []rune(s)

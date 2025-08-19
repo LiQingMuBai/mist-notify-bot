@@ -14,6 +14,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	trxfee "ushield_bot/internal/infrastructure/3rd"
 	"ushield_bot/internal/service"
 
 	"ushield_bot/internal/cache"
@@ -65,6 +66,14 @@ func main() {
 	_cookie2 := os.Getenv("COOKIE2")
 	_cookie3 := os.Getenv("COOKIE3")
 
+	trxfeeUrl := os.Getenv("TRXFEE_BASE_URL")
+	trxfeeApiKey := os.Getenv("TRXFEE_APIKEY")
+	trxfeeSecret := os.Getenv("TRXFEE_APISECRET")
+
+	log.Printf("Trxfee URL: %s", trxfeeUrl)
+	log.Printf("trxfeeApiKeyL: %s", trxfeeApiKey)
+	log.Printf("\ttrxfeeSecret: %s", trxfeeSecret)
+	
 	// 1. 创建字符串数组
 	cookies := []string{_cookie1, _cookie2, _cookie3}
 
@@ -124,11 +133,40 @@ func main() {
 					msg2 := service.CLICK_BUNDLE_PACKAGE_ADDRESS_STATS(db, update.Message.Chat.ID)
 					bot.Send(msg2)
 
-					msg := tgbotapi.NewMessage(update.Message.Chat.ID, "📢【✅ U盾成功发送一笔能量】\n\n"+
-						"接收地址："+record.Address+"\n\n"+
-						"剩余笔数："+strconv.FormatInt(restTimes, 10)+"\n\n")
-					msg.ParseMode = "HTML"
-					bot.Send(msg)
+					//调用trxfee接口
+
+					var sysOrder domain.UserEnergyOrders
+					orderNo, _ := GenerateOrderID(record.Address, 4)
+					//fmt.Printf("  OrderNo: %s\n", orderNo)
+					sysOrder.OrderNo = orderNo
+					sysOrder.TxId = ""
+					sysOrder.FromAddress = record.Address
+					//sysOrder.ToAddress = item.Address
+					sysOrder.Amount = 65000
+					sysOrder.ChatId = strconv.FormatInt(update.Message.Chat.ID, 10)
+					//
+					////添加一条记录
+					ueoRepo := repositories.NewUserEnergyOrdersRepo(db)
+					errsg := ueoRepo.Create(context.Background(), &sysOrder)
+
+					if errsg == nil {
+						trxfeeClient := trxfee.NewTrxfeeClient(trxfeeUrl, trxfeeApiKey, trxfeeSecret)
+
+						fmt.Sprintf("发送（%d）笔能量给（%s），订单号 %s\n", 1, record.Address, orderNo)
+						trxfeeClient.Order(orderNo, record.Address, 65_000*1)
+
+						msg := tgbotapi.NewMessage(update.Message.Chat.ID, "📢【✅ U盾成功发送一笔能量】\n\n"+
+							"接收地址："+record.Address+"\n\n"+
+							"剩余笔数："+strconv.FormatInt(restTimes, 10)+"\n\n")
+						msg.ParseMode = "HTML"
+						bot.Send(msg)
+					}
+
+					//msg := tgbotapi.NewMessage(update.Message.Chat.ID, "📢【✅ U盾成功发送一笔能量】\n\n"+
+					//	"接收地址："+record.Address+"\n\n"+
+					//	"剩余笔数："+strconv.FormatInt(restTimes, 10)+"\n\n")
+					//msg.ParseMode = "HTML"
+					//bot.Send(msg)
 
 				case strings.HasPrefix(update.Message.Command(), "stopDispatch"):
 
@@ -190,7 +228,7 @@ func main() {
 
 				log.Printf("3")
 				log.Printf("来自于自发的信息[%s] %s", update.Message.From.UserName, update.Message.Text)
-				handleRegularMessage(cache, bot, update.Message, db, _cookie)
+				handleRegularMessage(cache, bot, update.Message, db, _cookie, trxfeeUrl, trxfeeApiKey, trxfeeSecret)
 			}
 		} else if update.CallbackQuery != nil {
 			log.Printf("4")
@@ -236,7 +274,7 @@ func handleHideCommand(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbotap
 }
 
 // 处理普通消息（键盘按钮点击）
-func handleRegularMessage(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbotapi.Message, db *gorm.DB, _cookie string) {
+func handleRegularMessage(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbotapi.Message, db *gorm.DB, _cookie string, _trxfeeUrl, _trxfeeApiKey, _trxfeeSecret string) {
 	switch message.Text {
 	case "🔍地址检测":
 		service.MenuNavigateAddressDetection(cache, bot, message.Chat.ID, db)
@@ -326,11 +364,34 @@ func handleRegularMessage(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbo
 				msg2 := service.CLICK_BUNDLE_PACKAGE_ADDRESS_STATS(db, message.Chat.ID)
 				bot.Send(msg2)
 
-				msg := tgbotapi.NewMessage(message.Chat.ID, "📢【✅ U盾成功发送一笔能量】\n\n"+
-					"接收地址："+record.Address+"\n\n"+
-					"剩余笔数："+strconv.FormatInt(restTimes, 10)+"\n\n")
-				msg.ParseMode = "HTML"
-				bot.Send(msg)
+				//调用trxfee接口
+
+				var sysOrder domain.UserEnergyOrders
+				orderNo, _ := GenerateOrderID(record.Address, 4)
+				//fmt.Printf("  OrderNo: %s\n", orderNo)
+				sysOrder.OrderNo = orderNo
+				sysOrder.TxId = ""
+				sysOrder.FromAddress = record.Address
+				//sysOrder.ToAddress = item.Address
+				sysOrder.Amount = 65000
+				sysOrder.ChatId = strconv.FormatInt(message.Chat.ID, 10)
+				//
+				////添加一条记录
+				ueoRepo := repositories.NewUserEnergyOrdersRepo(db)
+				errsg := ueoRepo.Create(context.Background(), &sysOrder)
+
+				if errsg == nil {
+					trxfeeClient := trxfee.NewTrxfeeClient(_trxfeeUrl, _trxfeeApiKey, _trxfeeSecret)
+
+					fmt.Sprintf("发送（%d）笔能量给（%s），订单号 %s\n", 1, record.Address, orderNo)
+					trxfeeClient.Order(orderNo, record.Address, 65_000*1)
+
+					msg := tgbotapi.NewMessage(message.Chat.ID, "📢【✅ U盾成功发送一笔能量】\n\n"+
+						"接收地址："+record.Address+"\n\n"+
+						"剩余笔数："+strconv.FormatInt(restTimes, 10)+"\n\n")
+					msg.ParseMode = "HTML"
+					bot.Send(msg)
+				}
 
 			} else {
 				msg := tgbotapi.NewMessage(message.Chat.ID, "💬"+"<b>"+"地址有误，请重新输入需派送的地址: "+"</b>"+"\n")
