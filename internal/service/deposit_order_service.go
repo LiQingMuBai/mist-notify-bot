@@ -155,7 +155,7 @@ func DepositCancelOrder(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery *
 	if strings.Contains(orderNO, "USDT_") {
 		_orderNO := strings.ReplaceAll(orderNO, "USDT_", "")
 		userUSDTDepositsRepo := repositories.NewUserUSDTDepositsRepository(db)
-		record, _ := userUSDTDepositsRepo.Find(context.Background(), _orderNO)
+		record, _ := userUSDTDepositsRepo.Query(context.Background(), _orderNO)
 		//update
 		fmt.Printf("record: %v\n", record)
 		userUSDTPlaceholdersRepo := repositories.NewUserUsdtPlaceholdersRepository(db)
@@ -311,7 +311,7 @@ func DepositPrevOrder(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery *tg
 
 	msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID,
 
-		"支付金额："+"<code>"+realTransferAmount+"</code>"+" usdt （点击复制）"+"\n"+
+		"支付金额："+"<code>"+realTransferAmount+"</code>"+" trx （点击复制）"+"\n"+
 			"收款地址："+"<code>"+trxDeposit.Address+"</code>"+"（点击复制）"+"\n"+
 			"订单号：#TOPUP-"+trxDeposit.OrderNO+"\n"+
 			"有效期：10 分钟"+"\n"+

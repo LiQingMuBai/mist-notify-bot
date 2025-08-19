@@ -62,3 +62,10 @@ func (r *UserUSDTDepositsRepo) Find(ctx context.Context, orderNo string) (domain
 	return depositRecords[0], err
 
 }
+func (r *UserUSDTDepositsRepo) Query(ctx context.Context, orderNo string) (domain.UserUSDTDeposits, error) {
+	var depositRecord domain.UserUSDTDeposits
+	err := r.db.WithContext(ctx).
+		Find(&depositRecord, "order_no = ?", orderNo).Error
+	return depositRecord, err
+
+}
