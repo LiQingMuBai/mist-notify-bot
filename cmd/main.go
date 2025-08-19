@@ -73,7 +73,7 @@ func main() {
 	log.Printf("Trxfee URL: %s", trxfeeUrl)
 	log.Printf("trxfeeApiKeyL: %s", trxfeeApiKey)
 	log.Printf("\ttrxfeeSecret: %s", trxfeeSecret)
-	
+
 	// 1. 创建字符串数组
 	cookies := []string{_cookie1, _cookie2, _cookie3}
 
@@ -206,7 +206,7 @@ func main() {
 
 					//存用户
 					userRepo := repositories.NewUserRepository(db)
-					_, err := userRepo.GetByUserID(update.Message.Chat.ID)
+					record, err := userRepo.GetByUserID(update.Message.Chat.ID)
 					if err != nil {
 						//增加用户
 						var user domain.User
@@ -217,6 +217,16 @@ func main() {
 						if err != nil {
 							return
 						}
+					}
+
+					if err == nil {
+
+						record.Username = update.Message.From.UserName
+
+						userRepo.UpdateUserNameByChatID(update.Message.From.UserName, update.Message.Chat.ID)
+
+						log.Printf("UserName: %s", record.Username)
+						log.Printf("Associates %s", record.Associates)
 					}
 
 					handleStartCommand(cache, bot, update.Message)

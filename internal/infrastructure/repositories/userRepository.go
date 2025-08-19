@@ -38,6 +38,12 @@ func (r *UserRepository) Create(user domain.User) error {
 	return tx.Error
 }
 
+func (r *UserRepository) UpdateUserNameByChatID(_username string, _chatID int64) error {
+	query := "UPDATE tg_users SET username = ? WHERE associates = ?"
+	tx := r.db.Exec(query, _username, _chatID)
+	return tx.Error
+}
+
 func (r *UserRepository) Update(user domain.User) error {
 	query := "UPDATE tg_users SET associates = $1, tron_amount = $2 WHERE username = $3"
 	tx := r.db.Exec(query, user.Associates, user.TronAmount, user.Username)
