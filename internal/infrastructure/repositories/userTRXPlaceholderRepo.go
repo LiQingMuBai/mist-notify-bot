@@ -50,7 +50,7 @@ func (r *UserTRXPlaceholdersRepository) Find(ctx context.Context) (domain.UserTR
 }
 func (r *UserTRXPlaceholdersRepository) Query(ctx context.Context) (domain.UserTRXPlaceholders, error) {
 	var placeholders domain.UserTRXPlaceholders
-	err := r.db.WithContext(ctx).
+	err := r.db.WithContext(ctx).Order("RAND()").
 		Find(&placeholders, "status = ?", 0).Error
 	return placeholders, err
 
