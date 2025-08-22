@@ -54,7 +54,7 @@ func ADDRESS_LIST_TRACE(cache cache.Cache, bot *tgbotapi.BotAPI, callbackQuery *
 				result += " ✅\n" // 添加分隔符
 			}
 
-			restDays := fmt.Sprintf("%d", 30-item.Days)
+			restDays := fmt.Sprintf("%d", 31-item.Days)
 
 			result += "<code>" + item.Address + "</code>" + "（剩余" + restDays + "天）"
 		}
