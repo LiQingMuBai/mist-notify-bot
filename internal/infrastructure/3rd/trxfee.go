@@ -71,6 +71,8 @@ func (c *TrxfeeClient) Account() (resp *AccountDataResp, err error) {
 
 }
 func (c *TrxfeeClient) Order(_outTradeNo, _receiveAddress string, _energyAmount int) {
+
+	time.Sleep(1 * time.Second)
 	timestamp := strconv.FormatInt(time.Now().Unix(), 10)
 
 	data := Data{
