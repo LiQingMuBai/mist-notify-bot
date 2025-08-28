@@ -299,7 +299,7 @@ func handleRegularMessage(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbo
 	default:
 		status, _ := cache.Get(strconv.FormatInt(message.Chat.ID, 10))
 
-		log.Printf("用户状态staus %s", status)
+		log.Printf("用户状态status %s", status)
 		switch {
 		case strings.HasPrefix(status, "user_backup_notify"):
 
@@ -453,18 +453,21 @@ func handleRegularMessage(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbo
 
 		case strings.HasPrefix(status, "click_backup_account"):
 
-			if !strings.Contains(message.Text, "@") {
-				msg := tgbotapi.NewMessage(message.Chat.ID, "❌ 用户名格式有误，请重新输入")
+			log.Printf("进入click_backup_account状态：%s\n", message.Text)
+			if strings.Contains(message.Text, "@") {
+				msg := tgbotapi.NewMessage(message.Chat.ID, "❌ 用户名格式有误，去掉@符号，请重新输入")
 				msg.ParseMode = "HTML"
 				bot.Send(msg)
 				return
 			}
 			userName := strings.ReplaceAll(message.Text, "@", "")
 
+			log.Printf("备份用户：%s\n", userName)
 			userRepo := repositories.NewUserRepository(db)
 			user, err := userRepo.GetByUsername(userName)
 
 			if err != nil {
+				log.Printf("访问失败 %s\n", err)
 				msg := tgbotapi.NewMessage(message.Chat.ID, "❌ 用户名格式有误，请重新输入")
 				msg.ParseMode = "HTML"
 				bot.Send(msg)
@@ -472,6 +475,7 @@ func handleRegularMessage(cache cache.Cache, bot *tgbotapi.BotAPI, message *tgbo
 			}
 
 			if user.Id == 0 {
+				log.Printf("无该用户 %s\n", userName)
 				msg := tgbotapi.NewMessage(message.Chat.ID, "❌ 用户名格式有误，请重新输入")
 				msg.ParseMode = "HTML"
 				bot.Send(msg)
