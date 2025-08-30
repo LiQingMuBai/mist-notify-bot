@@ -69,7 +69,7 @@ func (r *UserPackageSubscriptionsRepository) GetUserPackageSubscriptionsInfoList
 	limit := info.PageSize
 	offset := info.PageSize * (info.Page - 1)
 	// 创建db
-	db := r.db.Model(&domain.UserPackageSubscriptions{}).Select("id,status,amount,times,bundle_name,bundle_id,address, DATE_FORMAT(created_at, '%m-%d') as created_date").Where("chat_id = ?", _chatID)
+	db := r.db.Model(&domain.UserPackageSubscriptions{}).Select("id,status,amount,times,bundle_name,bundle_id,address, DATE_FORMAT(created_at, '%m-%d') as created_date").Where("chat_id = ? and times > 0", _chatID)
 	var UserPackageSubscriptions []domain.UserPackageSubscriptions
 	// 如果有条件搜索 下方会自动创建搜索语句
 
